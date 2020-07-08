@@ -52,9 +52,7 @@ class MainActivity : AppCompatActivity() {
         city = findViewById(R.id.city)
 
         realTemp = findViewById(R.id.realTemp)
-
-
-
+        
     }
 
 
@@ -64,6 +62,7 @@ class MainActivity : AppCompatActivity() {
     internal fun getCurrentData() {
         val retrofit = Retrofit.Builder()
             .baseUrl(BaseUrl)
+                //Generate an implementation for deserialization
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val service = retrofit.create(WeatherService::class.java)
@@ -128,6 +127,7 @@ class MainActivity : AppCompatActivity() {
         var units = "metric"
         var lang = "de"
     }
+
 }
 
 
