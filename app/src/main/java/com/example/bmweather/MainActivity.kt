@@ -16,6 +16,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity() {
 
+    //Declare var for Textview with late init
     private lateinit var weatherDescription: TextView
     private lateinit var mainTemp: TextView
     private lateinit var tempAllDay: TextView
@@ -27,8 +28,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //toaster Message
+        //toaster Message + get current data
         search_button.setOnClickListener {
+            getCurrentData()
             Toast.makeText(
                 this, "this is a toast message",
                 Toast.LENGTH_SHORT
@@ -39,10 +41,9 @@ class MainActivity : AppCompatActivity() {
         autoCompleteTextView.setOnClickListener {
             autoCompleteTextView.setText("")
         }
-        //
+        //Get textview by id
 
         weatherDescription = findViewById(R.id.description)
-        findViewById<View>(R.id.search_button).setOnClickListener { getCurrentData() }
 
         mainTemp = findViewById(R.id.mainTemp)
 
@@ -59,20 +60,25 @@ class MainActivity : AppCompatActivity() {
 
 
 
+    //Retrofit based API request
     internal fun getCurrentData() {
         val retrofit = Retrofit.Builder()
             .baseUrl(BaseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val service = retrofit.create(WeatherService::class.java)
+        //add parameters to BaseURL
         val call = service.getCurrentWeatherData(q, units, lang, AppId)
         //val call = service.getCurrentWeatherData(lat, lon, AppId)
+
+        //Expected response
         call.enqueue(object : Callback<WeatherResponse> {
             override fun onResponse(call: retrofit2.Call<WeatherResponse>, response: Response<WeatherResponse>) {
+                //On successful response builde string as defined later on
                 if (response.code() == 200) {
                     val weatherResponse = response.body()!!
 
-
+                    //Build String from response
                     val stringBuilder = null
                     weatherDescription.text = stringBuilder
                     rain(weatherResponse.weather[0])
@@ -83,14 +89,16 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-
+            //Message in the case of failed API call
             override fun onFailure(call: retrofit2.Call<WeatherResponse>, t: Throwable) {
                 weatherDescription.text = t.message
             }
         })
     }
 
-    private fun rain(weather: Weather){
+    // Display API response in specific textview
+
+    fun rain(weather: Weather){
         weatherDescription.text = "Wetter: ".plus(weather.description)
     }
 
@@ -110,12 +118,12 @@ class MainActivity : AppCompatActivity() {
         city.text = weatherResponse.name.plus(", ").plus(weatherResponse.sys!!.country)
     }
 
+
+    // Declare parameters for tge GET funktion
     companion object {
 
         var BaseUrl = "http://api.openweathermap.org/"
         var AppId = "6133b390a077c487bc9ac43311b3ba26"
-        //var lat = "50.3535700"
-        //var lon = "7.5788300"
         var q = "Koblenz"
         var units = "metric"
         var lang = "de"
