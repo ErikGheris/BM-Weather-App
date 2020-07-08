@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">BM Weather</string>
+    <string name="search">search_Button</string>
+    <string name="searchHint">search_Hint</string>
+    <string name="messageText">message_Text</string>
+</resources>
