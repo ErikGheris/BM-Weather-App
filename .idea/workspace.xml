@@ -17,13 +17,8 @@
       <change beforePath="$PROJECT_DIR$/.gradle/6.1.1/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.1.1/javaCompile/javaCompile.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.1.1/javaCompile/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.1.1/javaCompile/taskHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules/app/app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/app/app.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/styles.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/styles.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,6 +38,13 @@
       </state>
     </system>
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="resourceFile" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -53,8 +55,8 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="DeviceAndSnapshotComboBoxAction.selectedDevice" value="Nexus_5_API_30" />
-    <property name="DeviceAndSnapshotComboBoxAction.selectionTime" value="2020-07-08T13:58:20.576Z" />
+    <property name="DeviceAndSnapshotComboBoxAction.selectedDevice" value="Pixel_3a_API_30" />
+    <property name="DeviceAndSnapshotComboBoxAction.selectionTime" value="2020-07-08T14:10:10.681Z" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="android.sdk.path" value="$USER_HOME$/Library/Android/sdk" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
@@ -134,38 +136,19 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="-1184" y="188" key="#app" timestamp="1594216510659">
-      <screen x="-1920" y="23" width="1920" height="986" />
+    <state x="308" y="203" key="AndroidCreateResourceFileDialog" timestamp="1594214991464">
+      <screen x="0" y="23" width="1440" height="837" />
     </state>
-    <state x="-1184" y="188" key="#app/-1920.23.1920.986/0.23.1440.877@-1920.23.1920.986" timestamp="1594216510659" />
-    <state width="1878" height="265" key="GridCell.Tab.0.bottom" timestamp="1594216414138">
-      <screen x="-1920" y="23" width="1920" height="986" />
+    <state x="308" y="203" key="AndroidCreateResourceFileDialog/0.23.1440.837@0.23.1440.837" timestamp="1594214991464" />
+    <state x="308" y="191" key="IDE.errors.dialog" timestamp="1594217059713">
+      <screen x="0" y="23" width="1440" height="837" />
     </state>
-    <state width="1878" height="265" key="GridCell.Tab.0.bottom/-1920.23.1920.986/0.23.1440.877@-1920.23.1920.986" timestamp="1594216414138" />
-    <state width="1878" height="265" key="GridCell.Tab.0.center" timestamp="1594216414137">
-      <screen x="-1920" y="23" width="1920" height="986" />
+    <state x="308" y="191" key="IDE.errors.dialog/0.23.1440.837@0.23.1440.837" timestamp="1594217059713" />
+    <state x="100" y="108" width="1240" height="685" key="com.android.tools.idea.avdmanager.AvdListDialog" timestamp="1594217406327">
+      <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1878" height="265" key="GridCell.Tab.0.center/-1920.23.1920.986/0.23.1440.877@-1920.23.1920.986" timestamp="1594216414137" />
-    <state width="1878" height="265" key="GridCell.Tab.0.left" timestamp="1594216414137">
-      <screen x="-1920" y="23" width="1920" height="986" />
-    </state>
-    <state width="1878" height="265" key="GridCell.Tab.0.left/-1920.23.1920.986/0.23.1440.877@-1920.23.1920.986" timestamp="1594216414137" />
-    <state width="1878" height="265" key="GridCell.Tab.0.right" timestamp="1594216414138">
-      <screen x="-1920" y="23" width="1920" height="986" />
-    </state>
-    <state width="1878" height="265" key="GridCell.Tab.0.right/-1920.23.1920.986/0.23.1440.877@-1920.23.1920.986" timestamp="1594216414138" />
-    <state x="-1820" y="123" width="1720" height="782" key="com.android.tools.idea.avdmanager.AvdListDialog" timestamp="1594216408816">
-      <screen x="-1920" y="23" width="1920" height="986" />
-    </state>
-    <state x="-1820" y="123" width="1720" height="782" key="com.android.tools.idea.avdmanager.AvdListDialog/-1920.23.1920.986/0.23.1440.877@-1920.23.1920.986" timestamp="1594216408816" />
-    <state x="-1820" y="123" width="1720" height="782" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1594215567062">
-      <screen x="-1920" y="23" width="1920" height="986" />
-    </state>
-    <state x="-1820" y="123" width="1720" height="782" key="com.intellij.history.integration.ui.views.FileHistoryDialog/-1920.23.1920.986/0.23.1440.877@-1920.23.1920.986" timestamp="1594215567062" />
-    <state x="-1290" y="348" key="com.intellij.ide.util.TipDialog" timestamp="1594216657872">
-      <screen x="-1920" y="23" width="1920" height="986" />
-    </state>
-    <state x="-1290" y="348" key="com.intellij.ide.util.TipDialog/-1920.23.1920.986/0.23.1440.877@-1920.23.1920.986" timestamp="1594216657872" />
+    <state x="100" y="108" width="1240" height="685" key="com.android.tools.idea.avdmanager.AvdListDialog/0.0.1440.900@0.0.1440.900" timestamp="1594217406327" />
+    <state x="100" y="123" width="1240" height="637" key="com.android.tools.idea.avdmanager.AvdListDialog/0.23.1440.837@0.23.1440.837" timestamp="1594217163764" />
     <state x="-1295" y="258" width="670" height="676" key="search.everywhere.popup" timestamp="1594213110337">
       <screen x="-1920" y="23" width="1920" height="1057" />
     </state>
