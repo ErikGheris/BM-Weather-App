@@ -1,7 +1,6 @@
 package com.example.bmweather
 
 import android.os.Bundle
-import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -10,8 +9,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-
-
+import com.example.bmweather.WeatherResponse as WeatherResponse
 
 
 class MainActivity : AppCompatActivity() {
@@ -61,7 +59,7 @@ class MainActivity : AppCompatActivity() {
 
 
     //Retrofit based API request
-    internal fun getCurrentData() {
+    private fun getCurrentData() {
         val retrofit = Retrofit.Builder()
             .baseUrl(BaseUrl)
                 //Generate an implementation for deserialization
@@ -97,26 +95,30 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+
+
     // Display API response in specific textview
 
+    
     private fun rain(weather: Weather){
-        weatherDescription.text = "Wetter: ".plus(weather.description)
+        weatherDescription.text = getString(R.string.weather_des).plus(weather.description)
     }
 
     private fun temp(main: Main){
-        mainTemp.text = "".plus(main.temp).plus(" °C")
+        mainTemp.text = "".plus(main.temp.toUInt()).plus(getString(R.string.temp_unit_c))
     }
 
     private fun tempallday(main: Main) {
-        tempAllDay.text = "min: ".plus(main.temp_min).plus("  ").plus("max: ").plus(main.temp_max)
+        tempAllDay.text = getString(R.string.min_temp).plus(main.temp_min.toUInt()).plus("  ").plus(getString(
+                    R.string.max_temp)).plus(main.temp_max.toUInt())
     }
 
     private fun realTemp(main: Main) {
-        realTemp.text = "Gefühlt wie: ".plus(main.feels_like)
+        realTemp.text = getString(R.string.feels_like_temp).plus(main.feels_like.toUInt())
     }
 
     private fun city(weatherResponse: WeatherResponse) {
-        city.text = weatherResponse.name.plus(", ").plus(weatherResponse.sys!!.country)
+        city.text = weatherResponse.name.plus(getString(R.string.comma)).plus(weatherResponse.sys!!.country)
     }
 
 
@@ -125,11 +127,9 @@ class MainActivity : AppCompatActivity() {
 
         var BaseUrl = "http://api.openweathermap.org/"
         var AppId = "6133b390a077c487bc9ac43311b3ba26"
-        var q = "Koblenz"
+        var q = "Berlin"
         var units = "metric"
         var lang = "de"
 
 
 }
-
-

@@ -18,7 +18,7 @@
     <Button
         android:id="@+id/search_button"
         android:layout_width="160dp"
-        android:layout_height="50dp"
+        android:layout_height="60dp"
         android:text="@string/search"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -30,7 +30,7 @@
     <AutoCompleteTextView
         android:id="@+id/autoCompleteTextView"
         android:layout_width="160dp"
-        android:layout_height="50dp"
+        android:layout_height="60dp"
         android:hint="search"
         android:singleLine="true"
         app:layout_constraintBottom_toBottomOf="parent"

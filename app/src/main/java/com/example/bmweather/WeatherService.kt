@@ -11,3 +11,4 @@ interface WeatherService {
     // Insert parameters (q for city, units, lang to select the language, APPID set the api Key)
     fun getCurrentWeatherData(@Query("q") q: String, @Query("units") units: String, @Query("lang") lang: String, @Query("APPID") app_id: String): Call<WeatherResponse>
 }
+

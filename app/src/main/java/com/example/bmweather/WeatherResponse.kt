@@ -59,7 +59,7 @@ class Wind {
 
 class Main {
     @SerializedName("temp")
-    var temp: Float = 0.toFloat()
+    var temp: Double = 0.0
     @SerializedName("humidity")
     var humidity: Float = 0.toFloat()
     @SerializedName("feels_like")

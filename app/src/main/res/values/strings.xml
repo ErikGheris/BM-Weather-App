@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">BM Weather</string>
-    <string name="search">search_Button</string>
+    <string name="search">Refresh</string>
     <string name="searchHint">search_Hint</string>
     <string name="messageText">message_Text</string>
+    <string name="temp_unit_c">\ °C\</string>
+    <string name="weather_des">"Wetter: "</string>
+    <string name="min_temp">"min: "</string>
+    <string name="max_temp">"max: "</string>
+    <string name="feels_like_temp">"Gefühlt wie: "</string>
+    <string name="comma">", "</string>
 </resources>
