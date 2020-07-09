@@ -22,8 +22,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var realTemp: TextView
 
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -41,6 +39,21 @@ class MainActivity : AppCompatActivity() {
         autoCompleteTextView.setOnClickListener {
             autoCompleteTextView.setText("")
         }
+
+        // all about pull to refresh data
+        swipe.setOnRefreshListener {
+
+            getCurrentData()
+            Toast.makeText(
+                this, "Data Updated",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            // Hide swipe to refresh icon animation
+            swipe.isRefreshing = false
+        }
+
+
         //Get textview by id
 
         weatherDescription = findViewById(R.id.description)
@@ -52,17 +65,15 @@ class MainActivity : AppCompatActivity() {
         city = findViewById(R.id.city)
 
         realTemp = findViewById(R.id.realTemp)
-        
+
     }
-
-
 
 
     //Retrofit based API request
     private fun getCurrentData() {
         val retrofit = Retrofit.Builder()
             .baseUrl(BaseUrl)
-                //Generate an implementation for deserialization
+            //Generate an implementation for deserialization
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val service = retrofit.create(WeatherService::class.java)
@@ -72,7 +83,10 @@ class MainActivity : AppCompatActivity() {
 
         //Expected response
         call.enqueue(object : Callback<WeatherResponse> {
-            override fun onResponse(call: retrofit2.Call<WeatherResponse>, response: Response<WeatherResponse>) {
+            override fun onResponse(
+                call: retrofit2.Call<WeatherResponse>,
+                response: Response<WeatherResponse>
+            ) {
                 //On successful response builde string as defined later on
                 if (response.code() == 200) {
                     val weatherResponse = response.body()!!
@@ -93,24 +107,28 @@ class MainActivity : AppCompatActivity() {
                 weatherDescription.text = t.message
             }
         })
-    }
 
+
+    }
 
 
     // Display API response in specific textview
 
-    
-    private fun rain(weather: Weather){
+
+    private fun rain(weather: Weather) {
         weatherDescription.text = getString(R.string.weather_des).plus(weather.description)
     }
 
-    private fun temp(main: Main){
+    private fun temp(main: Main) {
         mainTemp.text = "".plus(main.temp.toUInt()).plus(getString(R.string.temp_unit_c))
     }
 
     private fun tempallday(main: Main) {
-        tempAllDay.text = getString(R.string.min_temp).plus(main.temp_min.toUInt()).plus("  ").plus(getString(
-                    R.string.max_temp)).plus(main.temp_max.toUInt())
+        tempAllDay.text = getString(R.string.min_temp).plus(main.temp_min.toUInt()).plus("  ").plus(
+            getString(
+                R.string.max_temp
+            )
+        ).plus(main.temp_max.toUInt())
     }
 
     private fun realTemp(main: Main) {
@@ -118,18 +136,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun city(weatherResponse: WeatherResponse) {
-        city.text = weatherResponse.name.plus(getString(R.string.comma)).plus(weatherResponse.sys!!.country)
+        city.text =
+            weatherResponse.name.plus(getString(R.string.comma)).plus(weatherResponse.sys!!.country)
     }
 
 
     // Declare parameters for tge GET funktion
 
 
-        var BaseUrl = "http://api.openweathermap.org/"
-        var AppId = "6133b390a077c487bc9ac43311b3ba26"
-        var q = "Berlin"
-        var units = "metric"
-        var lang = "de"
+    var BaseUrl = "http://api.openweathermap.org/"
+    var AppId = "6133b390a077c487bc9ac43311b3ba26"
+    var q = "Berlin"
+    var units = "metric"
+    var lang = "de"
 
 
 }
