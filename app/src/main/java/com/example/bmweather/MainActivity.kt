@@ -24,6 +24,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var realTemp: TextView
 
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -97,7 +99,7 @@ class MainActivity : AppCompatActivity() {
 
     // Display API response in specific textview
 
-    fun rain(weather: Weather){
+    private fun rain(weather: Weather){
         weatherDescription.text = "Wetter: ".plus(weather.description)
     }
 
@@ -119,14 +121,14 @@ class MainActivity : AppCompatActivity() {
 
 
     // Declare parameters for tge GET funktion
-    companion object {
+
 
         var BaseUrl = "http://api.openweathermap.org/"
         var AppId = "6133b390a077c487bc9ac43311b3ba26"
         var q = "Koblenz"
         var units = "metric"
         var lang = "de"
-    }
+
 
 }
 
