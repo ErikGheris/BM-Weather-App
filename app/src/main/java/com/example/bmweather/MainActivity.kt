@@ -1,15 +1,20 @@
 package com.example.bmweather
 
 import android.os.Bundle
+import android.os.Handler
+import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.bmweather.WeatherResponse
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.android.awaitFrame
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import com.example.bmweather.WeatherResponse as WeatherResponse
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -25,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
 
         //toaster Message + get current data
         search_button.setOnClickListener {
@@ -71,6 +77,10 @@ class MainActivity : AppCompatActivity() {
 
     //Retrofit based API request
     private fun getCurrentData() {
+        // progress starts
+        progress().start(progress_widget)
+
+
         val retrofit = Retrofit.Builder()
             .baseUrl(BaseUrl)
             //Generate an implementation for deserialization
@@ -90,7 +100,6 @@ class MainActivity : AppCompatActivity() {
                 //On successful response builde string as defined later on
                 if (response.code() == 200) {
                     val weatherResponse = response.body()!!
-
                     //Build String from response
                     val stringBuilder = null
                     weatherDescription.text = stringBuilder
@@ -101,13 +110,19 @@ class MainActivity : AppCompatActivity() {
                     city(weatherResponse)
                 }
             }
-
             //Message in the case of failed API call
             override fun onFailure(call: retrofit2.Call<WeatherResponse>, t: Throwable) {
                 weatherDescription.text = t.message
+
             }
         })
 
+        //delay to show the progress !!! JUST TO SHOW IT WORKS!!
+        val handler = Handler()
+        handler.postDelayed(Runnable {
+            //wait x delay MS and then progress is done
+            progress().done(progress_widget)
+        }, 1000) // 1000 milliseconds
 
     }
 
