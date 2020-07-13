@@ -2,19 +2,16 @@ package com.example.bmweather
 
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
+import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.bmweather.WeatherResponse
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.android.awaitFrame
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -42,8 +39,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         // clears the autoCompleteTExtView when it is clicked
-        autoCompleteTextView.setOnClickListener {
-            autoCompleteTextView.setText("")
+        search_input.setOnClickListener {
+            search_input.setText("")
         }
 
         // all about pull to refresh data
@@ -116,6 +113,13 @@ class MainActivity : AppCompatActivity() {
 
             }
         })
+
+        //assigning the input to the searched on click
+        search_button.setOnClickListener {
+            val searched = search().get(search_input)
+            Toast.makeText(this, "looking for $searched's Weather Info", Toast.LENGTH_SHORT).show()
+        }
+
 
         //delay to show the progress !!! JUST TO SHOW IT WORKS!!
         val handler = Handler()
