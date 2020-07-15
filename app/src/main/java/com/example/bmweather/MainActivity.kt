@@ -1,13 +1,19 @@
 package com.example.bmweather
 
+import android.Manifest
+import android.app.AlertDialog
+import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
-import android.view.View
+import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Runnable
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -24,9 +30,21 @@ class MainActivity : AppCompatActivity() {
     private lateinit var realTemp: TextView
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+    Location().setupPermissions(this, this)
+
+
+        location_button.setOnClickListener {
+
+                 Toast.makeText(
+                      this, "IT WORKS",
+                      Toast.LENGTH_SHORT
+                  ).show()
+        }
 
 
         //toaster Message + get current data
@@ -71,12 +89,23 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+ /*   fun getContext(): Context? {
+        return sContext
+    } */
+
+
+
+
+
+
+
+
 
     //Retrofit based API request
     private fun getCurrentData() {
         // progress starts
         progress().start(progress_widget)
-
+   // Location().showToast(this,"PISSSSSSSS")
 
         val retrofit = Retrofit.Builder()
             .baseUrl(BaseUrl)
