@@ -1,25 +1,20 @@
 package com.example.bmweather
 
-import android.Manifest
-import android.app.AlertDialog
-import android.content.Context
-import android.content.pm.PackageManager
+
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Runnable
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-
-
+import android.content.pm.PackageManager
+import android.util.Log
+import androidx.core.app.ActivityCompat
 class MainActivity : AppCompatActivity() {
 
     //Declare var for Textview with late init
@@ -30,6 +25,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var realTemp: TextView
 
 
+    // Declare parameters for tge GET funktion
+
+
+    private val BaseUrl = "http://api.openweathermap.org/"
+    private val APIKey = "6133b390a077c487bc9ac43311b3ba26"
+    var cityName = "Berlin"
+    var units = "metric"
+    var lang = "de"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,11 +52,10 @@ class MainActivity : AppCompatActivity() {
 
         //toaster Message + get current data
         search_button.setOnClickListener {
+            val searched = search().get(search_input)
+            cityName = searched.toString()
+            Toast.makeText(this, "looking for $searched's Weather Info", Toast.LENGTH_SHORT).show()
             getCurrentData()
-            Toast.makeText(
-                this, "this is a toast message",
-                Toast.LENGTH_SHORT
-            ).show()
         }
 
         // clears the autoCompleteTExtView when it is clicked
@@ -94,13 +96,6 @@ class MainActivity : AppCompatActivity() {
     } */
 
 
-
-
-
-
-
-
-
     //Retrofit based API request
     private fun getCurrentData() {
         // progress starts
@@ -114,7 +109,11 @@ class MainActivity : AppCompatActivity() {
             .build()
         val service = retrofit.create(WeatherService::class.java)
         //add parameters to BaseURL
-        val call = service.getCurrentWeatherData(q, units, lang, AppId)
+        val call = service.getCurrentWeatherData(
+            q = cityName,
+            units = units,
+            lang = lang,
+            app_id = APIKey)
         //val call = service.getCurrentWeatherData(lat, lon, AppId)
 
         //Expected response
@@ -143,12 +142,12 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        //assigning the input to the searched on click
+     /*   //assigning the input to the searched on click
         search_button.setOnClickListener {
             val searched = search().get(search_input)
             Toast.makeText(this, "looking for $searched's Weather Info", Toast.LENGTH_SHORT).show()
         }
-
+*/
 
         //delay to show the progress !!! JUST TO SHOW IT WORKS!!
         val handler = Handler()
@@ -192,11 +191,34 @@ class MainActivity : AppCompatActivity() {
     // Declare parameters for tge GET funktion
 
 
-    var BaseUrl = "http://api.openweathermap.org/"
-    var AppId = "6133b390a077c487bc9ac43311b3ba26"
-    var q = "Berlin"
-    var units = "metric"
-    var lang = "de"
 
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            Location().permissionsList_request_Code -> {
+
+                if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+
+                    Log.i(Location().TAG, "Permission has been denied by user")
+                      Toast.makeText(
+                                      this, "Permission has been denied by user",
+                                      Toast.LENGTH_SHORT
+                                  ).show()
+
+                } else {
+                    Log.i(Location().TAG, "Permission has been granted by user")
+                      Toast.makeText(
+                                      this, "Permission has been granted by user",
+                                      Toast.LENGTH_SHORT
+                                  ).show()
+                }
+            }
+        }
+
+
+    }
 }
