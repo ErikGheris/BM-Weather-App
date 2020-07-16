@@ -56,6 +56,7 @@ class MainActivity : AppCompatActivity() {
             cityName = searched.toString()
             Toast.makeText(this, "looking for $searched's Weather Info", Toast.LENGTH_SHORT).show()
             getCurrentData()
+
         }
 
         // clears the autoCompleteTExtView when it is clicked
@@ -65,6 +66,12 @@ class MainActivity : AppCompatActivity() {
 
         // all about pull to refresh data
         swipe.setOnRefreshListener {
+         /*   finish();
+            startActivity(intent);*/
+
+
+
+
 
             getCurrentData()
             Toast.makeText(
@@ -74,6 +81,12 @@ class MainActivity : AppCompatActivity() {
 
             // Hide swipe to refresh icon animation
             swipe.isRefreshing = false
+
+
+            //finish();
+          //overridePendingTransition( 0, 0);
+            startActivity(intent);
+          // overridePendingTransition( 0, 0);*/
         }
 
 
@@ -134,6 +147,23 @@ class MainActivity : AppCompatActivity() {
                     realTemp(weatherResponse.main!!)
                     city(weatherResponse)
                 }
+                else
+                    if (response.code()==404){
+
+                        finish();
+                        overridePendingTransition(0, 0);
+                        startActivity(intent);
+                        overridePendingTransition(0, 0);
+                          Toast.makeText(
+                              applicationContext, "City NoT FounD",
+                                          Toast.LENGTH_SHORT
+                                      ).show()
+
+                   /*
+                        finish();
+                        startActivity(intent);*/
+
+                    }
             }
             //Message in the case of failed API call
             override fun onFailure(call: retrofit2.Call<WeatherResponse>, t: Throwable) {
