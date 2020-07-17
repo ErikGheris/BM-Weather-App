@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-<<<<<<< HEAD
+
 /*
         fun onCreateOptionsMenu(menu: Menu?): Boolean {
             return super.onCreateOptionsMenu(menu)
@@ -58,8 +58,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-=======
->>>>>>> seperate
+
         Location().setupPermissions(this, this)
 
 
@@ -269,17 +268,8 @@ class MainActivity : AppCompatActivity() {
 
 
     // Declare parameters for tge GET funktion
-<<<<<<< HEAD
-=======
 
->>>>>>> seperate
 
-    private fun activityRestart() {
-        finish();
-        overridePendingTransition(0, 0);
-        startActivity(intent);
-        overridePendingTransition(0, 0);
-    }
 
     private fun activityRestart() {
         finish();
