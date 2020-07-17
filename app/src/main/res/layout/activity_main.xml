@@ -63,7 +63,7 @@
         android:id="@+id/search_input"
         android:layout_width="160dp"
         android:layout_height="60dp"
-        android:hint="search"
+        android:drawableStart="@drawable/ic_baseline_search_24"
         android:singleLine="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

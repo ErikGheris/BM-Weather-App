@@ -18,6 +18,7 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Looper
 import android.util.Log
+import android.view.Menu
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
 
@@ -46,6 +47,15 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+/*
+        fun onCreateOptionsMenu(menu: Menu?): Boolean {
+            return super.onCreateOptionsMenu(menu)
+            menuInflater.inflate(R.menu.main, menu)
+            return super.onCreateOptionsMenu(menu)
+        }*/
+
+
 
         Location().setupPermissions(this, this)
 
