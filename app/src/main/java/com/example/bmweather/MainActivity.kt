@@ -17,8 +17,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Looper
+import android.text.Editable
 import android.util.Log
-import android.view.Menu
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
 
@@ -43,7 +43,8 @@ class MainActivity : AppCompatActivity() {
     private var cityName = "Berlin"
     var units = "metric"
     var lang = "de"
-
+    var lastCityCache = cityName
+ var searched: String   = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -59,11 +60,11 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        Location().setupPermissions(this, this)
 
 
 
         location_button.setOnClickListener {
+           // Location().setupPermissions(this, this)
             isLocationEnabled(this)
             setUpLocationListener()
         }
@@ -79,12 +80,16 @@ class MainActivity : AppCompatActivity() {
 
         //toaster Message + get current data
         search_button.setOnClickListener {
-            val searched = search().get(search_input)
+            searched = search().get(search_input).toString()
             if (searched.trim().isNotEmpty()) {
-                cityName = searched.toString()
+
+      lastCityCache     =        cityName
+                cityName = searched
+                getCurrentData()
+                //safe city
                 Toast.makeText(this, "looking for $searched's Weather Info", Toast.LENGTH_SHORT)
                     .show()
-                getCurrentData()
+
             } else {
                 Toast.makeText(
                     this, "Please enter a Location!",
@@ -102,15 +107,15 @@ class MainActivity : AppCompatActivity() {
         swipe.setOnRefreshListener {
 
 
-            // if (response.code.get != 404) {
+       /*     // if (response.code.get != 404) {
 
-            activityRestart()
+           // activityRestart()
             Toast.makeText(
                 applicationContext, "City NoT FounD",
                 Toast.LENGTH_SHORT
             ).show()
 
-            //}
+            //}*/
 
             getCurrentData()
             Toast.makeText(
@@ -166,9 +171,11 @@ class MainActivity : AppCompatActivity() {
             ) {
                 //On successful response builde string as defined later on
                 if (response.code() == 200 && response.code() != 400) {
+                    cityName = searched
                     correctResponse(response)
                 } else
                     if (response.code() == 404) {
+                        cityName = lastCityCache
                         sorryDisplayView()
                         Toast.makeText(
                             applicationContext, "City NoT FounD",
