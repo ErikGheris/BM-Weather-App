@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName
 
 class WeatherResponse {
 
+
+
     @SerializedName("coord")
     var coord: Coord? = null
     @SerializedName("sys")
@@ -91,4 +93,5 @@ class Coord {
 class Others {
     @SerializedName("name")
     var name: String? = null
+
 }

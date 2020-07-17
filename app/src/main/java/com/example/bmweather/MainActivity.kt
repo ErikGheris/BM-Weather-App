@@ -1,6 +1,8 @@
 package com.example.bmweather
 
 
+import android.Manifest
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.widget.TextView
@@ -13,8 +15,12 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import android.content.pm.PackageManager
+import android.location.LocationManager
+import android.os.Looper
 import android.util.Log
 import androidx.core.app.ActivityCompat
+import com.google.android.gms.location.*
+
 class MainActivity : AppCompatActivity() {
 
     //Declare var for Textview with late init
@@ -25,12 +31,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var realTemp: TextView
 
 
+    var fusedLocationClient: FusedLocationProviderClient? = null
+
+
     // Declare parameters for tge GET funktion
 
 
     private val BaseUrl = "http://api.openweathermap.org/"
     private val APIKey = "6133b390a077c487bc9ac43311b3ba26"
-    var cityName = "Berlin"
+    private var cityName = "Berlin"
     var units = "metric"
     var lang = "de"
 
@@ -38,25 +47,38 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-    Location().setupPermissions(this, this)
+        Location().setupPermissions(this, this)
+
 
 
         location_button.setOnClickListener {
+            isLocationEnabled(this)
+            setUpLocationListener()
+        }
 
+
+        /*location_button.setOnClickListener {
                  Toast.makeText(
                       this, "IT WORKS",
                       Toast.LENGTH_SHORT
                   ).show()
         }
-
+*/
 
         //toaster Message + get current data
         search_button.setOnClickListener {
             val searched = search().get(search_input)
-            cityName = searched.toString()
-            Toast.makeText(this, "looking for $searched's Weather Info", Toast.LENGTH_SHORT).show()
-            getCurrentData()
-
+            if (searched.trim().isNotEmpty()) {
+                cityName = searched.toString()
+                Toast.makeText(this, "looking for $searched's Weather Info", Toast.LENGTH_SHORT)
+                    .show()
+                getCurrentData()
+            } else {
+                Toast.makeText(
+                    this, "Please enter a Location!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
 
         // clears the autoCompleteTExtView when it is clicked
@@ -66,27 +88,25 @@ class MainActivity : AppCompatActivity() {
 
         // all about pull to refresh data
         swipe.setOnRefreshListener {
-         /*   finish();
-            startActivity(intent);*/
 
 
+            // if (response.code.get != 404) {
 
+            activityRestart()
+            Toast.makeText(
+                applicationContext, "City NoT FounD",
+                Toast.LENGTH_SHORT
+            ).show()
 
+            //}
 
             getCurrentData()
             Toast.makeText(
                 this, "Data Updated",
                 Toast.LENGTH_SHORT
             ).show()
-
             // Hide swipe to refresh icon animation
             swipe.isRefreshing = false
-
-
-            //finish();
-          //overridePendingTransition( 0, 0);
-            startActivity(intent);
-          // overridePendingTransition( 0, 0);*/
         }
 
 
@@ -104,16 +124,12 @@ class MainActivity : AppCompatActivity() {
 
     }
 
- /*   fun getContext(): Context? {
-        return sContext
-    } */
-
 
     //Retrofit based API request
     private fun getCurrentData() {
         // progress starts
         progress().start(progress_widget)
-   // Location().showToast(this,"PISSSSSSSS")
+        // Location().showToast(this,"PISSSSSSSS")
 
         val retrofit = Retrofit.Builder()
             .baseUrl(BaseUrl)
@@ -126,7 +142,8 @@ class MainActivity : AppCompatActivity() {
             q = cityName,
             units = units,
             lang = lang,
-            app_id = APIKey)
+            app_id = APIKey
+        )
         //val call = service.getCurrentWeatherData(lat, lon, AppId)
 
         //Expected response
@@ -136,35 +153,46 @@ class MainActivity : AppCompatActivity() {
                 response: Response<WeatherResponse>
             ) {
                 //On successful response builde string as defined later on
-                if (response.code() == 200) {
-                    val weatherResponse = response.body()!!
-                    //Build String from response
-                    val stringBuilder = null
-                    weatherDescription.text = stringBuilder
-                    rain(weatherResponse.weather[0])
-                    temp(weatherResponse.main!!)
-                    tempallday(weatherResponse.main!!)
-                    realTemp(weatherResponse.main!!)
-                    city(weatherResponse)
-                }
-                else
-                    if (response.code()==404){
-
-                        finish();
-                        overridePendingTransition(0, 0);
-                        startActivity(intent);
-                        overridePendingTransition(0, 0);
-                          Toast.makeText(
-                              applicationContext, "City NoT FounD",
-                                          Toast.LENGTH_SHORT
-                                      ).show()
-
-                   /*
-                        finish();
-                        startActivity(intent);*/
+                if (response.code() == 200 && response.code() != 400) {
+                    correctResponse(response)
+                } else
+                    if (response.code() == 404) {
+                        sorryDisplayView()
+                        Toast.makeText(
+                            applicationContext, "City NoT FounD",
+                            Toast.LENGTH_SHORT
+                        ).show()
 
                     }
             }
+
+            private fun correctResponse(response: Response<WeatherResponse>) {
+                val weatherResponse = response.body()!!
+                //Build String from response
+                val stringBuilder = null
+                weatherDescription.text = stringBuilder
+                rain(weatherResponse.weather[0])
+                temp(weatherResponse.main!!)
+                tempallday(weatherResponse.main!!)
+                realTemp(weatherResponse.main!!)
+                city(weatherResponse)
+            }
+
+
+            /*       private fun badResponse(response: Response<WeatherResponse>) {
+             *//*          val weatherResponse = response.body()!!
+                //Build String from response
+                val stringBuilder = null
+             //   weatherDescription.text = stringBuilder
+                *//**//*       rain(weatherResponse.weather[0])
+                        temp(weatherResponse.main!!)
+                        tempallday(weatherResponse.main!!)*//**//*
+                 //       realTemp(weatherResponse.main!!)*//*
+                         wrong()
+            }
+*/
+
+
             //Message in the case of failed API call
             override fun onFailure(call: retrofit2.Call<WeatherResponse>, t: Throwable) {
                 weatherDescription.text = t.message
@@ -172,12 +200,12 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-     /*   //assigning the input to the searched on click
-        search_button.setOnClickListener {
-            val searched = search().get(search_input)
-            Toast.makeText(this, "looking for $searched's Weather Info", Toast.LENGTH_SHORT).show()
-        }
-*/
+        /*   //assigning the input to the searched on click
+           search_button.setOnClickListener {
+               val searched = search().get(search_input)
+               Toast.makeText(this, "looking for $searched's Weather Info", Toast.LENGTH_SHORT).show()
+           }
+   */
 
         //delay to show the progress !!! JUST TO SHOW IT WORKS!!
         val handler = Handler()
@@ -218,10 +246,24 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    private fun sorryDisplayView() {
+        city.text = getString(R.string.sorry)
+        realTemp.text = getString(R.string.empty)
+        tempAllDay.text = getString(R.string.empty)
+        weatherDescription.text = getString(R.string.empty)
+        mainTemp.text = getString(R.string.empty)
+    }
+
+
     // Declare parameters for tge GET funktion
 
 
-
+    private fun activityRestart() {
+        finish();
+        overridePendingTransition(0, 0);
+        startActivity(intent);
+        overridePendingTransition(0, 0);
+    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -233,22 +275,79 @@ class MainActivity : AppCompatActivity() {
 
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
 
+
+                    setUpLocationListener()
+
+
                     Log.i(Location().TAG, "Permission has been denied by user")
-                      Toast.makeText(
-                                      this, "Permission has been denied by user",
-                                      Toast.LENGTH_SHORT
-                                  ).show()
+                    Toast.makeText(
+                        this, "Permission has been denied by user",
+                        Toast.LENGTH_SHORT
+                    ).show()
 
                 } else {
                     Log.i(Location().TAG, "Permission has been granted by user")
-                      Toast.makeText(
-                                      this, "Permission has been granted by user",
-                                      Toast.LENGTH_SHORT
-                                  ).show()
+                    Toast.makeText(
+                        this, "Permission has been granted by user",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
 
 
     }
+
+    private fun isLocationEnabled(context: Context): Boolean {
+        val locationManager: LocationManager =
+            context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+    }
+
+
+    //  fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+    private fun setUpLocationListener() {
+        val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+        // for getting the current location update after every 2 seconds with high accuracy
+        val locationRequest = LocationRequest().setInterval(2000).setFastestInterval(2000)
+            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
+        fusedLocationProviderClient.requestLocationUpdates(
+            locationRequest,
+            object : LocationCallback() {
+                override fun onLocationResult(locationResult: LocationResult) {
+                    super.onLocationResult(locationResult)
+                    for (location in locationResult.locations) {
+                        latTextView.text = location.latitude.toString()
+                        lngTextView.text = location.longitude.toString()
+                    }
+                    // Few more things we can do here:
+                    // For example: Update the location of user on server
+                }
+            },
+            Looper.myLooper()
+        )
+
+
+    }
+
+
 }
