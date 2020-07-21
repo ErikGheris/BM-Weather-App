@@ -68,6 +68,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+
         // clears the autoCompleteTExtView when it is clicked
         binding.searchInput.setOnClickListener {
             search_input.setText("")
@@ -149,7 +150,7 @@ class MainActivity : AppCompatActivity() {
         val handler = Handler()
         handler.postDelayed(Runnable {
             //wait x delay MS and then progress is done
-            progress().done(progress_widget)
+            Load().done(progress_widget)
         }, 1000) // 1000 milliseconds
 
     }
