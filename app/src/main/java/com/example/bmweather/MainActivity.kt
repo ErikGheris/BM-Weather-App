@@ -3,34 +3,26 @@ package com.example.bmweather
 
 import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
+import android.location.LocationManager
 import android.os.Bundle
 import android.os.Handler
-import android.widget.TextView
+import android.os.Looper
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import com.example.bmweather.databinding.ActivityMainBinding
+import com.google.android.gms.location.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Runnable
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import android.content.pm.PackageManager
-import android.location.LocationManager
-import android.os.Looper
-import android.text.Editable
-import android.util.Log
-import androidx.core.app.ActivityCompat
-import com.example.bmweather.databinding.ActivityMainBinding
-import com.google.android.gms.location.*
 
 class MainActivity : AppCompatActivity() {
 
- /*   //Declare var for Textview with late init
-    private lateinit var weatherDescription: TextView
-    private lateinit var mainTemp: TextView
-    private lateinit var tempAllDay: TextView
-    private lateinit var city: TextView
-    private lateinit var realTemp: TextView*/
 
     var fusedLocationClient: FusedLocationProviderClient? = null
 
@@ -47,23 +39,14 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //viewBinding initialization and assignment
-          binding = ActivityMainBinding.inflate(layoutInflater)
-          setContentView(binding.root)
-
-      /*  //Get textview by id
-        weatherDescription = findViewById(R.id.description)
-        mainTemp = findViewById(R.id.mainTemp)
-        tempAllDay = findViewById(R.id.TempAllDay)
-        city = findViewById(R.id.city)
-        realTemp = findViewById(R.id.realTemp)*/
-
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         binding.locationButton.setOnClickListener {
             // Location().setupPermissions(this, this)
             isLocationEnabled(this)
             setUpLocationListener()
         }
-
 
         //toaster Message + get current data
         binding.searchButton.setOnClickListener {
@@ -86,7 +69,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // clears the autoCompleteTExtView when it is clicked
-       binding.searchInput.setOnClickListener {
+        binding.searchInput.setOnClickListener {
             search_input.setText("")
         }
 
@@ -100,9 +83,6 @@ class MainActivity : AppCompatActivity() {
             // Hide swipe to refresh icon animation
             swipe.isRefreshing = false
         }
-
-
-
     }
 
     //Retrofit based API request
@@ -148,17 +128,17 @@ class MainActivity : AppCompatActivity() {
                 val weatherResponse = response.body()!!
                 //Build String from response
                 val stringBuilder = null
-
-                weatherDescription.text = stringBuilder
+                binding.description.text = stringBuilder
                 rain(weatherResponse.weather[0])
                 temp(weatherResponse.main!!)
                 tempallday(weatherResponse.main!!)
                 realTemp(weatherResponse.main!!)
                 city(weatherResponse)
             }
+
             //Message in the case of failed API call
             override fun onFailure(call: retrofit2.Call<WeatherResponse>, t: Throwable) {
-                weatherDescription.text = t.message
+                binding.description.text = t.message
             }
         })
         //delay to show the progress !!! JUST TO SHOW IT WORKS!!
@@ -176,7 +156,7 @@ class MainActivity : AppCompatActivity() {
 
     // Display API response in specific textview
     private fun rain(weather: Weather) {
-        weatherDescription.text = getString(R.string.weather_des).plus(weather.description)
+        binding.description.text = getString(R.string.weather_des).plus(weather.description)
     }
 
     private fun temp(main: Main) {
@@ -184,11 +164,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun tempallday(main: Main) {
-        tempAllDay.text = getString(R.string.min_temp).plus(main.temp_min.toUInt()).plus("  ").plus(
-            getString(
-                R.string.max_temp
-            )
-        ).plus(main.temp_max.toUInt())
+        binding.TempAllDay.text =
+            getString(R.string.min_temp).plus(main.temp_min.toUInt()).plus("  ").plus(
+                getString(
+                    R.string.max_temp
+                )
+            ).plus(main.temp_max.toUInt())
     }
 
     private fun realTemp(main: Main) {
@@ -203,8 +184,8 @@ class MainActivity : AppCompatActivity() {
     private fun sorryDisplayView() {
         city.text = getString(R.string.sorry)
         realTemp.text = getString(R.string.empty)
-        tempAllDay.text = getString(R.string.empty)
-        weatherDescription.text = getString(R.string.empty)
+        binding.TempAllDay.text = getString(R.string.empty)
+        binding.description.text = getString(R.string.empty)
         mainTemp.text = getString(R.string.empty)
     }
 
@@ -224,7 +205,6 @@ class MainActivity : AppCompatActivity() {
                         this, "Permission has been denied by user",
                         Toast.LENGTH_SHORT
                     ).show()
-
                 } else {
                     Log.i(Location().TAG, "Permission has been granted by user")
                     Toast.makeText(
@@ -234,8 +214,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
-
     }
 
     private fun isLocationEnabled(context: Context): Boolean {
@@ -246,7 +224,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     //  fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
     private fun setUpLocationListener() {
         val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         // for getting the current location update after every 2 seconds with high accuracy
@@ -284,7 +261,5 @@ class MainActivity : AppCompatActivity() {
             },
             Looper.myLooper()
         )
-
     }
-
 }
