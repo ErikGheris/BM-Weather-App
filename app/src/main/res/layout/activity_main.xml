@@ -47,11 +47,23 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.039" />
 
+    <Button
+        android:id="@+id/location_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="find me"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.17"
+        app:layout_constraintStart_toStartOf="@+id/relativeLayout"
+        app:layout_constraintTop_toBottomOf="@+id/search_button"
+        app:layout_constraintVertical_bias="0.87" />
+
     <AutoCompleteTextView
         android:id="@+id/search_input"
         android:layout_width="160dp"
         android:layout_height="60dp"
-        android:hint="search"
+        android:drawableStart="@drawable/ic_baseline_search_24"
         android:singleLine="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -93,20 +105,20 @@
             app:layout_constraintTop_toBottomOf="@+id/search_button"
             app:layout_constraintVertical_bias="0.346" />
 
-        <TextView
-            android:id="@+id/city"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="Standort"
-            android:textColor="#fff"
-            android:textColorHint="#fff"
-            android:textSize="30sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.494"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/search_button"
-            app:layout_constraintVertical_bias="0.109" />
+    <TextView
+        android:id="@+id/city"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Standort"
+        android:textColor="#fff"
+        android:textColorHint="#fff"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.56"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_button"
+        app:layout_constraintVertical_bias="0.109" />
 
         <TextView
             android:id="@+id/TempAllDay"
@@ -147,6 +159,32 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/latTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="60sp"
+        android:gravity="center"
+        android:text="@string/default_lat"
+        app:layout_constraintBottom_toBottomOf="@+id/relativeLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/description"
+        app:layout_constraintVertical_bias="0.89" />
+
+    <TextView
+        android:id="@+id/lngTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="60sp"
+        android:gravity="center"
+        android:text="@string/default_lng"
+        app:layout_constraintBottom_toTopOf="@+id/latTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/description"
+        app:layout_constraintVertical_bias="0.92" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

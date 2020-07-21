@@ -4,6 +4,8 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        // When the users set their Device's theme, the app theme will also be affected
+        <item name="android:forceDarkAllowed">true</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
