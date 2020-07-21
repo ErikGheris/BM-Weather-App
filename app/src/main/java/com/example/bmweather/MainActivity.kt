@@ -20,70 +20,57 @@ import android.os.Looper
 import android.text.Editable
 import android.util.Log
 import androidx.core.app.ActivityCompat
+import com.example.bmweather.databinding.ActivityMainBinding
 import com.google.android.gms.location.*
 
 class MainActivity : AppCompatActivity() {
 
-    //Declare var for Textview with late init
+ /*   //Declare var for Textview with late init
     private lateinit var weatherDescription: TextView
     private lateinit var mainTemp: TextView
     private lateinit var tempAllDay: TextView
     private lateinit var city: TextView
-    private lateinit var realTemp: TextView
-
+    private lateinit var realTemp: TextView*/
 
     var fusedLocationClient: FusedLocationProviderClient? = null
 
-
     // Declare parameters for tge GET funktion
-
-
     private val BaseUrl = "http://api.openweathermap.org/"
     private val APIKey = "6133b390a077c487bc9ac43311b3ba26"
     private var cityName = "Berlin"
     var units = "metric"
     var lang = "de"
     var lastCityCache = cityName
- var searched: String   = ""
+    var searched: String = ""
+
+    lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        //viewBinding initialization and assignment
+          binding = ActivityMainBinding.inflate(layoutInflater)
+          setContentView(binding.root)
+
+      /*  //Get textview by id
+        weatherDescription = findViewById(R.id.description)
+        mainTemp = findViewById(R.id.mainTemp)
+        tempAllDay = findViewById(R.id.TempAllDay)
+        city = findViewById(R.id.city)
+        realTemp = findViewById(R.id.realTemp)*/
 
 
-/*
-        fun onCreateOptionsMenu(menu: Menu?): Boolean {
-            return super.onCreateOptionsMenu(menu)
-            menuInflater.inflate(R.menu.main, menu)
-            return super.onCreateOptionsMenu(menu)
-        }*/
-
-
-
-
-
-
-
-        location_button.setOnClickListener {
-           // Location().setupPermissions(this, this)
+        binding.locationButton.setOnClickListener {
+            // Location().setupPermissions(this, this)
             isLocationEnabled(this)
             setUpLocationListener()
         }
 
 
-        /*location_button.setOnClickListener {
-                 Toast.makeText(
-                      this, "IT WORKS",
-                      Toast.LENGTH_SHORT
-                  ).show()
-        }
-*/
-
         //toaster Message + get current data
-        search_button.setOnClickListener {
+        binding.searchButton.setOnClickListener {
             searched = search().get(search_input).toString()
             if (searched.trim().isNotEmpty()) {
 
-      lastCityCache     =        cityName
+                lastCityCache = cityName
                 cityName = searched
                 getCurrentData()
                 //safe city
@@ -99,24 +86,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         // clears the autoCompleteTExtView when it is clicked
-        search_input.setOnClickListener {
+       binding.searchInput.setOnClickListener {
             search_input.setText("")
         }
 
         // all about pull to refresh data
-        swipe.setOnRefreshListener {
-
-
-       /*     // if (response.code.get != 404) {
-
-           // activityRestart()
-            Toast.makeText(
-                applicationContext, "City NoT FounD",
-                Toast.LENGTH_SHORT
-            ).show()
-
-            //}*/
-
+        binding.swipe.setOnRefreshListener {
             getCurrentData()
             Toast.makeText(
                 this, "Data Updated",
@@ -127,27 +102,13 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        //Get textview by id
-
-        weatherDescription = findViewById(R.id.description)
-
-        mainTemp = findViewById(R.id.mainTemp)
-
-        tempAllDay = findViewById(R.id.TempAllDay)
-
-        city = findViewById(R.id.city)
-
-        realTemp = findViewById(R.id.realTemp)
 
     }
-
 
     //Retrofit based API request
     private fun getCurrentData() {
         // progress starts
         progress().start(progress_widget)
-        // Location().showToast(this,"PISSSSSSSS")
-
         val retrofit = Retrofit.Builder()
             .baseUrl(BaseUrl)
             //Generate an implementation for deserialization
@@ -162,7 +123,6 @@ class MainActivity : AppCompatActivity() {
             app_id = APIKey
         )
         //val call = service.getCurrentWeatherData(lat, lon, AppId)
-
         //Expected response
         call.enqueue(object : Callback<WeatherResponse> {
             override fun onResponse(
@@ -178,10 +138,9 @@ class MainActivity : AppCompatActivity() {
                         cityName = lastCityCache
                         sorryDisplayView()
                         Toast.makeText(
-                            applicationContext, "City NoT FounD",
+                            applicationContext, "City NoT Found.",
                             Toast.LENGTH_SHORT
                         ).show()
-
                     }
             }
 
@@ -189,6 +148,7 @@ class MainActivity : AppCompatActivity() {
                 val weatherResponse = response.body()!!
                 //Build String from response
                 val stringBuilder = null
+
                 weatherDescription.text = stringBuilder
                 rain(weatherResponse.weather[0])
                 temp(weatherResponse.main!!)
@@ -196,37 +156,16 @@ class MainActivity : AppCompatActivity() {
                 realTemp(weatherResponse.main!!)
                 city(weatherResponse)
             }
-
-
-            /*       private fun badResponse(response: Response<WeatherResponse>) {
-             *//*          val weatherResponse = response.body()!!
-                //Build String from response
-                val stringBuilder = null
-             //   weatherDescription.text = stringBuilder
-                *//**//*       rain(weatherResponse.weather[0])
-                        temp(weatherResponse.main!!)
-                        tempallday(weatherResponse.main!!)*//**//*
-                 //       realTemp(weatherResponse.main!!)*//*
-                         wrong()
-            }
-*/
-
-
             //Message in the case of failed API call
             override fun onFailure(call: retrofit2.Call<WeatherResponse>, t: Throwable) {
                 weatherDescription.text = t.message
-
             }
         })
-
-        /*   //assigning the input to the searched on click
-           search_button.setOnClickListener {
-               val searched = search().get(search_input)
-               Toast.makeText(this, "looking for $searched's Weather Info", Toast.LENGTH_SHORT).show()
-           }
-   */
-
         //delay to show the progress !!! JUST TO SHOW IT WORKS!!
+        delayHandler()
+    }
+
+    private fun delayHandler() {
         val handler = Handler()
         handler.postDelayed(Runnable {
             //wait x delay MS and then progress is done
@@ -235,10 +174,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-
     // Display API response in specific textview
-
-
     private fun rain(weather: Weather) {
         weatherDescription.text = getString(R.string.weather_des).plus(weather.description)
     }
@@ -264,7 +200,6 @@ class MainActivity : AppCompatActivity() {
             weatherResponse.name.plus(getString(R.string.comma)).plus(weatherResponse.sys!!.country)
     }
 
-
     private fun sorryDisplayView() {
         city.text = getString(R.string.sorry)
         realTemp.text = getString(R.string.empty)
@@ -273,17 +208,6 @@ class MainActivity : AppCompatActivity() {
         mainTemp.text = getString(R.string.empty)
     }
 
-
-    // Declare parameters for tge GET funktion
-
-
-
-    private fun activityRestart() {
-        finish();
-        overridePendingTransition(0, 0);
-        startActivity(intent);
-        overridePendingTransition(0, 0);
-    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -294,11 +218,7 @@ class MainActivity : AppCompatActivity() {
             Location().permissionsList_request_Code -> {
 
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-
-
                     setUpLocationListener()
-
-
                     Log.i(Location().TAG, "Permission has been denied by user")
                     Toast.makeText(
                         this, "Permission has been denied by user",
@@ -324,7 +244,6 @@ class MainActivity : AppCompatActivity() {
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
                 || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
     }
-
 
     //  fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
@@ -366,8 +285,6 @@ class MainActivity : AppCompatActivity() {
             Looper.myLooper()
         )
 
-
     }
-
 
 }
