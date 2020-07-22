@@ -33,20 +33,6 @@ class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-<<<<<<< HEAD
-        setContentView(R.layout.activity_main)
-
-<<<<<<< Updated upstream
-    Location().setupPermissions(this, this)
-=======
-        Location().setupPermissions(this, this)
-
->>>>>>> Stashed changes
-
-
-        location_button.setOnClickListener {
-=======
->>>>>>> seperate
 
         //viewBinding initialization and assignment
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -58,11 +44,11 @@ class MainActivity : AppCompatActivity() {
         //
         binding.locationButton.setOnClickListener {
             // Location().setupPermissions(this, this)
-           // Location().isLocationEnabled(this)
+            // Location().isLocationEnabled(this)
             Location().setUpLocationListener(
                 binding.latTextView,
                 binding.lngTextView,
-               this,
+                this,
                 this
             )
         }
@@ -108,13 +94,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun clearInputText(textView: AutoCompleteTextView) {
-       textView.setText("")
+        textView.setText("")
     }
 
     //Retrofit based API request
     private fun getCurrentData() {
         // progress starts
-      Load().start(progress_widget)
+        Load().start(progress_widget)
         val retrofit = Retrofit.Builder()
             .baseUrl(BaseUrl)
             //Generate an implementation for deserialization
@@ -175,7 +161,7 @@ class MainActivity : AppCompatActivity() {
         val handler = Handler()
         handler.postDelayed(Runnable {
             //wait x delay MS and then progress is done
-           Load().done(progress_widget)
+            Load().done(progress_widget)
         }, 1000) // 1000 milliseconds
 
     }
