@@ -33,6 +33,20 @@ class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+<<<<<<< HEAD
+        setContentView(R.layout.activity_main)
+
+<<<<<<< Updated upstream
+    Location().setupPermissions(this, this)
+=======
+        Location().setupPermissions(this, this)
+
+>>>>>>> Stashed changes
+
+
+        location_button.setOnClickListener {
+=======
+>>>>>>> seperate
 
         //viewBinding initialization and assignment
         binding = ActivityMainBinding.inflate(layoutInflater)
