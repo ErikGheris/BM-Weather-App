@@ -1,7 +1,6 @@
 package com.example.bmweather
 
 import android.util.Log
-import android.widget.Toast
 import com.example.bmweather.Network.WeatherService
 import com.example.bmweather.ResponseModel.current.WeatherReport
 import retrofit2.Callback
@@ -26,7 +25,7 @@ class FetchWeatherData {
                         response: Response<WeatherReport>
                     ) {
                         //On successful response builde string as defined later on
-                        if (response.code() == 200 && response.code() != 400) {
+                        if (response.code() == 200) {
                             val weatherReport = response.body()!!
                             mainActivity.temp(weatherReport.main)
                             mainActivity.tempallday(weatherReport.main)
@@ -37,12 +36,18 @@ class FetchWeatherData {
                         else
                             if (response.code()==404){
 
-                                mainActivity.cityName = mainActivity.lastCityCache
-                                mainActivity.sorryDisplayView()
-                                Toast.makeText(
-                                    mainActivity.applicationContext, "City NoT Found.",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                /* finish();
+                                 overridePendingTransition(0, 0);
+                                 startActivity(intent);
+                                 overridePendingTransition(0, 0);
+                                 Toast.makeText(
+                                     applicationContext, "City NoT FounD",
+                                     Toast.LENGTH_SHORT
+                                 ).show() */
+
+                                /*
+                                     finish();
+                                     startActivity(intent);*/
 
                             }
                     }
@@ -51,7 +56,6 @@ class FetchWeatherData {
                         t.printStackTrace()
                     }
                 })
-            mainActivity.delayHandler()
         }
         fun getForecastWeatherReport(app_id: String,q: String,lang: String,units: String,cnt: String, mainActivity: MainActivity) {
             Log.d(TAG, "onResponse response:: $app_id  $q $lang $units $cnt")
@@ -62,19 +66,25 @@ class FetchWeatherData {
                         response: Response<WeatherNextDaysReport>
                     ) {
                         //On successful response builde string as defined later on
-                        if (response.code() == 200 && response.code() != 400) {
+                        if (response.code() == 200) {
                             val weatherNextDaysReport = response.body()!!
                             mainActivity.forecast(weatherNextDaysReport.list)
                         }
                         else
                             if (response.code()==404){
 
-                                mainActivity.cityName = mainActivity.lastCityCache
-                                mainActivity.sorryDisplayView()
-                                Toast.makeText(
-                                    mainActivity.applicationContext, "City NoT Found.",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                /* finish();
+                                 overridePendingTransition(0, 0);
+                                 startActivity(intent);
+                                 overridePendingTransition(0, 0);
+                                 Toast.makeText(
+                                     applicationContext, "City NoT FounD",
+                                     Toast.LENGTH_SHORT
+                                 ).show() */
+
+                                /*
+                                     finish();
+                                     startActivity(intent);*/
 
                             }
                     }
@@ -82,7 +92,6 @@ class FetchWeatherData {
                         t.printStackTrace()
                     }
                 })
-            mainActivity.delayHandler()
         }
     }
 }

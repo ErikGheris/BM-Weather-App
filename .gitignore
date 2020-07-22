@@ -88,3 +88,4 @@ lint/tmp/
 *.hprof
 .idea/
 .DS_Store
+app/build.gradle
