@@ -1,17 +1,13 @@
 package com.example.bmweather
 
 
-import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
-import android.location.LocationManager
 import android.os.Bundle
 import android.os.Handler
-import android.os.Looper
 import android.util.Log
+import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import com.example.bmweather.databinding.ActivityMainBinding
 import com.google.android.gms.location.*
 import kotlinx.android.synthetic.main.activity_main.*
@@ -22,8 +18,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity() {
-
-
+    val boolean: Boolean = true
     var fusedLocationClient: FusedLocationProviderClient? = null
 
     // Declare parameters for tge GET funktion
@@ -38,40 +33,50 @@ class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         //viewBinding initialization and assignment
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        //
+        Location().setupPermissions(this, this)
 
+
+        //
         binding.locationButton.setOnClickListener {
             // Location().setupPermissions(this, this)
-            isLocationEnabled(this)
-            setUpLocationListener()
+           // Location().isLocationEnabled(this)
+            Location().setUpLocationListener(
+                binding.latTextView,
+                binding.lngTextView,
+               this,
+                this
+            )
         }
 
         //toaster Message + get current data
         binding.searchButton.setOnClickListener {
-            searched = search().get(search_input).toString()
+            searched = Search().get(search_input).toString()
             if (searched.trim().isNotEmpty()) {
-
                 lastCityCache = cityName
                 cityName = searched
                 getCurrentData()
                 //safe city
                 Toast.makeText(this, "looking for $searched's Weather Info", Toast.LENGTH_SHORT)
                     .show()
+                clearInputText(binding.searchInput)
 
             } else {
                 Toast.makeText(
                     this, "Please enter a Location!",
                     Toast.LENGTH_SHORT
                 ).show()
+                clearInputText(binding.searchInput)
             }
         }
 
-
         // clears the autoCompleteTExtView when it is clicked
         binding.searchInput.setOnClickListener {
-            search_input.setText("")
+            clearInputText(binding.searchInput)
         }
 
         // all about pull to refresh data
@@ -84,12 +89,18 @@ class MainActivity : AppCompatActivity() {
             // Hide swipe to refresh icon animation
             swipe.isRefreshing = false
         }
+
+
+    }
+
+    private fun clearInputText(textView: AutoCompleteTextView) {
+       textView.setText("")
     }
 
     //Retrofit based API request
     private fun getCurrentData() {
         // progress starts
-        progress().start(progress_widget)
+      Load().start(progress_widget)
         val retrofit = Retrofit.Builder()
             .baseUrl(BaseUrl)
             //Generate an implementation for deserialization
@@ -150,7 +161,7 @@ class MainActivity : AppCompatActivity() {
         val handler = Handler()
         handler.postDelayed(Runnable {
             //wait x delay MS and then progress is done
-            Load().done(progress_widget)
+           Load().done(progress_widget)
         }, 1000) // 1000 milliseconds
 
     }
@@ -159,6 +170,7 @@ class MainActivity : AppCompatActivity() {
     private fun rain(weather: Weather) {
         binding.description.text = getString(R.string.weather_des).plus(weather.description)
     }
+
 
     private fun temp(main: Main) {
         mainTemp.text = "".plus(main.temp.toUInt()).plus(getString(R.string.temp_unit_c))
@@ -200,7 +212,10 @@ class MainActivity : AppCompatActivity() {
             Location().permissionsList_request_Code -> {
 
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    setUpLocationListener()
+                    Location().setUpLocationListener(
+                        binding.latTextView, binding.lngTextView,
+                        MainActivity(), this
+                    )
                     Log.i(Location().TAG, "Permission has been denied by user")
                     Toast.makeText(
                         this, "Permission has been denied by user",
@@ -217,50 +232,5 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun isLocationEnabled(context: Context): Boolean {
-        val locationManager: LocationManager =
-            context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-                || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
-    }
 
-    //  fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-    private fun setUpLocationListener() {
-        val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-        // for getting the current location update after every 2 seconds with high accuracy
-        val locationRequest = LocationRequest().setInterval(2000).setFastestInterval(2000)
-            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return
-        }
-        fusedLocationProviderClient.requestLocationUpdates(
-            locationRequest,
-            object : LocationCallback() {
-                override fun onLocationResult(locationResult: LocationResult) {
-                    super.onLocationResult(locationResult)
-                    for (location in locationResult.locations) {
-                        latTextView.text = location.latitude.toString()
-                        lngTextView.text = location.longitude.toString()
-                    }
-                    // Few more things we can do here:
-                    // For example: Update the location of user on server
-                }
-            },
-            Looper.myLooper()
-        )
-    }
 }
