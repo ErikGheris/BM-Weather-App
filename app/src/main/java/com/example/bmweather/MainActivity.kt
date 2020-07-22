@@ -1,8 +1,11 @@
 package com.example.bmweather
 
 
+import android.content.pm.PackageManager
 import android.os.Bundle
-import android.widget.TextView
+import android.os.Handler
+import android.util.Log
+import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bmweather.ResponseModel.current.Weather
@@ -18,16 +21,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import source.open.akash.mvvmlogin.Model.nextdayforecast.ListData
 
 class MainActivity : AppCompatActivity() {
-
-    //Declare var for Textview with late init
-    private lateinit var weatherDescription: TextView
-    private lateinit var mainTemp: TextView
-    private lateinit var tempAllDay: TextView
-    private lateinit var city: TextView
-    private lateinit var realTemp: TextView
-    lateinit var forecast: TextView
-
-
+    val boolean: Boolean = true
+    var fusedLocationClient: FusedLocationProviderClient? = null
 
     // Declare parameters for tge GET funktion
     val BaseUrl = "http://api.openweathermap.org/"
@@ -43,19 +38,25 @@ class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
+        //viewBinding initialization and assignment
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        //
         Location().setupPermissions(this, this)
 
 
-        location_button.setOnClickListener {
-
-            Toast.makeText(
-                this, "IT WORKS",
-                Toast.LENGTH_SHORT
-            ).show()
+        //
+        binding.locationButton.setOnClickListener {
+            // Location().setupPermissions(this, this)
+            // Location().isLocationEnabled(this)
+            Location().setUpLocationListener(
+                binding.latTextView,
+                binding.lngTextView,
+                this,
+                this
+            )
         }
-
 
         //toaster Message + get current data
         binding.searchButton.setOnClickListener {
@@ -70,11 +71,18 @@ class MainActivity : AppCompatActivity() {
                     .show()
                 clearInputText(binding.searchInput)
 
+            } else {
+                Toast.makeText(
+                    this, "Please enter a Location!",
+                    Toast.LENGTH_SHORT
+                ).show()
+                clearInputText(binding.searchInput)
+            }
         }
 
         // clears the autoCompleteTExtView when it is clicked
-        search_input.setOnClickListener {
-            search_input.setText("")
+        binding.searchInput.setOnClickListener {
+            clearInputText(binding.searchInput)
         }
 
         // all about pull to refresh data
@@ -85,21 +93,16 @@ class MainActivity : AppCompatActivity() {
                 this, "Data Updated",
                 Toast.LENGTH_SHORT
             ).show()
-
             // Hide swipe to refresh icon animation
             swipe.isRefreshing = false
-
-
-            //finish();
-            //overridePendingTransition( 0, 0);
-            startActivity(intent);
-            // overridePendingTransition( 0, 0);*/
         }
 
 
-        //Get textview by id
+    }
 
-        weatherDescription = findViewById(R.id.description)
+    private fun clearInputText(textView: AutoCompleteTextView) {
+        textView.setText("")
+    }
 
    
 
@@ -110,7 +113,7 @@ class MainActivity : AppCompatActivity() {
             Load().done(progress_widget)
         }, 1000) // 1000 milliseconds
 
-        forecast = findViewById(R.id.forecast)
+    }
 
     // Display API response in specific textview
     fun weather(weather: Weather) {
@@ -147,10 +150,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
-
-
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -160,13 +159,15 @@ class MainActivity : AppCompatActivity() {
             Location().permissionsList_request_Code -> {
 
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-
+                    Location().setUpLocationListener(
+                        binding.latTextView, binding.lngTextView,
+                        this, this
+                    )
                     Log.i(Location().TAG, "Permission has been denied by user")
                     Toast.makeText(
                         this, "Permission has been denied by user",
                         Toast.LENGTH_SHORT
                     ).show()
-
                 } else {
                     Log.i(Location().TAG, "Permission has been granted by user")
                     Toast.makeText(
@@ -176,7 +177,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
-
     }
+
+
 }

@@ -2,7 +2,7 @@ package com.example.bmweather
 
 import android.view.View
 
-class progress {
+class Load {
 
     fun start(progressBar: View) {
         progressBar.visibility = View.VISIBLE
