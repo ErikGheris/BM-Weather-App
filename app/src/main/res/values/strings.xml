@@ -1,12 +1,21 @@
 <resources>
-    <string name="app_name">BM Weather</string>
-    <string name="search">Refresh</string>
-    <string name="searchHint">search_Hint</string>
+    <string name="app_name" >BM Weather</string>
+    <string name="search_button">Search</string>
+    <string name="searchHint">Search</string>
     <string name="messageText">message_Text</string>
-    <string name="temp_unit_c">\ °C\</string>
-    <string name="weather_des">"Wetter: "</string>
+    <string name="temp_unit_c" >\ °C\</string>
+    <string name="weather_des" >"Wetter: "</string>
     <string name="min_temp">"min: "</string>
+    <string name="sorry">Sorry</string>
     <string name="max_temp">"max: "</string>
     <string name="feels_like_temp">"Gefühlt wie: "</string>
-    <string name="comma">", "</string>
+    <string name="comma">" "</string>
+    <string name="default_lat">Last Known Latitude: </string>
+    <string name="default_lng">Last Known Longitude: </string>
+    <string name="empty">" " </string>
+    <string name="City">City</string>
+    <string name="min_max">Min/Max</string>
+    <string name="feels_like">Feels Like</string>
+    <string name="find_me">Coordinations</string>
+    <string name="temp">Temp</string>
 </resources>
