@@ -18,7 +18,7 @@ import com.google.android.gms.location.LocationServices
 import kotlinx.android.synthetic.main.activity_main.*
 import java.security.AccessController.getContext
 
-class Location () {
+class Location {
 
     val TAG = "PermissionDemo"
 

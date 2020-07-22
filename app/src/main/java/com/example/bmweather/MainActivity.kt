@@ -214,7 +214,7 @@ class MainActivity : AppCompatActivity() {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     Location().setUpLocationListener(
                         binding.latTextView, binding.lngTextView,
-                        MainActivity(), this
+                        this, this
                     )
                     Log.i(Location().TAG, "Permission has been denied by user")
                     Toast.makeText(

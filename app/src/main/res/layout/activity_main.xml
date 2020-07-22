@@ -28,7 +28,9 @@
             android:id="@+id/swipe"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
+<androidx.appcompat.widget.AppCompatAutoCompleteTextView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"></androidx.appcompat.widget.AppCompatAutoCompleteTextView>
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </RelativeLayout>
