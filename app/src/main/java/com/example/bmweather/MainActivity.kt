@@ -8,6 +8,8 @@ import android.util.Log
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.bmweather.ResponseModel.current.Weather
+import com.example.bmweather.ResponseModel.current.WeatherReport
 import com.example.bmweather.databinding.ActivityMainBinding
 import com.google.android.gms.location.*
 import kotlinx.android.synthetic.main.activity_main.*
@@ -16,37 +18,26 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import source.open.akash.mvvmlogin.Model.nextdayforecast.ListData
 
 class MainActivity : AppCompatActivity() {
     val boolean: Boolean = true
     var fusedLocationClient: FusedLocationProviderClient? = null
 
     // Declare parameters for tge GET funktion
-    private val BaseUrl = "http://api.openweathermap.org/"
-    private val APIKey = "6133b390a077c487bc9ac43311b3ba26"
-    private var cityName = "Berlin"
+    val BaseUrl = "http://api.openweathermap.org/"
+    val app_id = "6133b390a077c487bc9ac43311b3ba26"
+    var cityName = "Berlin"
     var units = "metric"
     var lang = "de"
     var lastCityCache = cityName
     var searched: String = ""
+    var cnt = "3"
 
+    var fetchWeather = FetchWeatherData
     lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-<<<<<<< HEAD
-        setContentView(R.layout.activity_main)
-
-<<<<<<< Updated upstream
-    Location().setupPermissions(this, this)
-=======
-        Location().setupPermissions(this, this)
-
->>>>>>> Stashed changes
-
-
-        location_button.setOnClickListener {
-=======
->>>>>>> seperate
 
         //viewBinding initialization and assignment
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -54,15 +45,18 @@ class MainActivity : AppCompatActivity() {
         //
         Location().setupPermissions(this, this)
 
-
+       /*
+      like this we can Access to our coordination, they can be used later
+       Location().xCord
+        Location().yCord*/
         //
         binding.locationButton.setOnClickListener {
             // Location().setupPermissions(this, this)
-           // Location().isLocationEnabled(this)
+            // Location().isLocationEnabled(this)
             Location().setUpLocationListener(
                 binding.latTextView,
                 binding.lngTextView,
-               this,
+                this,
                 this
             )
         }
@@ -73,7 +67,8 @@ class MainActivity : AppCompatActivity() {
             if (searched.trim().isNotEmpty()) {
                 lastCityCache = cityName
                 cityName = searched
-                getCurrentData()
+                fetchWeather.getCurrentWeatherReport(app_id,cityName,lang,units, this)
+                fetchWeather.getForecastWeatherReport(app_id,cityName,lang,units,cnt,this)
                 //safe city
                 Toast.makeText(this, "looking for $searched's Weather Info", Toast.LENGTH_SHORT)
                     .show()
@@ -95,7 +90,8 @@ class MainActivity : AppCompatActivity() {
 
         // all about pull to refresh data
         binding.swipe.setOnRefreshListener {
-            getCurrentData()
+            fetchWeather.getCurrentWeatherReport(app_id,cityName,lang,units, this)
+            fetchWeather.getForecastWeatherReport(app_id,cityName,lang,units,cnt,this)
             Toast.makeText(
                 this, "Data Updated",
                 Toast.LENGTH_SHORT
@@ -108,107 +104,47 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun clearInputText(textView: AutoCompleteTextView) {
-       textView.setText("")
+        textView.setText("")
     }
 
-    //Retrofit based API request
-    private fun getCurrentData() {
-        // progress starts
-      Load().start(progress_widget)
-        val retrofit = Retrofit.Builder()
-            .baseUrl(BaseUrl)
-            //Generate an implementation for deserialization
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        val service = retrofit.create(WeatherService::class.java)
-        //add parameters to BaseURL
-        val call = service.getCurrentWeatherData(
-            q = cityName,
-            units = units,
-            lang = lang,
-            app_id = APIKey
-        )
-        //val call = service.getCurrentWeatherData(lat, lon, AppId)
-        //Expected response
-        call.enqueue(object : Callback<WeatherResponse> {
-            override fun onResponse(
-                call: retrofit2.Call<WeatherResponse>,
-                response: Response<WeatherResponse>
-            ) {
-                //On successful response builde string as defined later on
-                if (response.code() == 200 && response.code() != 400) {
-                    cityName = searched
-                    correctResponse(response)
-                } else
-                    if (response.code() == 404) {
-                        cityName = lastCityCache
-                        sorryDisplayView()
-                        Toast.makeText(
-                            applicationContext, "City NoT Found.",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-            }
+   
 
-            private fun correctResponse(response: Response<WeatherResponse>) {
-                val weatherResponse = response.body()!!
-                //Build String from response
-                val stringBuilder = null
-                binding.description.text = stringBuilder
-                rain(weatherResponse.weather[0])
-                temp(weatherResponse.main!!)
-                tempallday(weatherResponse.main!!)
-                realTemp(weatherResponse.main!!)
-                city(weatherResponse)
-            }
-
-            //Message in the case of failed API call
-            override fun onFailure(call: retrofit2.Call<WeatherResponse>, t: Throwable) {
-                binding.description.text = t.message
-            }
-        })
-        //delay to show the progress !!! JUST TO SHOW IT WORKS!!
-        delayHandler()
-    }
-
-    private fun delayHandler() {
+     fun delayHandler() {
         val handler = Handler()
         handler.postDelayed(Runnable {
             //wait x delay MS and then progress is done
-           Load().done(progress_widget)
+            Load().done(progress_widget)
         }, 1000) // 1000 milliseconds
 
     }
 
     // Display API response in specific textview
-    private fun rain(weather: Weather) {
+    fun weather(weather: Weather) {
         binding.description.text = getString(R.string.weather_des).plus(weather.description)
     }
 
-
-    private fun temp(main: Main) {
+    fun temp(main: com.example.bmweather.ResponseModel.current.Main) {
         mainTemp.text = "".plus(main.temp.toUInt()).plus(getString(R.string.temp_unit_c))
     }
 
-    private fun tempallday(main: Main) {
-        binding.TempAllDay.text =
-            getString(R.string.min_temp).plus(main.temp_min.toUInt()).plus("  ").plus(
-                getString(
-                    R.string.max_temp
-                )
-            ).plus(main.temp_max.toUInt())
+    fun tempallday(main: com.example.bmweather.ResponseModel.current.Main) {
+        binding.TempAllDay.text = getString(R.string.min_temp).plus(main.tempMin.toUInt()).plus("  ").plus(getString(R.string.max_temp)).plus(main.tempMax!!.toUInt())
     }
 
-    private fun realTemp(main: Main) {
-        realTemp.text = getString(R.string.feels_like_temp).plus(main.feels_like.toUInt())
+    fun realTemp(main: com.example.bmweather.ResponseModel.current.Main) {
+        realTemp.text = getString(R.string.feels_like_temp).plus(main.temp.toUInt())
     }
 
-    private fun city(weatherResponse: WeatherResponse) {
-        city.text =
-            weatherResponse.name.plus(getString(R.string.comma)).plus(weatherResponse.sys!!.country)
+    fun city(WeatherReport: WeatherReport) {
+        city.text = WeatherReport.name.plus(getString(R.string.comma)).plus(WeatherReport.sys.country)
     }
 
-    private fun sorryDisplayView() {
+    fun forecast(main: List<ListData>) {
+        forecast.text = getString(R.string.weather_des).plus(main[0])
+    }
+
+
+    fun sorryDisplayView() {
         city.text = getString(R.string.sorry)
         realTemp.text = getString(R.string.empty)
         binding.TempAllDay.text = getString(R.string.empty)
@@ -228,7 +164,7 @@ class MainActivity : AppCompatActivity() {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     Location().setUpLocationListener(
                         binding.latTextView, binding.lngTextView,
-                        MainActivity(), this
+                        this, this
                     )
                     Log.i(Location().TAG, "Permission has been denied by user")
                     Toast.makeText(
