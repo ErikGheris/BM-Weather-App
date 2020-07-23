@@ -17,9 +17,11 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import kotlinx.android.synthetic.main.activity_main.*
 import java.security.AccessController.getContext
+import kotlin.properties.Delegates
 
 class Location {
-
+    var xCord:String by Delegates.notNull()
+    var yCord:String by Delegates.notNull()
     val TAG = "PermissionDemo"
 
     /*  these two have to be declare/initialised @Top */
@@ -125,6 +127,10 @@ class Location {
                     for (location in locationResult.locations) {
                         latTextView.text = location.latitude.toString()
                         lngTextView.text = location.longitude.toString()
+                        xCord = location.latitude.toString()
+                        yCord=location.longitude.toString()
+
+                        Log.d(FetchWeatherData.TAG, "$xCord und $yCord")
                     }
                     // Few more things we can do here:
                     // For example: Update the location of user on server

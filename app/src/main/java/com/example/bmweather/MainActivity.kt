@@ -45,7 +45,10 @@ class MainActivity : AppCompatActivity() {
         //
         Location().setupPermissions(this, this)
 
-
+       /*
+      like this we can Access to our coordination, they can be used later
+       Location().xCord
+        Location().yCord*/
         //
         binding.locationButton.setOnClickListener {
             // Location().setupPermissions(this, this)
