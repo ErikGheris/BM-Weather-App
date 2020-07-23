@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
                 this,
                 this
             )
-        }
+        }   
 
         //toaster Message + get current data
         binding.searchButton.setOnClickListener {
