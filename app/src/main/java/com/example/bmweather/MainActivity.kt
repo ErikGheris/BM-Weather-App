@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
             // Location().setupPermissions(this, this)
             // Location().isLocationEnabled(this)
             
-            Toast.makeText(this, "hi  $longitude bye     $latitude" , Toast.LENGTH_SHORT).show()
+           
 
              fetchWeatherLocation.getCurrentLocationWeatherReport(app_id,lat=Search().get(latTextView), lon = Search().get(lngTextView),lang = lang ,units = units, mainActivity = this)
         }
