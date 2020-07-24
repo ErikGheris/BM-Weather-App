@@ -28,9 +28,14 @@
             android:id="@+id/swipe"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-<androidx.appcompat.widget.AppCompatAutoCompleteTextView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"></androidx.appcompat.widget.AppCompatAutoCompleteTextView>
+
+            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:visibility="invisible"
+
+                ></androidx.appcompat.widget.AppCompatAutoCompleteTextView>
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </RelativeLayout>
@@ -183,6 +188,7 @@
         android:layout_width="wrap_content"
         android:layout_height="60sp"
         android:gravity="center"
+        android:visibility="invisible"
         android:text="@string/default_lat"
         app:layout_constraintBottom_toBottomOf="@+id/relativeLayout"
         app:layout_constraintEnd_toEndOf="parent"
@@ -195,6 +201,7 @@
         android:layout_width="wrap_content"
         android:layout_height="60sp"
         android:gravity="center"
+        android:visibility="invisible"
         android:text="@string/default_lng"
         app:layout_constraintBottom_toTopOf="@+id/latTextView"
         app:layout_constraintEnd_toEndOf="parent"

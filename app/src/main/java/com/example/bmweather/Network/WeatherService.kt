@@ -26,5 +26,25 @@ interface WeatherService {
         @Query("APPID") app_id: String,
         @Query("cnt") cnt: String
     ): Call<WeatherNextDaysReport>
+
+    @GET("data/2.5/weather?")
+    // Insert parameters (q for city, units, lang to select the language, APPID set the api Key)
+    fun getCurrentLocationWeatherData(
+        @Query("lat") lat: String,
+        @Query("lon") lon: String,
+        @Query("units") units: String,
+        @Query("lang") lang: String,
+        @Query("APPID") app_id: String
+    ): Call<WeatherReport>
+
+    @GET("data/2.5/forecast?")
+    // Insert parameters (q for city, units, lang to select the language, APPID set the api Key)
+    fun getCurrentLocationForecastWeatherData(
+        @Query("lat") lat: String,
+        @Query("lon") lon: String,
+        @Query("lang") lang: String,
+        @Query("APPID") app_id: String,
+        @Query("cnt") cnt: String
+    ): Call<WeatherNextDaysReport>
 }
 

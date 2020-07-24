@@ -1,4 +1,4 @@
-package com.example.bmweather
+package com.example.bmweather.Location
 
 import android.Manifest
 import android.app.AlertDialog
@@ -11,17 +11,15 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
-import kotlinx.android.synthetic.main.activity_main.*
-import java.security.AccessController.getContext
-import kotlin.properties.Delegates
+import com.example.bmweather.FetchWeatherData
+import com.example.bmweather.MainActivity
+import com.google.android.gms.location.*
 
 class Location {
-    var xCord:String by Delegates.notNull()
-    var yCord:String by Delegates.notNull()
+
+
+    /*   var xCord:String by Delegates.notNull()
+        var yCord:String by Delegates.notNull()*/
     val TAG = "PermissionDemo"
 
     /*  these two have to be declare/initialised @Top */
@@ -95,8 +93,10 @@ class Location {
     }
 
 
-    fun setUpLocationListener(latTextView: TextView,lngTextView: TextView,activity: MainActivity, context: Context) {
+    fun setUpLocationListener(latTextView: TextView, lngTextView: TextView, activity: MainActivity, context: Context) {
         val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(activity)
+
+
         // for getting the current location update after every 2 seconds with high accuracy
         val locationRequest = LocationRequest().setInterval(2000).setFastestInterval(2000)
             .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
@@ -107,6 +107,8 @@ class Location {
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
+
+
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -119,26 +121,34 @@ class Location {
             return
 
         }
+
         fusedLocationProviderClient.requestLocationUpdates(
             locationRequest,
             object : LocationCallback() {
+
+
                 override fun onLocationResult(locationResult: LocationResult) {
                     super.onLocationResult(locationResult)
                     for (location in locationResult.locations) {
                         latTextView.text = location.latitude.toString()
                         lngTextView.text = location.longitude.toString()
-                        xCord = location.latitude.toString()
-                        yCord=location.longitude.toString()
 
+                        val  xCord = location.latitude.toString()
+                        val  yCord=location.longitude.toString()
                         Log.d(FetchWeatherData.TAG, "$xCord und $yCord")
+
                     }
+
                     // Few more things we can do here:
                     // For example: Update the location of user on server
+
                 }
             },
             Looper.myLooper()
         )
+
     }
+
 
 
 
@@ -166,7 +176,6 @@ class Location {
         }
 
     }
-
 
 
 }
