@@ -10,6 +10,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bmweather.FetchingData.FetchWeatherDataLocation
+import com.example.bmweather.Fragments.CurrentWeather
+import com.example.bmweather.Fragments.Forecast
 import com.example.bmweather.Location.Location
 import com.example.bmweather.ResponseModel.current.Weather
 import com.example.bmweather.ResponseModel.current.WeatherReport
@@ -38,11 +40,11 @@ class MainActivity : AppCompatActivity() {
         private val fetchWeatherLocation = FetchWeatherDataLocation
         lateinit var binding: ActivityMainBinding
       override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+          super.onCreate(savedInstanceState)
 
-        //viewBinding initialization and assignment
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+          //viewBinding initialization and assignment
+          binding = ActivityMainBinding.inflate(layoutInflater)
+          setContentView(binding.root)
 
 
 
@@ -53,75 +55,103 @@ class MainActivity : AppCompatActivity() {
               this
           )
 
-        //
-        com.example.bmweather.Location.Location().setupPermissions(this, this)
+          //
+          com.example.bmweather.Location.Location().setupPermissions(this, this)
 
 
-
-
-
-
-       /*
+          /*
       like this we can Access to our coordination, they can be used later*/
-        //
+          //
 
 
-        binding.locationButton.setOnClickListener {
-            // Location().setupPermissions(this, this)
-            // Location().isLocationEnabled(this)
-            
-           
-
-             fetchWeatherLocation.getCurrentLocationWeatherReport(app_id,lat=Search().get(latTextView), lon = Search().get(lngTextView),lang = lang ,units = units, mainActivity = this)
-        }
-
-        //toaster Message + get current data
-        binding.searchButton.setOnClickListener {
-            searched = Search().get(search_input).toString()
-            if (searched.trim().isNotEmpty()) {
-                lastCityCache = cityName
-                cityName = searched
-                fetchWeather.getCurrentWeatherReport(app_id,cityName,lang,units, this)
-                fetchWeather.getForecastWeatherReport(app_id,cityName,lang,units,cnt,this)
-                //safe city
-                Toast.makeText(this, "looking for $searched's Weather Info", Toast.LENGTH_SHORT)
-                    .show()
-                clearInputText(binding.searchInput)
-
-            } else {
-                Toast.makeText(
-                    this, "Please enter a Location!",
-                    Toast.LENGTH_SHORT
-                ).show()
-                clearInputText(binding.searchInput)
-            }
-        }
-
-        // clears the autoCompleteTExtView when it is clicked
-        binding.searchInput.setOnClickListener {
-            clearInputText(binding.searchInput)
-        }
-
-        // all about pull to refresh data
-        binding.swipe.setOnRefreshListener {
-            fetchWeather.getCurrentWeatherReport(app_id,cityName,lang,units, this)
-            fetchWeather.getForecastWeatherReport(app_id,cityName,lang,units,cnt,this)
-            Toast.makeText(
-                this, "Data Updated",
-                Toast.LENGTH_SHORT
-            ).show()
-            // Hide swipe to refresh icon animation
-            swipe.isRefreshing = false
-        }
+          binding.locationButton.setOnClickListener {
+              // Location().setupPermissions(this, this)
+              // Location().isLocationEnabled(this)
 
 
-    }
+              fetchWeatherLocation.getCurrentLocationWeatherReport(
+                  app_id,
+                  lat = Search().get(latTextView),
+                  lon = Search().get(lngTextView),
+                  lang = lang,
+                  units = units,
+                  mainActivity = this
+              )
+          }
+
+          //toaster Message + get current data
+          binding.searchButton.setOnClickListener {
+              searched = Search().get(search_input).toString()
+              if (searched.trim().isNotEmpty()) {
+                  lastCityCache = cityName
+                  cityName = searched
+                  fetchWeather.getCurrentWeatherReport(app_id, cityName, lang, units, this)
+                  fetchWeather.getForecastWeatherReport(app_id, cityName, lang, units, cnt, this)
+                  //safe city
+                  Toast.makeText(this, "looking for $searched's Weather Info", Toast.LENGTH_SHORT)
+                      .show()
+                  clearInputText(binding.searchInput)
+
+              } else {
+                  Toast.makeText(
+                      this, "Please enter a Location!",
+                      Toast.LENGTH_SHORT
+                  ).show()
+                  clearInputText(binding.searchInput)
+              }
+          }
+
+          // clears the autoCompleteTExtView when it is clicked
+          binding.searchInput.setOnClickListener {
+              clearInputText(binding.searchInput)
+          }
+
+          // all about pull to refresh data
+          binding.swipe.setOnRefreshListener {
+              fetchWeather.getCurrentWeatherReport(app_id, cityName, lang, units, this)
+              fetchWeather.getForecastWeatherReport(app_id, cityName, lang, units, cnt, this)
+              Toast.makeText(
+                  this, "Data Updated",
+                  Toast.LENGTH_SHORT
+              ).show()
+              // Hide swipe to refresh icon animation
+              swipe.isRefreshing = false
+          }
+
+
+          var state = 0
+
+          val forecastFragment = Forecast()
+          val currentWeatherFragment = CurrentWeather()
+          binding.fragment.setOnClickListener {
+              when (state) {
+
+                  0 -> {
+                      supportFragmentManager.beginTransaction().apply {
+                          state = 1
+                          replace(R.id.frameLayout, forecastFragment)
+                          commit()
+                      }
+                  }
+
+                  1 -> {
+                      supportFragmentManager.beginTransaction().apply {
+                          state = 0
+                          replace(R.id.frameLayout, currentWeatherFragment)
+                          commit()
+                      }
+                  }
+
+
+              }
+          }
+      }
 
     private fun clearInputText(textView: AutoCompleteTextView) {
         textView.setText("")
     }
 
-    private fun getTextViewValue(latTextView: TextView): String? {
+    fun getTextViewValue(latTextView: TextView): String? {
         return Search().get(lngTextView)
     }
 
