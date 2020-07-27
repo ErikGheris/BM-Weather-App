@@ -143,6 +143,7 @@ class MainActivity : AppCompatActivity() {
                   }
 
 
+                  else -> state=0
               }
           }
       }

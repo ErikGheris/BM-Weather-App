@@ -233,10 +233,7 @@
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-
-
     </FrameLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
