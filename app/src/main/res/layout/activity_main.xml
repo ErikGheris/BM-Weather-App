@@ -75,6 +75,18 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.039" />
 
+                <ImageView
+                    android:id="@+id/ic_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#fff"
+                    android:textColorHint="#fff"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/description"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/search_button"
+                    app:layout_constraintVertical_bias="0.524" />
+
 
                 <TextView
                     android:id="@+id/mainTemp"
@@ -205,6 +217,9 @@
                     app:layout_constraintVertical_bias="0.92" />
 
 
+
+
+
                 <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                     android:id="@+id/appCompatAutoCompleteTextView"
                     android:layout_width="match_parent"
@@ -212,8 +227,8 @@
                     android:layout_height="match_parent"
 
                     android:visibility="invisible"
-                    tools:layout_editor_absoluteX="-126dp"
-                    tools:layout_editor_absoluteY="0dp"></androidx.appcompat.widget.AppCompatAutoCompleteTextView>
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:layout_editor_absoluteY="51dp"></androidx.appcompat.widget.AppCompatAutoCompleteTextView>
 
                 <Button
                     android:id="@+id/fragment"

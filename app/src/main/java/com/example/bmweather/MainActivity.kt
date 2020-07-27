@@ -1,139 +1,147 @@
 package com.example.bmweather
 
 
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
-import android.provider.AlarmClock.EXTRA_MESSAGE
 import android.util.Log
-import android.view.View
 import android.widget.AutoCompleteTextView
-import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.bmweather.FetchingData.FetchWeatherDataLocation
 import com.example.bmweather.Fragments.CurrentWeather
 import com.example.bmweather.Fragments.Forecast
-import com.example.bmweather.Location.Location
-import com.example.bmweather.ResponseModel.current.Weather
-import com.example.bmweather.ResponseModel.current.WeatherReport
 import com.example.bmweather.databinding.ActivityMainBinding
+import com.example.bmweather.response.Current
+import com.example.bmweather.response.Daily
+import com.example.bmweather.response.Weather
 import com.google.android.gms.location.*
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_second.*
+import kotlinx.android.synthetic.main.fragment_forecast.*
 import kotlinx.coroutines.Runnable
-import source.open.akash.mvvmlogin.Model.nextdayforecast.ListData
 
-class MainActivity : AppCompatActivity() {
+
+
+class MainActivity : AppCompatActivity(),LocationReceiver {
     val boolean: Boolean = true
     var fusedLocationClient: FusedLocationProviderClient? = null
+    override var xCoordination: String = ""
+    override var yCoordination: String =""
 
     // Declare parameters for tge GET funktion
-    val BaseUrl = "http://api.openweathermap.org/"
     val app_id = "6133b390a077c487bc9ac43311b3ba26"
     var cityName = "Berlin"
     var units = "metric"
     var lang = "de"
     var lastCityCache = cityName
     var searched: String = ""
-    var cnt = "3"
     var longitude:String = ""
-     var latitude:String =""
-        private val fetchWeather = FetchWeatherData
-        private val fetchWeatherLocation = FetchWeatherDataLocation
-        lateinit var binding: ActivityMainBinding
-      override fun onCreate(savedInstanceState: Bundle?) {
-          super.onCreate(savedInstanceState)
-
-          //viewBinding initialization and assignment
-          binding = ActivityMainBinding.inflate(layoutInflater)
-          setContentView(binding.root)
+    var latitude:String =""
+    var exclude = "hourly,minutely"
 
 
+    private val fetchWeather = FetchWeatherData
 
-          com.example.bmweather.Location.LastLocation().setUpLocationListener(
-              binding.latTextView,
-              binding.lngTextView,
-              this,
-              this
-          )
+    lateinit var binding: ActivityMainBinding
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-          //
-          com.example.bmweather.Location.Location().setupPermissions(this, this)
-
-
-          /*
-      like this we can Access to our coordination, they can be used later*/
-          //
-
-
-          binding.locationButton.setOnClickListener {
-              // Location().setupPermissions(this, this)
-              // Location().isLocationEnabled(this)
-
-
-              fetchWeatherLocation.getCurrentLocationWeatherReport(
-                  app_id,
-                  lat = Search().get(latTextView),
-                  lon = Search().get(lngTextView),
-                  lang = lang,
-                  units = units,
-                  mainActivity = this
-              )
-          }
-
-          //toaster Message + get current data
-          binding.searchButton.setOnClickListener {
-              searched = Search().get(search_input).toString()
-              if (searched.trim().isNotEmpty()) {
-                  lastCityCache = cityName
-                  cityName = searched
-                  fetchWeather.getCurrentWeatherReport(app_id, cityName, lang, units, this)
-                  fetchWeather.getForecastWeatherReport(app_id, cityName, lang, units, cnt, this)
-                  //safe city
-                  Toast.makeText(this, "looking for $searched's Weather Info", Toast.LENGTH_SHORT)
-                      .show()
-                  clearInputText(binding.searchInput)
-
-              } else {
-                  Toast.makeText(
-                      this, "Please enter a Location!",
-                      Toast.LENGTH_SHORT
-                  ).show()
-                  clearInputText(binding.searchInput)
-              }
-          }
-
-          // clears the autoCompleteTExtView when it is clicked
-          binding.searchInput.setOnClickListener {
-              clearInputText(binding.searchInput)
-          }
-
-          // all about pull to refresh data
-          binding.swipe.setOnRefreshListener {
-              fetchWeather.getCurrentWeatherReport(app_id, cityName, lang, units, this)
-              fetchWeather.getForecastWeatherReport(app_id, cityName, lang, units, cnt, this)
-              Toast.makeText(
-                  this, "Data Updated",
-                  Toast.LENGTH_SHORT
-              ).show()
-              // Hide swipe to refresh icon animation
-              swipe.isRefreshing = false
-          }
+        //viewBinding initialization and assignment
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
 
 
-          binding.fragment.setOnClickListener(){
+        com.example.bmweather.Location.LastLocation().setUpLocationListener(
+            binding.latTextView,
+            binding.lngTextView,
+            this,
+            this
+        )
+
+        //
+        com.example.bmweather.Location.Location().setupPermissions(this, this)
+
+
+
+
+
+
+        /*
+       like this we can Access to our coordination, they can be used later*/
+        //
+
+
+        binding.locationButton.setOnClickListener {
+            // Location().setupPermissions(this, this)
+            // Location().isLocationEnabled(this)
+
+            Toast.makeText(this, "hi  $xCoordination  ,     $yCoordination" , Toast.LENGTH_SHORT).show()
+
+        }
+
+
+        /*button_2.setOnClickListener {
+
+             fetchWeather.getForeCastWeatherReport(app_id,lat=Search().get(latTextView), lon = Search().get(lngTextView), lang = lang,units = units,exclude = exclude, mainActivity = this)
+
+          }*/
+
+        //toaster Message + get current data
+        binding.searchButton.setOnClickListener {
+            searched = Search().get(search_input).toString()
+            if (searched.trim().isNotEmpty()) {
+                lastCityCache = cityName
+                cityName = searched
+                fetchWeather.getCurrentWeatherReport(app_id,lat=xCoordination, lon = yCoordination, lang = lang,units = units,exclude = exclude, mainActivity = this)
+                //safe city
+                Toast.makeText(this, "looking for $searched's Weather Info", Toast.LENGTH_SHORT)
+                    .show()
+                clearInputText(binding.searchInput)
+
+            } else {
+                Toast.makeText(
+                    this, "Please enter a Location!",
+                    Toast.LENGTH_SHORT
+                ).show()
+                clearInputText(binding.searchInput)
+            }
+        }
+
+        // clears the autoCompleteTExtView when it is clicked
+        binding.searchInput.setOnClickListener {
+            clearInputText(binding.searchInput)
+        }
+
+        // all about pull to refresh data
+        binding.swipe.setOnRefreshListener {
+            fetchWeather.getCurrentWeatherReport(app_id,lat=xCoordination, lon = yCoordination, lang = lang,units = units,exclude = exclude, mainActivity = this)
+            Toast.makeText(
+                this, "Data Updated",
+                Toast.LENGTH_SHORT
+            ).show()
+            // Hide swipe to refresh icon animation
+            swipe.isRefreshing = false
+        }
+
+
+
+        binding.fragment.setOnClickListener(){
 
               val intent = Intent(this, SecondActivity::class.java)
+
+
+              intent.putExtra("x", "$xCoordination ");
+              intent.putExtra("y", "$yCoordination ");
+              Toast.makeText(this, "$xCoordination    $yCoordination", Toast.LENGTH_SHORT).show()
               startActivity(intent)
 
           }
 
-          /*var state = 0
+     /*     var state = 0
 
           val forecastFragment = Forecast()
           val currentWeatherFragment = CurrentWeather()
@@ -196,29 +204,46 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Display API response in specific textview
+    fun temp(main: Current) {
+        mainTemp.text = "".plus(main.temp.toUInt()).plus(getString(R.string.temp_unit_c))
+    }
+
+    fun tempallday(weather: Daily) {
+        binding.TempAllDay.text = getString(R.string.min_temp).plus(weather.temp.min.toUInt()).plus("  ").plus(getString(R.string.max_temp)).plus(weather.temp.max.toUInt())
+    }
+
+    fun ic_description(weather: List<Weather>) {
+        Picasso.get()
+            .load("http://openweathermap.org/img/wn/" + weather?.get(0)?.icon + "@2x.png")
+            .into(ic_description)
+    }
+
+    fun realTemp(main: Current) {
+        realTemp.text = getString(R.string.feels_like_temp).plus(main.feelsLike.toUInt())
+    }
+
+
     fun weather(weather: Weather) {
         binding.description.text = getString(R.string.weather_des).plus(weather.description)
     }
 
-    fun temp(main: com.example.bmweather.ResponseModel.current.Main) {
-        mainTemp.text = "".plus(main.temp.toUInt()).plus(getString(R.string.temp_unit_c))
-    }
 
-    fun tempallday(main: com.example.bmweather.ResponseModel.current.Main) {
-        binding.TempAllDay.text = getString(R.string.min_temp).plus(main.tempMin.toUInt()).plus("  ").plus(getString(R.string.max_temp)).plus(main.tempMax!!.toUInt())
-    }
 
-    fun realTemp(main: com.example.bmweather.ResponseModel.current.Main) {
-        realTemp.text = getString(R.string.feels_like_temp).plus(main.temp.toUInt())
-    }
 
-    fun city(WeatherReport: WeatherReport) {
+    /*
+        fun city(WeatherReport: WeatherReport) {
         city.text = WeatherReport.name.plus(getString(R.string.comma)).plus(WeatherReport.sys.country)
     }
 
+
+
+
+
+
+
     fun forecast(main: List<ListData>) {
         forecast.text = getString(R.string.weather_des).plus(main[0])
-    }
+    } */
 
 
     fun sorryDisplayView() {
@@ -227,6 +252,7 @@ class MainActivity : AppCompatActivity() {
         binding.TempAllDay.text = getString(R.string.empty)
         binding.description.text = getString(R.string.empty)
         mainTemp.text = getString(R.string.empty)
+
     }
 
 
