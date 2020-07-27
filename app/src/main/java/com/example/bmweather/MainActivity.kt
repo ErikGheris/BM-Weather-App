@@ -1,11 +1,16 @@
 package com.example.bmweather
 
 
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
+import android.provider.AlarmClock.EXTRA_MESSAGE
 import android.util.Log
+import android.view.View
 import android.widget.AutoCompleteTextView
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +23,7 @@ import com.example.bmweather.ResponseModel.current.WeatherReport
 import com.example.bmweather.databinding.ActivityMainBinding
 import com.google.android.gms.location.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_second.*
 import kotlinx.coroutines.Runnable
 import source.open.akash.mvvmlogin.Model.nextdayforecast.ListData
 
@@ -119,7 +125,15 @@ class MainActivity : AppCompatActivity() {
           }
 
 
-          var state = 0
+
+          binding.fragment.setOnClickListener(){
+
+              val intent = Intent(this, SecondActivity::class.java)
+              startActivity(intent)
+
+          }
+
+          /*var state = 0
 
           val forecastFragment = Forecast()
           val currentWeatherFragment = CurrentWeather()
@@ -145,8 +159,23 @@ class MainActivity : AppCompatActivity() {
 
                   else -> state=0
               }
-          }
+          }*/
       }
+
+
+
+    /*  fun sendMessage(view: View) {
+          val editText = findViewById<EditText>(R.id.editText)
+          val message = editText.text.toString()
+          val intent = Intent(this, DisplayMessageActivity::class.java).apply {
+              putExtra(EXTRA_MESSAGE, message)
+          }
+          startActivity(intent)
+      }
+  */
+
+
+
 
     private fun clearInputText(textView: AutoCompleteTextView) {
         textView.setText("")

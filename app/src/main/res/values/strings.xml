@@ -24,4 +24,6 @@
     <string name="forecastFragmentTV">ThisISGoingToBeOurForecastFragment</string>
     <string name="currentWeatherFragmentTV">ThisIsGoingToBeOurcurrentWeatherFragment</string>
     <string name="fragmentSwitchButton">Fragment Switch</string>
+    <string name="secondActivityTV">"you are in the second activity "</string>
+    <string name="mainActivityButton">Back</string>
 </resources>
