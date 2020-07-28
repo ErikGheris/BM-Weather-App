@@ -25,12 +25,11 @@ import kotlinx.android.synthetic.main.fragment_forecast.*
 import kotlinx.coroutines.Runnable
 
 
-
-class MainActivity : AppCompatActivity(),LocationReceiver {
+class MainActivity : AppCompatActivity(), LocationReceiver {
     val boolean: Boolean = true
     var fusedLocationClient: FusedLocationProviderClient? = null
     override var xCoordination: String = ""
-    override var yCoordination: String =""
+    override var yCoordination: String = ""
 
     // Declare parameters for tge GET funktion
     val app_id = "6133b390a077c487bc9ac43311b3ba26"
@@ -39,8 +38,8 @@ class MainActivity : AppCompatActivity(),LocationReceiver {
     var lang = "de"
     var lastCityCache = cityName
     var searched: String = ""
-    var longitude:String = ""
-    var latitude:String =""
+    var longitude: String = ""
+    var latitude: String = ""
     var exclude = "hourly,minutely"
 
 
@@ -67,10 +66,6 @@ class MainActivity : AppCompatActivity(),LocationReceiver {
         LastLocation().setupPermissions(this, this)
 
 
-
-
-
-
         /*
        like this we can Access to our coordination, they can be used later*/
         //
@@ -80,7 +75,8 @@ class MainActivity : AppCompatActivity(),LocationReceiver {
             // Location().setupPermissions(this, this)
             // Location().isLocationEnabled(this)
 
-            Toast.makeText(this, "hi  $xCoordination  ,     $yCoordination" , Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "hi  $xCoordination  ,     $yCoordination", Toast.LENGTH_SHORT)
+                .show()
 
         }
 
@@ -97,7 +93,15 @@ class MainActivity : AppCompatActivity(),LocationReceiver {
             if (searched.trim().isNotEmpty()) {
                 lastCityCache = cityName
                 cityName = searched
-                fetchWeather.getCurrentWeatherReport(app_id,lat=xCoordination, lon = yCoordination, lang = lang,units = units,exclude = exclude, mainActivity = this)
+                fetchWeather.getCurrentWeatherReport(
+                    app_id,
+                    lat = xCoordination,
+                    lon = yCoordination,
+                    lang = lang,
+                    units = units,
+                    exclude = exclude,
+                    mainActivity = this
+                )
                 //safe city
                 Toast.makeText(this, "looking for $searched's Weather Info", Toast.LENGTH_SHORT)
                     .show()
@@ -119,7 +123,15 @@ class MainActivity : AppCompatActivity(),LocationReceiver {
 
         // all about pull to refresh data
         binding.swipe.setOnRefreshListener {
-            fetchWeather.getCurrentWeatherReport(app_id,lat=xCoordination, lon = yCoordination, lang = lang,units = units,exclude = exclude, mainActivity = this)
+            fetchWeather.getCurrentWeatherReport(
+                app_id,
+                lat = xCoordination,
+                lon = yCoordination,
+                lang = lang,
+                units = units,
+                exclude = exclude,
+                mainActivity = this
+            )
             Toast.makeText(
                 this, "Data Updated",
                 Toast.LENGTH_SHORT
@@ -128,49 +140,42 @@ class MainActivity : AppCompatActivity(),LocationReceiver {
             swipe.isRefreshing = false
         }
 
+        binding.fragment.setOnClickListener() {
+            val intent = Intent(this, SecondActivity::class.java)
+            intent.putExtra("xCoordination", xCoordination);
+            intent.putExtra("yCoordination", yCoordination);
+            Toast.makeText(this, "$xCoordination    $yCoordination", Toast.LENGTH_SHORT).show()
+            startActivity(intent)
+        }
+
+        /*     var state = 0
+
+             val forecastFragment = Forecast()
+             val currentWeatherFragment = CurrentWeather()
+             binding.fragment.setOnClickListener {
+                 when (state) {
+
+                     0 -> {
+                         supportFragmentManager.beginTransaction().apply {
+                             state = 1
+                             replace(R.id.frameLayout, forecastFragment)
+                             commit()
+                         }
+                     }
+
+                     1 -> {
+                         supportFragmentManager.beginTransaction().apply {
+                             state = 0
+                             replace(R.id.frameLayout, currentWeatherFragment)
+                             commit()
+                         }
+                     }
 
 
-        binding.fragment.setOnClickListener(){
-
-              val intent = Intent(this, SecondActivity::class.java)
-
-
-              intent.putExtra("x", "$xCoordination ");
-              intent.putExtra("y", "$yCoordination ");
-              Toast.makeText(this, "$xCoordination    $yCoordination", Toast.LENGTH_SHORT).show()
-              startActivity(intent)
-
-          }
-
-     /*     var state = 0
-
-          val forecastFragment = Forecast()
-          val currentWeatherFragment = CurrentWeather()
-          binding.fragment.setOnClickListener {
-              when (state) {
-
-                  0 -> {
-                      supportFragmentManager.beginTransaction().apply {
-                          state = 1
-                          replace(R.id.frameLayout, forecastFragment)
-                          commit()
-                      }
-                  }
-
-                  1 -> {
-                      supportFragmentManager.beginTransaction().apply {
-                          state = 0
-                          replace(R.id.frameLayout, currentWeatherFragment)
-                          commit()
-                      }
-                  }
-
-
-                  else -> state=0
-              }
-          }*/
-      }
-
+                     else -> state=0
+                 }
+             }*/
+    }
 
 
     /*  fun sendMessage(view: View) {
@@ -184,8 +189,6 @@ class MainActivity : AppCompatActivity(),LocationReceiver {
   */
 
 
-
-
     private fun clearInputText(textView: AutoCompleteTextView) {
         textView.setText("")
     }
@@ -195,7 +198,7 @@ class MainActivity : AppCompatActivity(),LocationReceiver {
     }
 
 
-     fun delayHandler() {
+    fun delayHandler() {
         val handler = Handler()
         handler.postDelayed(Runnable {
             //wait x delay MS and then progress is done
@@ -210,7 +213,9 @@ class MainActivity : AppCompatActivity(),LocationReceiver {
     }
 
     fun tempallday(weather: Daily) {
-        binding.TempAllDay.text = getString(R.string.min_temp).plus(weather.temp.min.toUInt()).plus("  ").plus(getString(R.string.max_temp)).plus(weather.temp.max.toUInt())
+        binding.TempAllDay.text =
+            getString(R.string.min_temp).plus(weather.temp.min.toUInt()).plus("  ")
+                .plus(getString(R.string.max_temp)).plus(weather.temp.max.toUInt())
     }
 
     fun ic_description(weather: List<Weather>) {
@@ -227,8 +232,6 @@ class MainActivity : AppCompatActivity(),LocationReceiver {
     fun weather(weather: Weather) {
         binding.description.text = getString(R.string.weather_des).plus(weather.description)
     }
-
-
 
 
     /*
@@ -270,13 +273,19 @@ class MainActivity : AppCompatActivity(),LocationReceiver {
                         binding.latTextView, binding.lngTextView,
                         this, this
                     )
-                    Log.i(com.example.bmweather.Location.Location().TAG, "Permission has been denied by user")
+                    Log.i(
+                        com.example.bmweather.Location.Location().TAG,
+                        "Permission has been denied by user"
+                    )
                     Toast.makeText(
                         this, "Permission has been denied by user",
                         Toast.LENGTH_SHORT
                     ).show()
                 } else {
-                    Log.i(com.example.bmweather.Location.Location().TAG, "Permission has been granted by user")
+                    Log.i(
+                        com.example.bmweather.Location.Location().TAG,
+                        "Permission has been granted by user"
+                    )
                     Toast.makeText(
                         this, "Permission has been granted by user",
                         Toast.LENGTH_SHORT

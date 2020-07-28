@@ -26,13 +26,11 @@ class SecondActivity : AppCompatActivity(){
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-      val xCoordination= intent.getStringExtra("x").toString()
-     val yCoordination= intent.getStringExtra("y").toString()
-
+      val xCoordination= intent.getStringExtra("xCoordination").toString().trim()
+     val yCoordination= intent.getStringExtra("yCoordination").toString().trim()
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_second)
-
 
 
         val fetchWeather = FetchWeatherData
@@ -52,22 +50,27 @@ class SecondActivity : AppCompatActivity(){
 
 
 
+    @ExperimentalUnsignedTypes
     fun temp1(weather: Daily) {
-        textView3.text = getString(R.string.min_temp).plus(weather.temp?.min?.toUInt()).plus("  ").plus(getString(R.string.max_temp)).plus(weather.temp?.max?.toUInt())
+        textView3.text = getString(R.string.min_temp).plus(weather.    temp.min.toUInt()).plus("  ").plus(getString(R.string.max_temp)).plus(weather.temp?.max?.toUInt())
     }
 
+    @ExperimentalUnsignedTypes
     fun temp2(weather: Daily) {
         textView4.text = getString(R.string.min_temp).plus(weather.temp.min.toUInt()).plus("  ").plus(getString(R.string.max_temp)).plus(weather.temp.max.toUInt())
     }
 
+    @ExperimentalUnsignedTypes
     fun temp3(weather: Daily) {
         textView5.text = getString(R.string.min_temp).plus(weather.temp.min.toUInt()).plus("  ").plus(getString(R.string.max_temp)).plus(weather.temp.max.toUInt())
     }
 
+    @ExperimentalUnsignedTypes
     fun temp4(weather: Daily) {
         textView6.text = getString(R.string.min_temp).plus(weather.temp.min.toUInt()).plus("  ").plus(getString(R.string.max_temp)).plus(weather.temp.max.toUInt())
     }
 
+    @ExperimentalUnsignedTypes
     fun temp5(weather: Daily) {
         textView7.text = getString(R.string.min_temp).plus(weather.temp.min.toUInt()).plus("  ").plus(getString(R.string.max_temp)).plus(weather.temp.max.toUInt())
     }
