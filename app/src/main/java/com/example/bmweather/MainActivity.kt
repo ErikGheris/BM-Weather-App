@@ -25,15 +25,15 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
     override var yCoordination: String = ""
 
     // Declare parameters for tge GET funktion
-    val app_id = "6133b390a077c487bc9ac43311b3ba26"
+    private val apiKey = "6133b390a077c487bc9ac43311b3ba26"
     var cityName = "Berlin"
-    var units = "metric"
-    var lang = "de"
+    private var units = "metric"
+    private var lang = "de"
     var lastCityCache = cityName
     var searched: String = ""
     var longitude: String = ""
     var latitude: String = ""
-    var exclude = "hourly,minutely"
+    private var exclude = "hourly,minutely"
 
 
     private val fetchWeather = FetchWeatherData
@@ -41,28 +41,21 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
     lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        longitude = yCoordination
+        latitude = xCoordination
         //viewBinding initialization and assignment
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         LastLocation().setupPermissions(this, this)
 
-
         binding.locationButton.setOnClickListener {
-
             LastLocation().setUpLocationListener(
                 binding.latTextView,
                 binding.lngTextView,
                 this,
                 this
             )
-            Toast.makeText(
-                this,
-                "Latitude: $xCoordination  Longitude: $yCoordination",
-                Toast.LENGTH_SHORT
-            )
-                .show()
         }
 
         //toaster Message + get current data
@@ -72,7 +65,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                 lastCityCache = cityName
                 cityName = searched
                 fetchWeather.getCurrentWeatherReport(
-                    app_id,
+                    apiKey,
                     lat = xCoordination,
                     lon = yCoordination,
                     lang = lang,
@@ -97,9 +90,9 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         }
         binding.swipe.setOnRefreshListener {
             fetchWeather.getCurrentWeatherReport(
-                app_id,
-                lat = xCoordination,
-                lon = yCoordination,
+                apiKey,
+                lat = latitude,
+                lon = longitude,
                 lang = lang,
                 units = units,
                 exclude = exclude,
@@ -127,7 +120,6 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
              val currentWeatherFragment = CurrentWeather()
              binding.fragment.setOnClickListener {
                  when (state) {
-
                      0 -> {
                          supportFragmentManager.beginTransaction().apply {
                              state = 1
@@ -135,7 +127,6 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                              commit()
                          }
                      }
-
                      1 -> {
                          supportFragmentManager.beginTransaction().apply {
                              state = 0
@@ -143,13 +134,10 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                              commit()
                          }
                      }
-
-
                      else -> state=0
                  }
              }*/
     }
-
 
     /*  fun sendMessage(view: View) {
           val editText = findViewById<EditText>(R.id.editText)

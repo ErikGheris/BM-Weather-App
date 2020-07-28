@@ -7,21 +7,21 @@ import com.example.bmweather.response.Daily
 import kotlinx.android.synthetic.main.activity_second.*
 
 lateinit var binding: ActivitySecondBinding
-val app_id = "6133b390a077c487bc9ac43311b3ba26"
+const val apiKey = "6133b390a077c487bc9ac43311b3ba26"
 var cityName = "Berlin"
 var units = "metric"
 var lang = "de"
 var lastCityCache = cityName
 var searched: String = ""
-
 var exclude = "hourly,minutely"
-
+var longitude: String = ""
+var latitude: String = ""
 
 class SecondActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val xCoordination = intent.getStringExtra("xCoordination").toString().trim()
-        val yCoordination = intent.getStringExtra("yCoordination").toString().trim()
+        latitude = intent.getStringExtra("xCoordination").toString().trim()
+        longitude = intent.getStringExtra("yCoordination").toString().trim()
         binding = ActivitySecondBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -29,9 +29,9 @@ class SecondActivity : AppCompatActivity() {
         val fetchWeather = FetchWeatherData
         binding.forecastButton.setOnClickListener {
             fetchWeather.getForeCastWeatherReport(
-                app_id = app_id,
-                lat = xCoordination,
-                lon = yCoordination,
+                app_id = apiKey,
+                lat = latitude,
+                lon = longitude,
                 lang = lang,
                 units = units,
                 exclude = exclude,
