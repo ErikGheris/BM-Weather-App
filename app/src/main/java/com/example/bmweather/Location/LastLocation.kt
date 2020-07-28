@@ -20,14 +20,14 @@ import com.google.android.gms.location.LocationServices
 
 
 class LastLocation {
-    val TAG = "PermissionDemo"
+    private val TAG = "PermissionDemo"
 
     /*  these two have to be declare/initialised @Top */
-    var permissionsList = arrayOf(
+    private var permissionsList = arrayOf(
         Manifest.permission.ACCESS_COARSE_LOCATION,
         Manifest.permission.ACCESS_FINE_LOCATION
     )
-    val permissionsList_request_Code = 10
+    private val permissionsRequestCode = 10
 
     fun showToast(mContext: Context?, message: String?) {
         Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show()
@@ -37,7 +37,7 @@ class LastLocation {
         ActivityCompat.requestPermissions(
             activity,
             permissionsList,
-            permissionsList_request_Code
+            permissionsRequestCode
         )
     }
 
@@ -94,7 +94,7 @@ class LastLocation {
                 override fun onLocationResult(locationResult: LocationResult) {
                     super.onLocationResult(locationResult)
                     for (location in locationResult.locations) {
-                        /*  latTextView.text = location.latitude.toString()
+                        /* latTextView.text = location.latitude.toString()
                           lngTextView.text = location.longitude.toString()*/
                         LocationReceiver.xCoordination = location.latitude.toString()
                         LocationReceiver.yCoordination = location.longitude.toString()

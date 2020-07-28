@@ -23,8 +23,6 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
     val boolean: Boolean = true
     override var xCoordination: String = ""
     override var yCoordination: String = ""
-
-    // Declare parameters for tge GET funktion
     private val apiKey = "6133b390a077c487bc9ac43311b3ba26"
     var cityName = "Berlin"
     private var units = "metric"
@@ -34,8 +32,6 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
     var longitude: String = ""
     var latitude: String = ""
     private var exclude = "hourly,minutely"
-
-
     private val fetchWeather = FetchWeatherData
 
     lateinit var binding: ActivityMainBinding

@@ -1,7 +1,6 @@
 package com.example.bmweather.Location
 
 import android.Manifest
-import android.app.AlertDialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.LocationManager
@@ -10,16 +9,16 @@ import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.example.bmweather.FetchWeatherData
 import com.example.bmweather.MainActivity
-import com.google.android.gms.location.*
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
 
 class Location {
 
 
-    /*   var xCord:String by Delegates.notNull()
-        var yCord:String by Delegates.notNull()*/
     val TAG = "PermissionDemo"
 
     /*  these two have to be declare/initialised @Top */
@@ -27,6 +26,7 @@ class Location {
         Manifest.permission.ACCESS_COARSE_LOCATION,
         Manifest.permission.ACCESS_FINE_LOCATION
     )
+
     val permissionsList_request_Code = 10
 
     fun showToast(mContext: Context?, message: String?) {
@@ -40,9 +40,7 @@ class Location {
             permissionsList_request_Code
         )
     }
-
-
-
+    //  THIS IS NOT COPIED TO THE OTHER CLASS YET
 
     fun isLocationEnabled(context: Context): Boolean {
         val locationManager: LocationManager =
@@ -66,8 +64,6 @@ class Location {
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-
-
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -78,14 +74,11 @@ class Location {
             // if the permissions were not granted , ask for permissions
             makeMultipleRequest(activity)
             return
-
         }
 
         fusedLocationProviderClient.requestLocationUpdates(
             locationRequest,
             object : LocationCallback() {
-
-
                 override fun onLocationResult(locationResult: LocationResult) {
                     super.onLocationResult(locationResult)
                     for (location in locationResult.locations) {
@@ -105,34 +98,6 @@ class Location {
             },
             Looper.myLooper()
         )
-
-    }
-
-
-
-
-
- // It should be overridden but how ?
-
-
-
-    fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>, grantResults: IntArray, context: Context
-    ) {
-        when (requestCode) {
-            permissionsList_request_Code -> {
-                if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    Log.i(TAG, "Permission has been denied by user")
-                    Toast.makeText(
-                        context, "Data Updated",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                } else {
-                    Log.i(TAG, "Permission has been granted by user")
-                }
-            }
-        }
 
     }
 
