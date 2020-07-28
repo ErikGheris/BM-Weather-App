@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bmweather.Fragments.CurrentWeather
 import com.example.bmweather.Fragments.Forecast
+import com.example.bmweather.Location.LastLocation
 import com.example.bmweather.databinding.ActivityMainBinding
 import com.example.bmweather.response.Current
 import com.example.bmweather.response.Daily
@@ -55,7 +56,7 @@ class MainActivity : AppCompatActivity(),LocationReceiver {
 
 
 
-        com.example.bmweather.Location.LastLocation().setUpLocationListener(
+        LastLocation().setUpLocationListener(
             binding.latTextView,
             binding.lngTextView,
             this,
@@ -63,7 +64,7 @@ class MainActivity : AppCompatActivity(),LocationReceiver {
         )
 
         //
-        com.example.bmweather.Location.Location().setupPermissions(this, this)
+        LastLocation().setupPermissions(this, this)
 
 
 
@@ -265,7 +266,7 @@ class MainActivity : AppCompatActivity(),LocationReceiver {
             com.example.bmweather.Location.Location().permissionsList_request_Code -> {
 
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    com.example.bmweather.Location.LastLocation().setUpLocationListener(
+                    LastLocation().setUpLocationListener(
                         binding.latTextView, binding.lngTextView,
                         this, this
                     )
