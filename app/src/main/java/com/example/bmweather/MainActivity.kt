@@ -7,27 +7,20 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.widget.AutoCompleteTextView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.bmweather.Fragments.CurrentWeather
-import com.example.bmweather.Fragments.Forecast
 import com.example.bmweather.Location.LastLocation
 import com.example.bmweather.databinding.ActivityMainBinding
 import com.example.bmweather.response.Current
 import com.example.bmweather.response.Daily
 import com.example.bmweather.response.Weather
-import com.google.android.gms.location.*
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_second.*
-import kotlinx.android.synthetic.main.fragment_forecast.*
 import kotlinx.coroutines.Runnable
 
 
 class MainActivity : AppCompatActivity(), LocationReceiver {
     val boolean: Boolean = true
-    var fusedLocationClient: FusedLocationProviderClient? = null
     override var xCoordination: String = ""
     override var yCoordination: String = ""
 
@@ -53,39 +46,24 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-
-        LastLocation().setUpLocationListener(
-            binding.latTextView,
-            binding.lngTextView,
-            this,
-            this
-        )
-
-        //
         LastLocation().setupPermissions(this, this)
 
 
-        /*
-       like this we can Access to our coordination, they can be used later*/
-        //
-
-
         binding.locationButton.setOnClickListener {
-            // Location().setupPermissions(this, this)
-            // Location().isLocationEnabled(this)
 
-            Toast.makeText(this, "hi  $xCoordination  ,     $yCoordination", Toast.LENGTH_SHORT)
+            LastLocation().setUpLocationListener(
+                binding.latTextView,
+                binding.lngTextView,
+                this,
+                this
+            )
+            Toast.makeText(
+                this,
+                "Latitude: $xCoordination  Longitude: $yCoordination",
+                Toast.LENGTH_SHORT
+            )
                 .show()
-
         }
-
-
-        /*button_2.setOnClickListener {
-
-             fetchWeather.getForeCastWeatherReport(app_id,lat=Search().get(latTextView), lon = Search().get(lngTextView), lang = lang,units = units,exclude = exclude, mainActivity = this)
-
-          }*/
 
         //toaster Message + get current data
         binding.searchButton.setOnClickListener {
@@ -106,7 +84,6 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                 Toast.makeText(this, "looking for $searched's Weather Info", Toast.LENGTH_SHORT)
                     .show()
                 clearInputText(binding.searchInput)
-
             } else {
                 Toast.makeText(
                     this, "Please enter a Location!",
@@ -115,13 +92,9 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                 clearInputText(binding.searchInput)
             }
         }
-
-        // clears the autoCompleteTExtView when it is clicked
         binding.searchInput.setOnClickListener {
             clearInputText(binding.searchInput)
         }
-
-        // all about pull to refresh data
         binding.swipe.setOnRefreshListener {
             fetchWeather.getCurrentWeatherReport(
                 app_id,
@@ -187,16 +160,9 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
           startActivity(intent)
       }
   */
-
-
     private fun clearInputText(textView: AutoCompleteTextView) {
         textView.setText("")
     }
-
-    fun getTextViewValue(latTextView: TextView): String? {
-        return Search().get(lngTextView)
-    }
-
 
     fun delayHandler() {
         val handler = Handler()
@@ -207,7 +173,6 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
 
     }
 
-    // Display API response in specific textview
     fun temp(main: Current) {
         mainTemp.text = "".plus(main.temp.toUInt()).plus(getString(R.string.temp_unit_c))
     }
@@ -239,12 +204,6 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         city.text = WeatherReport.name.plus(getString(R.string.comma)).plus(WeatherReport.sys.country)
     }
 
-
-
-
-
-
-
     fun forecast(main: List<ListData>) {
         forecast.text = getString(R.string.weather_des).plus(main[0])
     } */
@@ -259,7 +218,6 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
 
     }
 
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -267,7 +225,6 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
     ) {
         when (requestCode) {
             com.example.bmweather.Location.Location().permissionsList_request_Code -> {
-
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     LastLocation().setUpLocationListener(
                         binding.latTextView, binding.lngTextView,
@@ -294,6 +251,4 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
             }
         }
     }
-
-
 }
