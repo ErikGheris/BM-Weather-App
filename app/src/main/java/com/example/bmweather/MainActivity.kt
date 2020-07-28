@@ -20,7 +20,6 @@ import kotlinx.coroutines.Runnable
 
 
 class MainActivity : AppCompatActivity(), LocationReceiver {
-    val boolean: Boolean = true
     override var xCoordination: String = ""
     override var yCoordination: String = ""
     private val apiKey = "6133b390a077c487bc9ac43311b3ba26"
@@ -28,9 +27,9 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
     private var units = "metric"
     private var lang = "de"
     var lastCityCache = cityName
-    var searched: String = ""
-    var longitude: String = ""
-    var latitude: String = ""
+    private var searched: String = ""
+    private var longitude: String = ""
+    private var latitude: String = ""
     private var exclude = "hourly,minutely"
     private val fetchWeather = FetchWeatherData
 
