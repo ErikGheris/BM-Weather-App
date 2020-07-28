@@ -22,8 +22,8 @@ class SecondActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         latitude = intent.getStringExtra("xCoordination").toString().trim()
         longitude = intent.getStringExtra("yCoordination").toString().trim()
-        binding = ActivitySecondBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
+        binding = ActivitySecondBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val fetchWeather = FetchWeatherData
