@@ -44,47 +44,6 @@ class Location {
 
 
 
-
-    fun setupPermissions(context: Context, activity: MainActivity) {
-        val FINE_LOCATION_PERMISSION = ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        )
-        val COARSE_LOCATION_PERMISSION = ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        )
-        /*
-         Only if on the first start, the user clicks on deny, the next
-         time he starts the app an intro Dialog will be shown to explain the reason
-        for asking permissions, then when he clicks on "OK",
-        once again he will be asked for permission.
-
-         */
-        if (FINE_LOCATION_PERMISSION != PackageManager.PERMISSION_GRANTED || COARSE_LOCATION_PERMISSION != PackageManager.PERMISSION_GRANTED) {
-            Log.i(TAG, "Permission to record denied")
-            if (ActivityCompat.shouldShowRequestPermissionRationale(
-                    activity,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )
-            ) {
-                val builder = AlertDialog.Builder(context)
-                builder.setMessage("Permission to access the Location is required for this app to Show results based on your LAST KNOWN LOCATION.")
-                    .setTitle("Permission required")
-                builder.setPositiveButton(
-                    "OK"
-                ) { dialog, id ->
-                    Log.i(TAG, "Clicked")
-                    makeMultipleRequest(activity)
-                }
-                val dialog = builder.create()
-                dialog.show()
-            } else {
-                makeMultipleRequest(activity)
-            }
-        }
-    }
-
     fun isLocationEnabled(context: Context): Boolean {
         val locationManager: LocationManager =
             context.getSystemService(Context.LOCATION_SERVICE) as LocationManager

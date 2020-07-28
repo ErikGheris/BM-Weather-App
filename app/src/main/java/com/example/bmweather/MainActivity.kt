@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         }
         binding.swipe.setOnRefreshListener {
             fetchWeather.getCurrentWeatherReport(
-                apiKey,
+                app_id = apiKey,
                 lat = latitude,
                 lon = longitude,
                 lang = lang,
