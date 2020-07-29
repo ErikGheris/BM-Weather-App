@@ -43,7 +43,12 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         setContentView(binding.root)
 
         LastLocation().setupPermissions(this, this)
-
+        LastLocation().setUpLocationListener(
+            binding.latTextView,
+            binding.lngTextView,
+            this,
+            this
+        )
         binding.locationButton.setOnClickListener {
             LastLocation().setUpLocationListener(
                 binding.latTextView,
@@ -86,8 +91,8 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         binding.swipe.setOnRefreshListener {
             fetchWeather.getCurrentWeatherReport(
                 app_id = apiKey,
-                lat = latitude,
-                lon = longitude,
+                lat = xCoordination,
+                lon = yCoordination,
                 lang = lang,
                 units = units,
                 exclude = exclude,
