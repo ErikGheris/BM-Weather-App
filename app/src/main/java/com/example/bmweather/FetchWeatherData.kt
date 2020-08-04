@@ -26,22 +26,20 @@ class FetchWeatherData {
                         //On successful response builde string as defined later on
                         if (response.code() == 200 && response.code() != 400) {
                             val weatherReport = response.body()!!
-                            mainActivity.temp(weatherReport.current)
-                            mainActivity.realTemp(weatherReport.current)
-                            mainActivity.tempallday(weatherReport.daily[0])
-                            mainActivity.ic_description(weatherReport.current.weather)
-                            mainActivity.weather(weatherReport.current.weather[0])
+                            mainActivity.current(weatherReport.current)
+                           // mainActivity.realTemp(weatherReport.current)
+                            mainActivity.daily(weatherReport.daily[0])
 
                         }
                         else
                             if (response.code()==404){
 
-                                mainActivity.cityName = mainActivity.lastCityCache
+                              /*  mainActivity.cityName = mainActivity.lastCityCache
                                 mainActivity.sorryDisplayView()
                                 Toast.makeText(
                                     mainActivity.applicationContext, "City NoT Found.",
                                     Toast.LENGTH_SHORT
-                                ).show()
+                                ).show()*/
 
                             }
                     }
@@ -65,11 +63,7 @@ class FetchWeatherData {
                         //On successful response builde string as defined later on
                         if (response.code() == 200 && response.code() != 400) {
                             val weatherReport = response.body()!!
-                            activity.temp1(weatherReport.daily[1])
-                            activity.temp2(weatherReport.daily[2])
-                            activity.temp3(weatherReport.daily[3])
-                            activity.temp4(weatherReport.daily[4])
-                            activity.temp5(weatherReport.daily[5])
+                            activity.fetchDailyWeather(weatherReport.daily)
                         }
                         else
                             if (response.code()==404){

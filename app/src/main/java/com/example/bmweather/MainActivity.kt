@@ -3,7 +3,6 @@ package com.example.bmweather
 
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.widget.AutoCompleteTextView
@@ -13,17 +12,18 @@ import com.example.bmweather.Location.LastLocation
 import com.example.bmweather.databinding.ActivityMainBinding
 import com.example.bmweather.response.Current
 import com.example.bmweather.response.Daily
-import com.example.bmweather.response.Weather
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Runnable
+import java.text.SimpleDateFormat
+import kotlin.math.roundToInt
 
 
 class MainActivity : AppCompatActivity(), LocationReceiver {
     override var xCoordination: String = ""
     override var yCoordination: String = ""
     private val apiKey = "6133b390a077c487bc9ac43311b3ba26"
-    var cityName = "Berlin"
+    var cityName = ""
     private var units = "metric"
     private var lang = "de"
     var lastCityCache = cityName
@@ -34,8 +34,10 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
     private val fetchWeather = FetchWeatherData
 
     lateinit var binding: ActivityMainBinding
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+
+    override fun onStart() {
+        super.onStart()
+
         longitude = yCoordination
         latitude = xCoordination
         //viewBinding initialization and assignment
@@ -49,14 +51,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
             this,
             this
         )
-        binding.locationButton.setOnClickListener {
-            LastLocation().setUpLocationListener(
-                binding.latTextView,
-                binding.lngTextView,
-                this,
-                this
-            )
-        }
+
 
         //toaster Message + get current data
         binding.searchButton.setOnClickListener {
@@ -112,6 +107,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
             intent.putExtra("yCoordination", yCoordination);
             Toast.makeText(this, "$xCoordination    $yCoordination", Toast.LENGTH_SHORT).show()
             startActivity(intent)
+
         }
 
         /*     var state = 0
@@ -137,6 +133,18 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                      else -> state=0
                  }
              }*/
+        Handler().postDelayed({
+            fetchWeather.getCurrentWeatherReport(
+                app_id = apiKey,
+                lat = xCoordination,
+                lon = yCoordination,
+                lang = lang,
+                units = units,
+                exclude = exclude,
+                mainActivity = this
+            )
+        }, 3000)
+
     }
 
     /*  fun sendMessage(view: View) {
@@ -160,32 +168,25 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         }, 1000) // 1000 milliseconds
 
     }
+    val sunformat = SimpleDateFormat("kk:mm" )
 
-    fun temp(main: Current) {
-        mainTemp.text = "".plus(main.temp.toUInt()).plus(getString(R.string.temp_unit_c))
-    }
-
-    fun tempallday(weather: Daily) {
-        binding.TempAllDay.text =
-            getString(R.string.min_temp).plus(weather.temp.min.toUInt()).plus("  ")
-                .plus(getString(R.string.max_temp)).plus(weather.temp.max.toUInt())
-    }
-
-    fun ic_description(weather: List<Weather>) {
+    fun current(main: Current) {
+        binding.mainTemp.text = main.temp.roundToInt().toString().plus(getString(R.string.temp_unit_c))
+        binding.sunrise.text = sunformat.format(main.sunrise * 1000L).toString()
+        binding.sunset.text = sunformat.format(main.sunset * 1000L).toString()
+        binding.feelslike.text = main.feelsLike.roundToInt().toString().plus(getString(R.string.temp_unit_c))
+        binding.wind.text = main.windSpeed.roundToInt().toString().plus(getString(R.string.kmh))
+        binding.description.text = main.weather[0].description
         Picasso.get()
-            .load("http://openweathermap.org/img/wn/" + weather?.get(0)?.icon + "@2x.png")
+            .load("http://openweathermap.org/img/wn/" + main.weather[0].icon + "@2x.png")
+            .resize(250, 250)
             .into(ic_description)
     }
 
-    fun realTemp(main: Current) {
-        realTemp.text = getString(R.string.feels_like_temp).plus(main.feelsLike.toUInt())
+    fun daily(weather: Daily) {
+        binding.mintemp.text = weather.temp.min.roundToInt().toString().plus(getString(R.string.temp_unit_c))
+        binding.maxtemp.text = weather.temp.max.roundToInt().toString().plus(getString(R.string.temp_unit_c))
     }
-
-
-    fun weather(weather: Weather) {
-        binding.description.text = getString(R.string.weather_des).plus(weather.description)
-    }
-
 
     /*
         fun city(WeatherReport: WeatherReport) {
@@ -197,14 +198,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
     } */
 
 
-    fun sorryDisplayView() {
-        city.text = getString(R.string.sorry)
-        realTemp.text = getString(R.string.empty)
-        binding.TempAllDay.text = getString(R.string.empty)
-        binding.description.text = getString(R.string.empty)
-        mainTemp.text = getString(R.string.empty)
 
-    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
