@@ -54,6 +54,7 @@ class SecondActivity : AppCompatActivity() {
                 exclude = exclude,
                 activity = this
             )
+            Toast.makeText(this, "$latitude   $longitude", Toast.LENGTH_SHORT).show()
         }
         binding.fragment2.setOnClickListener() {
             finish()

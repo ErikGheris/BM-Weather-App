@@ -13,7 +13,7 @@
     <string name="default_lat">Last Known Latitude: </string>
     <string name="default_lng">Last Known Longitude: </string>
     <string name="empty">" " </string>
-    <string name="City">City</string>
+    <string name="City">"  %1$s, %2$s "</string>
     <string name="min_max">Min/Max</string>
     <string name="feels_like">Feels Like</string>
     <string name="find_me">Coordinations</string>
@@ -28,4 +28,6 @@
     <string name="mainActivityButton">Back</string>
     <string name="kmh">km/h</string>
     <string name="des_pic">des_pic</string>
+    <string name="service_not_available">service is not available</string>
+    <string name="tvCityPlaceholder" />
 </resources>

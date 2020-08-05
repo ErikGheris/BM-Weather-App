@@ -1,25 +1,44 @@
 package com.example.bmweather
 
 
+import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
+import android.location.Location
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import com.example.bmweather.Location.LastLocation
 import com.example.bmweather.databinding.ActivityMainBinding
 import com.example.bmweather.response.Current
 import com.example.bmweather.response.Daily
+import com.example.bmweather.response.Weather
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.tasks.OnSuccessListener
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Runnable
-import java.text.SimpleDateFormat
-import kotlin.math.roundToInt
-
+import java.io.IOException
+import java.util.*
 
 class MainActivity : AppCompatActivity(), LocationReceiver {
+    val TAG = "thisTAG"
+    var resultMessage = "SKSKSK"
+    val REQUEST_LOCATION_PERMISSION = 87
+    lateinit var mLastLocation: Location
+    lateinit var mFusedLocationProviderClient: FusedLocationProviderClient
+    val cachedLatitude = "0"
+    val cachedLongitude = "0"
     override var xCoordination: String = ""
     override var yCoordination: String = ""
     private val apiKey = "6133b390a077c487bc9ac43311b3ba26"
@@ -34,23 +53,29 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
     private val fetchWeather = FetchWeatherData
 
     lateinit var binding: ActivityMainBinding
-
     override fun onStart() {
         super.onStart()
-
-        longitude = yCoordination
-        latitude = xCoordination
+/*        longitude = yCoordination
+        latitude = xCoordination*/
         //viewBinding initialization and assignment
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         LastLocation().setupPermissions(this, this)
         LastLocation().setUpLocationListener(
-            binding.latTextView,
-            binding.lngTextView,
+
             this,
             this
         )
+
+        //      axcadwqewqewqqqq
+        binding.locationButton.setOnClickListener {
+/*        LastLocation().setUpLocationListener(
+                this,
+                this)*/
+            getCurrentLocationName()
+
+        }
 
 
         //toaster Message + get current data
@@ -59,6 +84,11 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
             if (searched.trim().isNotEmpty()) {
                 lastCityCache = cityName
                 cityName = searched
+                val locale = getLocaleFromName(cityName)
+                val countryCode = getCountryCodeFromName(cityName)
+                xCoordination = toLatitude(cityName, this)
+                yCoordination = toLongitude(cityName, this)
+                binding.city.text = getString(R.string.City, locale, countryCode)
                 fetchWeather.getCurrentWeatherReport(
                     apiKey,
                     lat = xCoordination,
@@ -68,8 +98,13 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                     exclude = exclude,
                     mainActivity = this
                 )
+
                 //safe city
-                Toast.makeText(this, "looking for $searched's Weather Info", Toast.LENGTH_SHORT)
+                Toast.makeText(
+                    this,
+                    "looking for $searched's Weather Info, Coordinates are $xCoordination $yCoordination",
+                    Toast.LENGTH_SHORT
+                )
                     .show()
                 clearInputText(binding.searchInput)
             } else {
@@ -80,10 +115,13 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                 clearInputText(binding.searchInput)
             }
         }
+
         binding.searchInput.setOnClickListener {
             clearInputText(binding.searchInput)
         }
+
         binding.swipe.setOnRefreshListener {
+            getCurrentLocationName()
             fetchWeather.getCurrentWeatherReport(
                 app_id = apiKey,
                 lat = xCoordination,
@@ -94,7 +132,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                 mainActivity = this
             )
             Toast.makeText(
-                this, "Data Updated",
+                this, "Data Updated, Coordinates are $xCoordination, $yCoordination",
                 Toast.LENGTH_SHORT
             ).show()
             // Hide swipe to refresh icon animation
@@ -103,14 +141,13 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
 
         binding.fragment.setOnClickListener() {
             val intent = Intent(this, SecondActivity::class.java)
-            intent.putExtra("xCoordination", xCoordination);
-            intent.putExtra("yCoordination", yCoordination);
-            Toast.makeText(this, "$xCoordination    $yCoordination", Toast.LENGTH_SHORT).show()
+            intent.putExtra("xCoordination", cachedLatitude);
+            intent.putExtra("yCoordination", cachedLongitude);
+            Toast.makeText(this, "$cachedLatitude    $cachedLongitude", Toast.LENGTH_SHORT).show()
             startActivity(intent)
 
         }
 
-        /*     var state = 0
 
              val forecastFragment = Forecast()
              val currentWeatherFragment = CurrentWeather()
@@ -209,7 +246,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
             com.example.bmweather.Location.Location().permissionsList_request_Code -> {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     LastLocation().setUpLocationListener(
-                        binding.latTextView, binding.lngTextView,
+
                         this, this
                     )
                     Log.i(
@@ -233,4 +270,166 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
             }
         }
     }
+
+
+    private fun networkCheck(context: Context): Boolean {
+        val statusCheck = networkAvailabilityStatus(context)
+        return if (!statusCheck) {
+            Toast.makeText(context, "Internet is not Available", Toast.LENGTH_SHORT).show()
+            false
+        } else
+            true
+    }
+
+
+    private fun networkAvailabilityStatus(context: Context): Boolean {
+        var result = false
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkCapabilities = connectivityManager.activeNetwork ?: return false
+        val activeNetwork =
+            connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
+        result = when {
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+            else -> false
+        }
+
+        return result
+    }
+
+
+    fun getCurrentLocationName() {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                REQUEST_LOCATION_PERMISSION
+            )
+        } else {
+            mFusedLocationProviderClient.lastLocation.addOnSuccessListener(
+                object : OnSuccessListener<Location> {
+                    override fun onSuccess(location: Location) {
+                        // updateAddress(mLastLocation)
+                        mLastLocation = location
+                        Log.d(TAG, "hi")
+                        city.text = getString(
+                            R.string.City,
+                            getLocaleFromCurrentLocation(mLastLocation),
+                            getCountryCodeFromCurrentLocation(mLastLocation)
+                        )
+                    }
+                })
+        }
+    }
+
+
+    fun getLocaleFromCurrentLocation(location: Location): String {
+        var locale: String = "LOCALE_DEFAULT"
+        val addressList: ArrayList<Address>
+        val geocoder: Geocoder = Geocoder(this, Locale.getDefault())
+        try {
+            addressList =
+                geocoder.getFromLocation(
+                    location.latitude,
+                    location.longitude,
+                    1
+                ) as ArrayList<Address>
+            locale = addressList.get(0).locality
+            //  tv_location.text= getString(R.string.address_text,address,LocalDateTime.now())
+
+        } catch (e: IOException) {
+            resultMessage = this.getString(R.string.service_not_available)
+            Log.e(TAG, resultMessage, e)
+        }
+
+        return locale
+    }
+
+
+    fun getCountryCodeFromCurrentLocation(location: Location): String {
+        val addressList: ArrayList<Address>
+        val geocoder: Geocoder = Geocoder(this, Locale.getDefault())
+        addressList =
+            geocoder.getFromLocation(location.latitude, location.longitude, 1) as ArrayList<Address>
+
+        val countryCode = addressList.get(0).countryCode
+        //  tv_location.text= getString(R.string.address_text,address,LocalDateTime.now())
+        return countryCode
+    }
+
+
+    fun getCountryCodeFromName(locationName: String): String {
+        val addressListFromName: ArrayList<Address>
+        val geocoder: Geocoder = Geocoder(this, Locale.getDefault())
+        addressListFromName = geocoder.getFromLocationName(locationName, 1) as ArrayList<Address>
+
+        val countryCode = addressListFromName.get(0).countryCode
+        //  tv_location.text= getString(R.string.address_text,address,LocalDateTime.now())
+        return countryCode
+    }
+
+    fun getLocaleFromName(locationName: String): String {
+        var locale: String = "LOCALE_DEFAULT"
+        val addressList: ArrayList<Address>
+        val geocoder: Geocoder = Geocoder(this, Locale.getDefault())
+        try {
+            addressList =
+                geocoder.getFromLocationName(locationName, 1) as ArrayList<Address>
+            locale = addressList.get(0).locality
+            //  tv_location.text= getString(R.string.address_text,address,LocalDateTime.now())
+
+        } catch (e: IOException) {
+            resultMessage = this.getString(R.string.service_not_available)
+            Log.e(TAG, resultMessage, e)
+        }
+
+        return locale
+    }
+
+
+    fun toLatitude(locationName: String = "Koblenz", context: Context): String {
+        val cAddressList: java.util.ArrayList<Address>
+        val geocoder: Geocoder = Geocoder(context, Locale.getDefault())
+        var lcLatitude: String = ""
+        try {
+            cAddressList =
+                geocoder.getFromLocationName(locationName, 1) as java.util.ArrayList<Address>
+            if (cAddressList.isNotEmpty() && cAddressList.size != 0) {
+                lcLatitude = cAddressList.get(0).latitude.toString()
+            }
+            if (cAddressList.size == 0) return "0"
+        } catch (e: IOException) {
+            //   resultMessage = this.getString(R.string.service_not_available)
+            Log.e(TAG, resultMessage, e)
+        }
+        return lcLatitude
+    }
+
+
+    fun toLongitude(locationName: String = "Koblenz", context: Context): String {
+        val cAddressList: java.util.ArrayList<Address>
+        val geocoder: Geocoder = Geocoder(context, Locale.getDefault())
+        var lcLongitude: String = ""
+        try {
+            cAddressList =
+                geocoder.getFromLocationName(locationName, 1) as java.util.ArrayList<Address>
+            if (cAddressList.isNotEmpty() && cAddressList.size != 0) {
+                lcLongitude = cAddressList.get(0).longitude.toString()
+            }
+            if (cAddressList.size == 0) return "0"
+        } catch (e: IOException) {
+            // resultMessage = this.getString(R.string.service_not_available)
+            Log.e(TAG, resultMessage, e)
+        }
+
+        return lcLongitude
+    }
+
+
 }

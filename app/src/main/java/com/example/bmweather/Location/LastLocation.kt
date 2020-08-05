@@ -5,6 +5,10 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Looper
 import android.util.Log
 import android.widget.TextView
@@ -13,15 +17,20 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.bmweather.LocationReceiver
 import com.example.bmweather.MainActivity
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
+import com.example.bmweather.R
+import com.google.android.gms.location.*
+import com.google.android.gms.tasks.OnSuccessListener
+import java.io.IOException
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class LastLocation {
+    var resultMessage = "SKSKSK"
     private val TAG = "PermissionDemo"
-
+    lateinit var mLastLocation: Location
+    lateinit var mFusedLocationProviderClient: FusedLocationProviderClient
+    val REQUEST_LOCATION_PERMISSION = 87
     /*  these two have to be declare/initialised @Top */
     private var permissionsList = arrayOf(
         Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -79,8 +88,7 @@ class LastLocation {
 
     @SuppressLint("MissingPermission")
     fun setUpLocationListener(
-        latTextView: TextView,
-        lngTextView: TextView,
+
         context: Context,
         LocationReceiver: LocationReceiver
     ) {
@@ -106,5 +114,47 @@ class LastLocation {
             Looper.myLooper()
         )
     }
+
+
+    fun toLatitude(locationName: String = "Koblenz", context: Context): String {
+        val cAddressList: java.util.ArrayList<Address>
+        val geocoder: Geocoder = Geocoder(context, Locale.getDefault())
+        var lcLatitude: String = ""
+        try {
+            cAddressList = geocoder.getFromLocationName(locationName, 1) as java.util.ArrayList<Address>
+            if (cAddressList.isNotEmpty() && cAddressList.size != 0) {
+                lcLatitude = cAddressList.get(0).latitude.toString()
+            }
+            if (cAddressList.size == 0) return "0"
+        } catch (e: IOException) {
+         //   resultMessage = this.getString(R.string.service_not_available)
+            Log.e(TAG, resultMessage, e)
+        }
+        return lcLatitude
+    }
+
+
+    fun toLongitude(locationName: String = "Koblenz",context: Context): String {
+        val cAddressList: java.util.ArrayList<Address>
+        val geocoder: Geocoder = Geocoder(context, Locale.getDefault())
+        var lcLongitude: String = ""
+        try {
+            cAddressList = geocoder.getFromLocationName(locationName, 1) as java.util.ArrayList<Address>
+            if (cAddressList.isNotEmpty() && cAddressList.size != 0) {
+                lcLongitude = cAddressList.get(0).longitude.toString()
+            }
+            if (cAddressList.size == 0) return "0"
+        } catch (e: IOException) {
+           // resultMessage = this.getString(R.string.service_not_available)
+            Log.e(TAG, resultMessage, e)
+        }
+
+        return lcLongitude
+    }
+
+
+
+
+
 
 }
