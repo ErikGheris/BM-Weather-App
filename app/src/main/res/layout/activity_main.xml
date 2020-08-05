@@ -48,12 +48,10 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.039"
-                    tools:text="search"
-                    android:visibility="gone"/>
+                    tools:text="search" />
 
 
                 <AutoCompleteTextView
-                    android:visibility="gone"
                     android:id="@+id/search_input"
                     android:layout_width="160dp"
                     android:layout_height="60dp"

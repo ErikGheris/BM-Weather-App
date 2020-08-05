@@ -29,7 +29,9 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Runnable
 import java.io.IOException
+import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity(), LocationReceiver {
     val TAG = "thisTAG"
@@ -69,13 +71,13 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         )
 
         //      axcadwqewqewqqqq
-        binding.locationButton.setOnClickListener {
-/*        LastLocation().setUpLocationListener(
+       /* binding.locationButton.setOnClickListener {
+*//*        LastLocation().setUpLocationListener(
                 this,
-                this)*/
+                this)*//*
             getCurrentLocationName()
 
-        }
+        }*/
 
 
         //toaster Message + get current data
@@ -121,7 +123,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         }
 
         binding.swipe.setOnRefreshListener {
-            getCurrentLocationName()
+         //   getCurrentLocationName()
             fetchWeather.getCurrentWeatherReport(
                 app_id = apiKey,
                 lat = xCoordination,
@@ -149,27 +151,6 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         }
 
 
-             val forecastFragment = Forecast()
-             val currentWeatherFragment = CurrentWeather()
-             binding.fragment.setOnClickListener {
-                 when (state) {
-                     0 -> {
-                         supportFragmentManager.beginTransaction().apply {
-                             state = 1
-                             replace(R.id.frameLayout, forecastFragment)
-                             commit()
-                         }
-                     }
-                     1 -> {
-                         supportFragmentManager.beginTransaction().apply {
-                             state = 0
-                             replace(R.id.frameLayout, currentWeatherFragment)
-                             commit()
-                         }
-                     }
-                     else -> state=0
-                 }
-             }*/
         Handler().postDelayed({
             fetchWeather.getCurrentWeatherReport(
                 app_id = apiKey,
@@ -180,8 +161,16 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                 exclude = exclude,
                 mainActivity = this
             )
-        }, 3000)
-
+        }, 4000)
+        fetchWeather.getCurrentWeatherReport(
+            app_id = apiKey,
+            lat = xCoordination,
+            lon = yCoordination,
+            lang = lang,
+            units = units,
+            exclude = exclude,
+            mainActivity = this
+        )
     }
 
     /*  fun sendMessage(view: View) {
@@ -312,7 +301,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                 REQUEST_LOCATION_PERMISSION
             )
         } else {
-            mFusedLocationProviderClient.lastLocation.addOnSuccessListener(
+            /*mFusedLocationProviderClient.lastLocation.addOnSuccessListener(
                 object : OnSuccessListener<Location> {
                     override fun onSuccess(location: Location) {
                         // updateAddress(mLastLocation)
@@ -324,7 +313,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                             getCountryCodeFromCurrentLocation(mLastLocation)
                         )
                     }
-                })
+                })*/
         }
     }
 
