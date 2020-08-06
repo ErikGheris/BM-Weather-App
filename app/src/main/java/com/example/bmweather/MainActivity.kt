@@ -43,6 +43,8 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
     val cachedLongitude = "0"
     override var xCoordination: String = ""
     override var yCoordination: String = ""
+    override var countryCode: String = ""
+    override var locality: String =""
     private val apiKey = "6133b390a077c487bc9ac43311b3ba26"
     var cityName = ""
     private var units = "metric"
@@ -62,13 +64,20 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         //viewBinding initialization and assignment
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+       // mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
-        LastLocation().setupPermissions(this, this)
-        LastLocation().setUpLocationListener(
 
-            this,
-            this
+
+
+
+
+       LastLocation().setupPermissions(this, this)
+        //!!!!!!!!!!!!!!
+      LastLocation().setUpLocationListener(
+
+            this,this
         )
+
 
         //      axcadwqewqewqqqq
        /* binding.locationButton.setOnClickListener {
@@ -122,8 +131,14 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
             clearInputText(binding.searchInput)
         }
 
+
+
+
+
         binding.swipe.setOnRefreshListener {
-         //   getCurrentLocationName()
+
+            binding.city.text = getString(R.string.City,locality,countryCode)
+
             fetchWeather.getCurrentWeatherReport(
                 app_id = apiKey,
                 lat = xCoordination,
@@ -140,6 +155,9 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
             // Hide swipe to refresh icon animation
             swipe.isRefreshing = false
         }
+
+
+
 
         binding.fragment.setOnClickListener() {
             val intent = Intent(this, SecondActivity::class.java)
@@ -234,10 +252,13 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         when (requestCode) {
             com.example.bmweather.Location.Location().permissionsList_request_Code -> {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    LastLocation().setUpLocationListener(
-
-                        this, this
+                   LastLocation().setUpLocationListener(
+                    this, this
                     )
+
+                   // getCurrentLocationName()
+
+
                     Log.i(
                         com.example.bmweather.Location.Location().TAG,
                         "Permission has been denied by user"
@@ -247,6 +268,9 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                         Toast.LENGTH_SHORT
                     ).show()
                 } else {
+                    LastLocation().setUpLocationListener(
+                       this, this
+                    )
                     Log.i(
                         com.example.bmweather.Location.Location().TAG,
                         "Permission has been granted by user"
@@ -289,68 +313,6 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
     }
 
 
-    fun getCurrentLocationName() {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                REQUEST_LOCATION_PERMISSION
-            )
-        } else {
-            /*mFusedLocationProviderClient.lastLocation.addOnSuccessListener(
-                object : OnSuccessListener<Location> {
-                    override fun onSuccess(location: Location) {
-                        // updateAddress(mLastLocation)
-                        mLastLocation = location
-                        Log.d(TAG, "hi")
-                        city.text = getString(
-                            R.string.City,
-                            getLocaleFromCurrentLocation(mLastLocation),
-                            getCountryCodeFromCurrentLocation(mLastLocation)
-                        )
-                    }
-                })*/
-        }
-    }
-
-
-    fun getLocaleFromCurrentLocation(location: Location): String {
-        var locale: String = "LOCALE_DEFAULT"
-        val addressList: ArrayList<Address>
-        val geocoder: Geocoder = Geocoder(this, Locale.getDefault())
-        try {
-            addressList =
-                geocoder.getFromLocation(
-                    location.latitude,
-                    location.longitude,
-                    1
-                ) as ArrayList<Address>
-            locale = addressList.get(0).locality
-            //  tv_location.text= getString(R.string.address_text,address,LocalDateTime.now())
-
-        } catch (e: IOException) {
-            resultMessage = this.getString(R.string.service_not_available)
-            Log.e(TAG, resultMessage, e)
-        }
-
-        return locale
-    }
-
-
-    fun getCountryCodeFromCurrentLocation(location: Location): String {
-        val addressList: ArrayList<Address>
-        val geocoder: Geocoder = Geocoder(this, Locale.getDefault())
-        addressList =
-            geocoder.getFromLocation(location.latitude, location.longitude, 1) as ArrayList<Address>
-
-        val countryCode = addressList.get(0).countryCode
-        //  tv_location.text= getString(R.string.address_text,address,LocalDateTime.now())
-        return countryCode
-    }
 
 
     fun getCountryCodeFromName(locationName: String): String {
