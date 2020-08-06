@@ -219,14 +219,15 @@
 
                 <TextView
                     android:id="@+id/city"
-                    android:layout_width="70dp"
-                    android:layout_height="30dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:textSize="30sp"
                     app:layout_constraintBottom_toBottomOf="@+id/btn_capture_photo3"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.65"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0" />
+                    app:layout_constraintVertical_bias="0.19" />
 
 
                 <TextView

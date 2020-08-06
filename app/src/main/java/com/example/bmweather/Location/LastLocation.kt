@@ -5,10 +5,9 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.location.Address
 import android.location.Geocoder
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.os.Looper
 import android.util.Log
 import android.widget.TextView
@@ -19,10 +18,8 @@ import com.example.bmweather.LocationReceiver
 import com.example.bmweather.MainActivity
 import com.example.bmweather.R
 import com.google.android.gms.location.*
-import com.google.android.gms.tasks.OnSuccessListener
 import java.io.IOException
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class LastLocation {
@@ -95,17 +92,25 @@ class LastLocation {
         val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
         // for getting the current location update after every 2 seconds with high accuracy
         val locationRequest = LocationRequest().setInterval(2000).setFastestInterval(2000)
+
+
             .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+        var myAddressList: java.util.ArrayList<Address>
+        val mygeocoder: Geocoder = Geocoder(context, Locale.getDefault())
         fusedLocationProviderClient.requestLocationUpdates(
             locationRequest,
             object : LocationCallback() {
                 override fun onLocationResult(locationResult: LocationResult) {
                     super.onLocationResult(locationResult)
                     for (location in locationResult.locations) {
+                        myAddressList = mygeocoder.getFromLocation(location.latitude,location.longitude,1) as java.util.ArrayList<Address>
                         /* latTextView.text = location.latitude.toString()
                           lngTextView.text = location.longitude.toString()*/
+                        LocationReceiver.countryCode = myAddressList.get(0).countryCode
+                        LocationReceiver.locality = myAddressList.get(0).locality
                         LocationReceiver.xCoordination = location.latitude.toString()
                         LocationReceiver.yCoordination = location.longitude.toString()
+
                     }
                     // Few more things we can do here:
                     // For example: Update the location of user on server
