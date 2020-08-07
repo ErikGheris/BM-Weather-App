@@ -142,9 +142,9 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
 
         binding.fragment.setOnClickListener() {
             val intent = Intent(this, SecondActivity::class.java)
-            intent.putExtra("xCoordination", cachedLatitude);
-            intent.putExtra("yCoordination", cachedLongitude);
-            Toast.makeText(this, "$cachedLatitude    $cachedLongitude", Toast.LENGTH_SHORT).show()
+            intent.putExtra("xCoordination", xCoordination);
+            intent.putExtra("yCoordination", yCoordination);
+            Toast.makeText(this, "Forcast for:  $xCoordination , $yCoordination", Toast.LENGTH_SHORT).show()
             startActivity(intent)
 
         }
