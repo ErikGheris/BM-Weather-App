@@ -91,7 +91,7 @@ class LastLocation {
     ) {
         val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
         // for getting the current location update after every 2 seconds with high accuracy
-        val locationRequest = LocationRequest().setInterval(2000).setFastestInterval(2000)
+        val locationRequest = LocationRequest().setInterval(10000).setFastestInterval(10000)
 
 
             .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
@@ -106,8 +106,8 @@ class LastLocation {
                         myAddressList = mygeocoder.getFromLocation(location.latitude,location.longitude,1) as java.util.ArrayList<Address>
                         /* latTextView.text = location.latitude.toString()
                           lngTextView.text = location.longitude.toString()*/
-                        LocationReceiver.countryCode = myAddressList.get(0).countryCode
-                        LocationReceiver.locality = myAddressList.get(0).locality
+                        LocationReceiver.countryCode = myAddressList[0].countryCode
+                        LocationReceiver.locality = myAddressList[0].locality
                         LocationReceiver.xCoordination = location.latitude.toString()
                         LocationReceiver.yCoordination = location.longitude.toString()
 

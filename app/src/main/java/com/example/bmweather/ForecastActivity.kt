@@ -17,11 +17,8 @@ import java.text.SimpleDateFormat
 
 lateinit var binding: ActivitySecondBinding
 const val apiKey = "6133b390a077c487bc9ac43311b3ba26"
-var cityName = "Berlin"
 var units = "metric"
 var lang = "de"
-var lastCityCache = cityName
-var searched: String = ""
 var exclude = "hourly,minutely"
 var longitude: String = ""
 var latitude: String = ""

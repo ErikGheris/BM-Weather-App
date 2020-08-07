@@ -13,7 +13,10 @@ import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.View
+import android.view.WindowManager
 import android.widget.AutoCompleteTextView
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -23,8 +26,6 @@ import com.example.bmweather.response.Current
 import com.example.bmweather.response.Daily
 import com.example.bmweather.response.Weather
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.tasks.OnSuccessListener
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Runnable
@@ -59,17 +60,8 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
     lateinit var binding: ActivityMainBinding
     override fun onStart() {
         super.onStart()
-/*        longitude = yCoordination
-        latitude = xCoordination*/
-        //viewBinding initialization and assignment
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-       // mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-
-
-
-
-
 
        LastLocation().setupPermissions(this, this)
         //!!!!!!!!!!!!!!
@@ -78,18 +70,6 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
             this,this
         )
 
-
-        //      axcadwqewqewqqqq
-       /* binding.locationButton.setOnClickListener {
-*//*        LastLocation().setUpLocationListener(
-                this,
-                this)*//*
-            getCurrentLocationName()
-
-        }*/
-
-
-        //toaster Message + get current data
         binding.searchButton.setOnClickListener {
             searched = Search().get(search_input).toString()
             if (searched.trim().isNotEmpty()) {
@@ -170,6 +150,8 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
 
 
         Handler().postDelayed({
+            binding.city.text = getString(R.string.City,locality,countryCode)
+
             fetchWeather.getCurrentWeatherReport(
                 app_id = apiKey,
                 lat = xCoordination,
@@ -179,27 +161,22 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                 exclude = exclude,
                 mainActivity = this
             )
+            Toast.makeText(
+                this, "Data Updated, Coordinates are $xCoordination, $yCoordination",
+                Toast.LENGTH_SHORT
+            ).show()
+            // Hide swipe to refresh icon animation
+            swipe.isRefreshing = false
+
+            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            val mProgressBar = findViewById<ProgressBar>(R.id.Progress)
+            mProgressBar.visibility = View.GONE;
         }, 4000)
-        fetchWeather.getCurrentWeatherReport(
-            app_id = apiKey,
-            lat = xCoordination,
-            lon = yCoordination,
-            lang = lang,
-            units = units,
-            exclude = exclude,
-            mainActivity = this
-        )
+       window.setFlags(
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 
-    /*  fun sendMessage(view: View) {
-          val editText = findViewById<EditText>(R.id.editText)
-          val message = editText.text.toString()
-          val intent = Intent(this, DisplayMessageActivity::class.java).apply {
-              putExtra(EXTRA_MESSAGE, message)
-          }
-          startActivity(intent)
-      }
-  */
     private fun clearInputText(textView: AutoCompleteTextView) {
         textView.setText("")
     }
@@ -231,17 +208,6 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         binding.mintemp.text = weather.temp.min.roundToInt().toString().plus(getString(R.string.temp_unit_c))
         binding.maxtemp.text = weather.temp.max.roundToInt().toString().plus(getString(R.string.temp_unit_c))
     }
-
-    /*
-        fun city(WeatherReport: WeatherReport) {
-        city.text = WeatherReport.name.plus(getString(R.string.comma)).plus(WeatherReport.sys.country)
-    }
-
-    fun forecast(main: List<ListData>) {
-        forecast.text = getString(R.string.weather_des).plus(main[0])
-    } */
-
-
 
 
     override fun onRequestPermissionsResult(
@@ -321,7 +287,6 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         addressListFromName = geocoder.getFromLocationName(locationName, 1) as ArrayList<Address>
 
         val countryCode = addressListFromName.get(0).countryCode
-        //  tv_location.text= getString(R.string.address_text,address,LocalDateTime.now())
         return countryCode
     }
 
@@ -333,7 +298,6 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
             addressList =
                 geocoder.getFromLocationName(locationName, 1) as ArrayList<Address>
             locale = addressList.get(0).locality
-            //  tv_location.text= getString(R.string.address_text,address,LocalDateTime.now())
 
         } catch (e: IOException) {
             resultMessage = this.getString(R.string.service_not_available)
@@ -356,7 +320,6 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
             }
             if (cAddressList.size == 0) return "0"
         } catch (e: IOException) {
-            //   resultMessage = this.getString(R.string.service_not_available)
             Log.e(TAG, resultMessage, e)
         }
         return lcLatitude
@@ -375,7 +338,6 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
             }
             if (cAddressList.size == 0) return "0"
         } catch (e: IOException) {
-            // resultMessage = this.getString(R.string.service_not_available)
             Log.e(TAG, resultMessage, e)
         }
 
