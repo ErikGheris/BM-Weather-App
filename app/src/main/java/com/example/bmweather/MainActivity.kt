@@ -57,10 +57,13 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
     private var exclude = "hourly,minutely"
     private val fetchWeather = FetchWeatherData
     private val lastLocation = LastLocation()
+    var searchedxCoordination = ""
+    var searchedyCoordination = ""
+
 
     lateinit var binding: ActivityMainBinding
-    override fun onStart() {
-        super.onStart()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -78,13 +81,13 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                 cityName = searched
                 val locale = getLocaleFromName(cityName)
                 val countryCode = getCountryCodeFromName(cityName)
-                xCoordination = toLatitude(cityName, this)
-                yCoordination = toLongitude(cityName, this)
+                searchedxCoordination = toLatitude(cityName, this)
+                searchedyCoordination = toLongitude(cityName, this)
                 binding.city.text = getString(R.string.City, locale, countryCode)
                 fetchWeather.getCurrentWeatherReport(
                     apiKey,
-                    lat = xCoordination,
-                    lon = yCoordination,
+                    lat = searchedxCoordination,
+                    lon = searchedyCoordination,
                     lang = lang,
                     units = units,
                     exclude = exclude,
@@ -148,6 +151,11 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
             startActivity(intent)
 
         }
+
+    }
+
+    override fun onStart() {
+        super.onStart()
         val mProgressBar = findViewById<ProgressBar>(R.id.Progress)
         if (xCoordination.isNullOrEmpty()) {
             Handler().postDelayed({
@@ -179,7 +187,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         }
         else{
             binding.city.text = getString(R.string.City, locality, countryCode)
-
+if (searched)
             fetchWeather.getCurrentWeatherReport(
                 app_id = apiKey,
                 lat = xCoordination,
@@ -191,8 +199,8 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
             )
             mProgressBar.visibility = View.GONE;
         }
-
     }
+
     private fun clearInputText(textView: AutoCompleteTextView) {
         textView.setText("")
     }
