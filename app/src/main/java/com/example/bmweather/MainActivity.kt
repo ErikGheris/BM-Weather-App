@@ -56,6 +56,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
     private var latitude: String = ""
     private var exclude = "hourly,minutely"
     private val fetchWeather = FetchWeatherData
+    private val lastLocation = LastLocation()
 
     lateinit var binding: ActivityMainBinding
     override fun onStart() {
@@ -63,11 +64,11 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-       LastLocation().setupPermissions(this, this)
+        lastLocation.setupPermissions(this, this)
         //!!!!!!!!!!!!!!
-      LastLocation().setUpLocationListener(
+        lastLocation.setUpLocationListener(
 
-            this,this
+            this, this
         )
 
         binding.searchButton.setOnClickListener {
@@ -117,7 +118,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
 
         binding.swipe.setOnRefreshListener {
 
-            binding.city.text = getString(R.string.City,locality,countryCode)
+            binding.city.text = getString(R.string.City, locality, countryCode)
 
             fetchWeather.getCurrentWeatherReport(
                 app_id = apiKey,
@@ -147,10 +148,37 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
             startActivity(intent)
 
         }
+        val mProgressBar = findViewById<ProgressBar>(R.id.Progress)
+        if (xCoordination.isNullOrEmpty()) {
+            Handler().postDelayed({
+                binding.city.text = getString(R.string.City, locality, countryCode)
 
+                fetchWeather.getCurrentWeatherReport(
+                    app_id = apiKey,
+                    lat = xCoordination,
+                    lon = yCoordination,
+                    lang = lang,
+                    units = units,
+                    exclude = exclude,
+                    mainActivity = this
+                )
+                Toast.makeText(
+                    this, "Data Updated, Coordinates are $xCoordination, $yCoordination",
+                    Toast.LENGTH_SHORT
+                ).show()
+                // Hide swipe to refresh icon animation
+                swipe.isRefreshing = false
 
-        Handler().postDelayed({
-            binding.city.text = getString(R.string.City,locality,countryCode)
+                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                mProgressBar.visibility = View.GONE;
+            }, 4000)
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            );
+        }
+        else{
+            binding.city.text = getString(R.string.City, locality, countryCode)
 
             fetchWeather.getCurrentWeatherReport(
                 app_id = apiKey,
@@ -161,22 +189,10 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                 exclude = exclude,
                 mainActivity = this
             )
-            Toast.makeText(
-                this, "Data Updated, Coordinates are $xCoordination, $yCoordination",
-                Toast.LENGTH_SHORT
-            ).show()
-            // Hide swipe to refresh icon animation
-            swipe.isRefreshing = false
-
-            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-            val mProgressBar = findViewById<ProgressBar>(R.id.Progress)
             mProgressBar.visibility = View.GONE;
-        }, 4000)
-       window.setFlags(
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-    }
+        }
 
+    }
     private fun clearInputText(textView: AutoCompleteTextView) {
         textView.setText("")
     }
@@ -218,7 +234,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         when (requestCode) {
             com.example.bmweather.Location.Location().permissionsList_request_Code -> {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                   LastLocation().setUpLocationListener(
+                   lastLocation.setUpLocationListener(
                     this, this
                     )
 
@@ -234,7 +250,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                         Toast.LENGTH_SHORT
                     ).show()
                 } else {
-                    LastLocation().setUpLocationListener(
+                    lastLocation.setUpLocationListener(
                        this, this
                     )
                     Log.i(

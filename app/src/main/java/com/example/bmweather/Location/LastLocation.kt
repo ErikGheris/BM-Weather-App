@@ -24,6 +24,7 @@ import java.util.*
 
 class LastLocation {
     var resultMessage = "SKSKSK"
+    var location = false
     private val TAG = "PermissionDemo"
     lateinit var mLastLocation: Location
     lateinit var mFusedLocationProviderClient: FusedLocationProviderClient
@@ -82,43 +83,50 @@ class LastLocation {
         }
     }
 
-
+    @Synchronized
     @SuppressLint("MissingPermission")
     fun setUpLocationListener(
 
         context: Context,
         LocationReceiver: LocationReceiver
+
+
     ) {
-        val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
-        // for getting the current location update after every 2 seconds with high accuracy
-        val locationRequest = LocationRequest().setInterval(10000).setFastestInterval(10000)
+    if(location) return
+
+            val fusedLocationProviderClient =
+                LocationServices.getFusedLocationProviderClient(context)
+            // for getting the current location update after every 10 seconds with high accuracy
+            val locationRequest = LocationRequest().setInterval(10000).setFastestInterval(10000)
 
 
-            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-        var myAddressList: java.util.ArrayList<Address>
-        val mygeocoder: Geocoder = Geocoder(context, Locale.getDefault())
-        fusedLocationProviderClient.requestLocationUpdates(
-            locationRequest,
-            object : LocationCallback() {
-                override fun onLocationResult(locationResult: LocationResult) {
-                    super.onLocationResult(locationResult)
-                    for (location in locationResult.locations) {
-                        myAddressList = mygeocoder.getFromLocation(location.latitude,location.longitude,1) as java.util.ArrayList<Address>
-                        /* latTextView.text = location.latitude.toString()
-                          lngTextView.text = location.longitude.toString()*/
-                        LocationReceiver.countryCode = myAddressList[0].countryCode
-                        LocationReceiver.locality = myAddressList[0].locality
-                        LocationReceiver.xCoordination = location.latitude.toString()
-                        LocationReceiver.yCoordination = location.longitude.toString()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+            val geocoder = Geocoder(context, Locale.getDefault())
+            fusedLocationProviderClient.requestLocationUpdates(
+                locationRequest,
+                object : LocationCallback() {
+                    override fun onLocationResult(locationResult: LocationResult) {
+                        super.onLocationResult(locationResult)
+                        for (location in locationResult.locations) {
+                            var myAddressList: ArrayList<Address> = geocoder.getFromLocation(
+                                location.latitude,
+                                location.longitude,
+                                1
+                            ) as ArrayList<Address>
+                            LocationReceiver.countryCode = myAddressList[0].countryCode
+                            LocationReceiver.locality = myAddressList[0].locality
+                            LocationReceiver.xCoordination = location.latitude.toString()
+                            LocationReceiver.yCoordination = location.longitude.toString()
 
+                        }
+                        // Few more things we can do here:
+                        // For example: Update the location of user on server
                     }
-                    // Few more things we can do here:
-                    // For example: Update the location of user on server
-                }
-            },
-            Looper.myLooper()
-        )
-    }
+                },
+                Looper.myLooper()
+            )
+        location = true
+}
 
 
     fun toLatitude(locationName: String = "Koblenz", context: Context): String {
