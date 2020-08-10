@@ -1,7 +1,6 @@
 package com.example.bmweather
 
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -19,13 +18,10 @@ import android.widget.AutoCompleteTextView
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import com.example.bmweather.Location.LastLocation
 import com.example.bmweather.databinding.ActivityMainBinding
 import com.example.bmweather.response.Current
 import com.example.bmweather.response.Daily
-import com.example.bmweather.response.Weather
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Runnable
@@ -37,23 +33,17 @@ import kotlin.math.roundToInt
 class MainActivity : AppCompatActivity(), LocationReceiver {
     val TAG = "thisTAG"
     var resultMessage = "SKSKSK"
-    val REQUEST_LOCATION_PERMISSION = 87
     lateinit var mLastLocation: Location
-    lateinit var mFusedLocationProviderClient: FusedLocationProviderClient
-    val cachedLatitude = "0"
-    val cachedLongitude = "0"
     override var xCoordination: String = ""
     override var yCoordination: String = ""
     override var countryCode: String = ""
-    override var locality: String =""
+    override var locality: String = ""
     private val apiKey = "6133b390a077c487bc9ac43311b3ba26"
     var cityName = ""
     private var units = "metric"
     private var lang = "de"
     var lastCityCache = cityName
     private var searched: String = ""
-    private var longitude: String = ""
-    private var latitude: String = ""
     private var exclude = "hourly,minutely"
     private val fetchWeather = FetchWeatherData
     private val lastLocation = LastLocation()
@@ -147,7 +137,11 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
             val intent = Intent(this, SecondActivity::class.java)
             intent.putExtra("xCoordination", searchedxCoordination);
             intent.putExtra("yCoordination", searchedyCoordination);
-            Toast.makeText(this, "Forcast for:  $searchedxCoordination, $searchedyCoordination", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this,
+                "Forcast for:  $searchedxCoordination, $searchedyCoordination",
+                Toast.LENGTH_SHORT
+            ).show()
             startActivity(intent)
 
         }
@@ -183,8 +177,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
             );
-        }
-        else{
+        } else {
             binding.city.text = getString(R.string.City, locality, countryCode)
             fetchWeather.getCurrentWeatherReport(
                 app_id = apiKey,
@@ -211,13 +204,16 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         }, 1000) // 1000 milliseconds
 
     }
-    val sunformat = SimpleDateFormat("kk:mm" )
+
+    val sunformat = SimpleDateFormat("kk:mm")
 
     fun current(main: Current) {
-        binding.mainTemp.text = main.temp.roundToInt().toString().plus(getString(R.string.temp_unit_c))
+        binding.mainTemp.text =
+            main.temp.roundToInt().toString().plus(getString(R.string.temp_unit_c))
         binding.sunrise.text = sunformat.format(main.sunrise * 1000L).toString()
         binding.sunset.text = sunformat.format(main.sunset * 1000L).toString()
-        binding.feelslike.text = main.feelsLike.roundToInt().toString().plus(getString(R.string.temp_unit_c))
+        binding.feelslike.text =
+            main.feelsLike.roundToInt().toString().plus(getString(R.string.temp_unit_c))
         binding.wind.text = main.windSpeed.roundToInt().toString().plus(getString(R.string.kmh))
         binding.description.text = main.weather[0].description
         Picasso.get()
@@ -227,8 +223,10 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
     }
 
     fun daily(weather: Daily) {
-        binding.mintemp.text = weather.temp.min.roundToInt().toString().plus(getString(R.string.temp_unit_c))
-        binding.maxtemp.text = weather.temp.max.roundToInt().toString().plus(getString(R.string.temp_unit_c))
+        binding.mintemp.text =
+            weather.temp.min.roundToInt().toString().plus(getString(R.string.temp_unit_c))
+        binding.maxtemp.text =
+            weather.temp.max.roundToInt().toString().plus(getString(R.string.temp_unit_c))
     }
 
 
@@ -240,11 +238,11 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         when (requestCode) {
             com.example.bmweather.Location.Location().permissionsList_request_Code -> {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                   lastLocation.setUpLocationListener(
-                    this, this
+                    lastLocation.setUpLocationListener(
+                        this, this
                     )
 
-                   // getCurrentLocationName()
+                    // getCurrentLocationName()
 
 
                     Log.i(
@@ -257,7 +255,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                     ).show()
                 } else {
                     lastLocation.setUpLocationListener(
-                       this, this
+                        this, this
                     )
                     Log.i(
                         com.example.bmweather.Location.Location().TAG,
@@ -299,8 +297,6 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
 
         return result
     }
-
-
 
 
     fun getCountryCodeFromName(locationName: String): String {
