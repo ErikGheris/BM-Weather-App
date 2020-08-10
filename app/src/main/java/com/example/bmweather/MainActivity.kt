@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                 //safe city
                 Toast.makeText(
                     this,
-                    "looking for $searched's Weather Info, Coordinates are $xCoordination $yCoordination",
+                    "looking for $searched's Weather Info, Coordinates are $searchedxCoordination $searchedyCoordination",
                     Toast.LENGTH_SHORT
                 )
                     .show()
@@ -145,9 +145,9 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
 
         binding.fragment.setOnClickListener() {
             val intent = Intent(this, SecondActivity::class.java)
-            intent.putExtra("xCoordination", xCoordination);
-            intent.putExtra("yCoordination", yCoordination);
-            Toast.makeText(this, "Forcast for:  $xCoordination , $yCoordination", Toast.LENGTH_SHORT).show()
+            intent.putExtra("xCoordination", searchedxCoordination);
+            intent.putExtra("yCoordination", searchedyCoordination);
+            Toast.makeText(this, "Forcast for:  $searchedxCoordination, $searchedyCoordination", Toast.LENGTH_SHORT).show()
             startActivity(intent)
 
         }
@@ -160,7 +160,6 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         if (xCoordination.isNullOrEmpty()) {
             Handler().postDelayed({
                 binding.city.text = getString(R.string.City, locality, countryCode)
-
                 fetchWeather.getCurrentWeatherReport(
                     app_id = apiKey,
                     lat = xCoordination,
@@ -187,7 +186,6 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         }
         else{
             binding.city.text = getString(R.string.City, locality, countryCode)
-if (searched)
             fetchWeather.getCurrentWeatherReport(
                 app_id = apiKey,
                 lat = xCoordination,
