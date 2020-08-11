@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
     override fun onStart() {
         super.onStart()
         val mProgressBar = findViewById<ProgressBar>(R.id.Progress)
-        if (!searching) {
+        if (xCoordination.isEmpty()) {
             Handler().postDelayed({
                 binding.city.text = getString(R.string.City, locality, countryCode)
                 fetchWeather.getCurrentWeatherReport(
@@ -106,21 +106,44 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
             );
         } else {
-            lastCityCache = cityName
-            cityName = searched
-            searchedxCoordination = lastLocation.toLatitude(cityName)
-            searchedyCoordination = lastLocation.toLongitude(cityName)
-            setSearchedCityInfoInTV()
-            fetchWeather.getCurrentWeatherReport(
-                apiKey,
-                lat = searchedxCoordination,
-                lon = searchedyCoordination,
-                lang = lang,
-                units = units,
-                exclude = exclude,
-                mainActivity = this
-            )
-            mProgressBar.visibility = View.GONE;
+            if (!searching) {
+                    binding.city.text = getString(R.string.City, locality, countryCode)
+                    fetchWeather.getCurrentWeatherReport(
+                        app_id = apiKey,
+                        lat = xCoordination,
+                        lon = yCoordination,
+                        lang = lang,
+                        units = units,
+                        exclude = exclude,
+                        mainActivity = this
+                    )
+                    Toast.makeText(
+                        this, "Data Updated, Coordinates are $xCoordination, $yCoordination",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    // Hide swipe to refresh icon animation
+                    swipe.isRefreshing = false
+
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    mProgressBar.visibility = View.GONE;
+
+            } else {
+                lastCityCache = cityName
+                cityName = searched
+                searchedxCoordination = lastLocation.toLatitude(cityName)
+                searchedyCoordination = lastLocation.toLongitude(cityName)
+                setSearchedCityInfoInTV()
+                fetchWeather.getCurrentWeatherReport(
+                    apiKey,
+                    lat = searchedxCoordination,
+                    lon = searchedyCoordination,
+                    lang = lang,
+                    units = units,
+                    exclude = exclude,
+                    mainActivity = this
+                )
+                mProgressBar.visibility = View.GONE;
+            }
         }
     }
 

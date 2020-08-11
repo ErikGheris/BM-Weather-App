@@ -12,6 +12,7 @@ import com.example.bmweather.R
 import com.example.bmweather.response.Daily
 import com.squareup.picasso.Picasso
 import java.text.SimpleDateFormat
+import kotlin.math.roundToInt
 
 
 class DailyArrayAdapter
@@ -29,7 +30,7 @@ class DailyArrayAdapter
         val desPic = view.findViewById<ImageView>(R.id.des_pic)
         val format = SimpleDateFormat("EEEE',' dd.MM.yy" )
 
-        view.findViewById<TextView>(R.id.temp).text = context.getString(R.string.min_temp).plus(property.temp.min.toUInt().toString()).plus(context.getString(R.string.empty)).plus(context.getString(R.string.max_temp)).plus(property.temp.max.toUInt().toString())
+        view.findViewById<TextView>(R.id.temp).text = context.getString(R.string.min_temp).plus(property.temp.min.roundToInt().toString()).plus(context.getString(R.string.empty)).plus(context.getString(R.string.max_temp)).plus(property.temp.max.roundToInt().toString())
         Picasso.get().load("http://openweathermap.org/img/wn/" + property.weather[0].icon + "@2x.png").into(desPic)
         view.findViewById<TextView>(R.id.day).text = format.format(property.dt * 1000L).toString()
 
