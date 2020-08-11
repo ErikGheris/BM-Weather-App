@@ -56,8 +56,8 @@
             android:layout_height="30dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
-            app:layout_constraintBottom_toBottomOf="@+id/fragment"
-            app:layout_constraintEnd_toEndOf="@+id/fragment"
+            app:layout_constraintBottom_toBottomOf="@+id/activityButton"
+            app:layout_constraintEnd_toEndOf="@+id/activityButton"
             app:srcCompat="@drawable/kisspng_arrow_button_icon_right_arrow_transparent_background_5a77bc2a82ed16_7252492515177963945363" />
     </FrameLayout>
 

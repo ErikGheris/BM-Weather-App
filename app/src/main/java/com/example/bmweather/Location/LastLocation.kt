@@ -10,7 +10,6 @@ import android.location.Address
 import android.location.Geocoder
 import android.os.Looper
 import android.util.Log
-import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -20,15 +19,25 @@ import com.example.bmweather.R
 import com.google.android.gms.location.*
 import java.io.IOException
 import java.util.*
+import kotlin.collections.ArrayList
 
 
-class LastLocation {
+class LastLocation(context: Context) {
+    val geocoder: Geocoder = Geocoder(context, Locale.getDefault())
     var resultMessage = "SKSKSK"
     var location = false
     private val TAG = "PermissionDemo"
     lateinit var mLastLocation: Location
     lateinit var mFusedLocationProviderClient: FusedLocationProviderClient
     val REQUEST_LOCATION_PERMISSION = 87
+
+
+/*
+val addressListOfCurrentLocation:  ArrayList<Address>
+*/
+
+
+
     /*  these two have to be declare/initialised @Top */
     private var permissionsList = arrayOf(
         Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -92,82 +101,99 @@ class LastLocation {
 
 
     ) {
-    if(location) return
+        if (location) return
 
-            val fusedLocationProviderClient =
-                LocationServices.getFusedLocationProviderClient(context)
-            // for getting the current location update after every 10 seconds with high accuracy
-            val locationRequest = LocationRequest().setInterval(10000).setFastestInterval(10000)
+        val fusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(context)
+        // for getting the current location update after every 10 seconds with high accuracy
+        val locationRequest = LocationRequest().setInterval(10000).setFastestInterval(10000)
 
 
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-            val geocoder = Geocoder(context, Locale.getDefault())
-            fusedLocationProviderClient.requestLocationUpdates(
-                locationRequest,
-                object : LocationCallback() {
-                    override fun onLocationResult(locationResult: LocationResult) {
-                        super.onLocationResult(locationResult)
-                        for (location in locationResult.locations) {
-                            var myAddressList: ArrayList<Address> = geocoder.getFromLocation(
-                                location.latitude,
-                                location.longitude,
-                                1
-                            ) as ArrayList<Address>
-                            LocationReceiver.countryCode = myAddressList[0].countryCode
-                            LocationReceiver.locality = myAddressList[0].locality
-                            LocationReceiver.xCoordination = location.latitude.toString()
-                            LocationReceiver.yCoordination = location.longitude.toString()
+            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+        val geocoder = Geocoder(context, Locale.getDefault())
+        fusedLocationProviderClient.requestLocationUpdates(
+            locationRequest,
+            object : LocationCallback() {
+                override fun onLocationResult(locationResult: LocationResult) {
+                    super.onLocationResult(locationResult)
+                    for (location in locationResult.locations) {
+                        var myAddressList: ArrayList<Address> = geocoder.getFromLocation(
+                            location.latitude,
+                            location.longitude,
+                            1
+                        ) as ArrayList<Address>
+                        LocationReceiver.countryCode = myAddressList[0].countryCode
+                        LocationReceiver.locality = myAddressList[0].locality
+                        LocationReceiver.xCoordination = location.latitude.toString()
+                        LocationReceiver.yCoordination = location.longitude.toString()
 
-                        }
-                        // Few more things we can do here:
-                        // For example: Update the location of user on server
                     }
-                },
-                Looper.myLooper()
-            )
+                    // Few more things we can do here:
+                    // For example: Update the location of user on server
+                }
+            },
+            Looper.myLooper()
+        )
         location = true
-}
-
-
-    fun toLatitude(locationName: String = "Koblenz", context: Context): String {
-        val cAddressList: java.util.ArrayList<Address>
-        val geocoder: Geocoder = Geocoder(context, Locale.getDefault())
-        var lcLatitude: String = ""
-        try {
-            cAddressList = geocoder.getFromLocationName(locationName, 1) as java.util.ArrayList<Address>
-            if (cAddressList.isNotEmpty() && cAddressList.size != 0) {
-                lcLatitude = cAddressList.get(0).latitude.toString()
-            }
-            if (cAddressList.size == 0) return "0"
-        } catch (e: IOException) {
-         //   resultMessage = this.getString(R.string.service_not_available)
-            Log.e(TAG, resultMessage, e)
-        }
-        return lcLatitude
     }
 
 
-    fun toLongitude(locationName: String = "Koblenz",context: Context): String {
+    fun toLatitude(locationName: String = "Koblenz"): String {
         val cAddressList: java.util.ArrayList<Address>
-        val geocoder: Geocoder = Geocoder(context, Locale.getDefault())
-        var lcLongitude: String = ""
+        var locationLatitude: String = ""
         try {
-            cAddressList = geocoder.getFromLocationName(locationName, 1) as java.util.ArrayList<Address>
+            cAddressList =
+                geocoder.getFromLocationName(locationName, 1) as java.util.ArrayList<Address>
             if (cAddressList.isNotEmpty() && cAddressList.size != 0) {
-                lcLongitude = cAddressList.get(0).longitude.toString()
+                locationLatitude = cAddressList.get(0).latitude.toString()
+
             }
             if (cAddressList.size == 0) return "0"
         } catch (e: IOException) {
-           // resultMessage = this.getString(R.string.service_not_available)
             Log.e(TAG, resultMessage, e)
         }
-
-        return lcLongitude
+        return locationLatitude
     }
 
 
+    fun toLongitude(locationName: String = "Koblenz"): String {
+        val cAddressList: java.util.ArrayList<Address>
+        var locationLongitude: String = ""
+        try {
+
+            cAddressList =
+                geocoder.getFromLocationName(locationName, 1) as java.util.ArrayList<Address>
+            if (cAddressList.isNotEmpty() && cAddressList.size != 0) {
+                locationLongitude = cAddressList.get(0).longitude.toString()
+            }
+            if (cAddressList.size == 0) return "0"
+        } catch (e: IOException) {
+            Log.e(TAG, resultMessage, e)
+        }
+
+        return locationLongitude
+    }
 
 
+    fun getCountryCodeFromName(locationName: String= "Koblenz"): String {
+        return cityNameReq(locationName)[0].countryCode
+    }
+
+    private fun cityNameReq(locationName: String ="Koblenz"): ArrayList<Address> {
+        return geocoder.getFromLocationName(locationName, 1) as ArrayList<Address>
+    }
+
+    fun getLocaleFromName(locationName: String = "Koblenz"): String {
+    var locale = "Default_Locale"
+        try {
+          locale = cityNameReq(locationName)[0].locality
+
+        } catch (e: IOException) {
+            resultMessage = Resources.getSystem().getString(R.string.service_not_available)
+            Log.e(TAG, resultMessage, e)
+        }
+        return locale
+    }
 
 
 }

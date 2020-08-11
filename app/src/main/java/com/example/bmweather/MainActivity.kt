@@ -4,8 +4,6 @@ package com.example.bmweather
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Address
-import android.location.Geocoder
 import android.location.Location
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -25,9 +23,7 @@ import com.example.bmweather.response.Daily
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Runnable
-import java.io.IOException
 import java.text.SimpleDateFormat
-import java.util.*
 import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity(), LocationReceiver {
@@ -46,112 +42,43 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
     private var searched: String = ""
     private var exclude = "hourly,minutely"
     private val fetchWeather = FetchWeatherData
-    private val lastLocation = LastLocation()
     var searchedxCoordination = ""
     var searchedyCoordination = ""
-
-
+    lateinit var lastLocation: LastLocation
     lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val mainActivityContext = applicationContext
+        lastLocation = LastLocation(mainActivityContext)
 
         lastLocation.setupPermissions(this, this)
         //!!!!!!!!!!!!!!
         lastLocation.setUpLocationListener(
-
             this, this
         )
 
-        binding.searchButton.setOnClickListener {
-            searched = Search().get(search_input).toString()
-            if (searched.trim().isNotEmpty()) {
-                lastCityCache = cityName
-                cityName = searched
-                val locale = getLocaleFromName(cityName)
-                val countryCode = getCountryCodeFromName(cityName)
-                searchedxCoordination = toLatitude(cityName, this)
-                searchedyCoordination = toLongitude(cityName, this)
-                binding.city.text = getString(R.string.City, locale, countryCode)
-                fetchWeather.getCurrentWeatherReport(
-                    apiKey,
-                    lat = searchedxCoordination,
-                    lon = searchedyCoordination,
-                    lang = lang,
-                    units = units,
-                    exclude = exclude,
-                    mainActivity = this
-                )
-
-                //safe city
-                Toast.makeText(
-                    this,
-                    "looking for $searched's Weather Info, Coordinates are $searchedxCoordination $searchedyCoordination",
-                    Toast.LENGTH_SHORT
-                )
-                    .show()
-                clearInputText(binding.searchInput)
-            } else {
-                Toast.makeText(
-                    this, "Please enter a Location!",
-                    Toast.LENGTH_SHORT
-                ).show()
-                clearInputText(binding.searchInput)
-            }
-        }
+        searchButtonAction()
 
         binding.searchInput.setOnClickListener {
             clearInputText(binding.searchInput)
         }
 
+        swipeAction()
 
-
-
-
-        binding.swipe.setOnRefreshListener {
-
-            binding.city.text = getString(R.string.City, locality, countryCode)
-
-            fetchWeather.getCurrentWeatherReport(
-                app_id = apiKey,
-                lat = xCoordination,
-                lon = yCoordination,
-                lang = lang,
-                units = units,
-                exclude = exclude,
-                mainActivity = this
-            )
-            Toast.makeText(
-                this, "Data Updated, Coordinates are $xCoordination, $yCoordination",
-                Toast.LENGTH_SHORT
-            ).show()
-            // Hide swipe to refresh icon animation
-            swipe.isRefreshing = false
-        }
-
-
-
-
-        binding.fragment.setOnClickListener() {
-            val intent = Intent(this, SecondActivity::class.java)
-            intent.putExtra("xCoordination", searchedxCoordination);
-            intent.putExtra("yCoordination", searchedyCoordination);
-            Toast.makeText(
-                this,
-                "Forcast for:  $searchedxCoordination, $searchedyCoordination",
-                Toast.LENGTH_SHORT
-            ).show()
-            startActivity(intent)
-
-        }
+        activityButtonAction()
 
     }
+
 
     override fun onStart() {
         super.onStart()
         val mProgressBar = findViewById<ProgressBar>(R.id.Progress)
-        if (xCoordination.isNullOrEmpty()) {
+        if (xCoordination.isEmpty()) {
             Handler().postDelayed({
                 binding.city.text = getString(R.string.City, locality, countryCode)
                 fetchWeather.getCurrentWeatherReport(
@@ -191,6 +118,91 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
             mProgressBar.visibility = View.GONE;
         }
     }
+
+
+    private fun searchButtonAction() {
+        binding.searchButton.setOnClickListener {
+            searched = Search().get(search_input).toString()
+            if (searched.trim().isNotEmpty()) {
+                lastCityCache = cityName
+                cityName = searched
+                searchedxCoordination = lastLocation.toLatitude(cityName)
+                searchedyCoordination = lastLocation.toLongitude(cityName)
+                setSearchedCityInfoInTV()
+                fetchWeather.getCurrentWeatherReport(
+                    apiKey,
+                    lat = searchedxCoordination,
+                    lon = searchedyCoordination,
+                    lang = lang,
+                    units = units,
+                    exclude = exclude,
+                    mainActivity = this
+                )
+                //safe city
+                Toast.makeText(
+                    this,
+                    "looking for $searched's Weather Info, Coordinates are $searchedxCoordination $searchedyCoordination",
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
+                clearInputText(binding.searchInput)
+            } else {
+                Toast.makeText(
+                    this, "Please enter a Location!",
+                    Toast.LENGTH_SHORT
+                ).show()
+                clearInputText(binding.searchInput)
+            }
+        }
+    }
+
+    private fun activityButtonAction() {
+        binding.activityButton.setOnClickListener() {
+            val intent = Intent(this, SecondActivity::class.java)
+            intent.putExtra("xCoordination", searchedxCoordination);
+            intent.putExtra("yCoordination", searchedyCoordination);
+            Toast.makeText(
+                this,
+                "Forcast for:  $searchedxCoordination, $searchedyCoordination",
+                Toast.LENGTH_SHORT
+            ).show()
+            startActivity(intent)
+
+        }
+    }
+
+    private fun swipeAction() {
+        binding.swipe.setOnRefreshListener {
+            binding.city.text = getString(R.string.City, locality, countryCode)
+            fetchWeather.getCurrentWeatherReport(
+                app_id = apiKey,
+                lat = xCoordination,
+                lon = yCoordination,
+                lang = lang,
+                units = units,
+                exclude = exclude,
+                mainActivity = this
+            )
+            Toast.makeText(
+                this, "Data Updated, Coordinates are $xCoordination, $yCoordination",
+                Toast.LENGTH_SHORT
+            ).show()
+            // Hide swipe to refresh icon animation
+            swipe.isRefreshing = false
+        }
+    }
+
+    private fun setSearchedCityInfoInTV() {
+        val (locale, countryCode) = getCityInfo()
+        binding.city.text = getString(R.string.City, locale, countryCode)
+    }
+
+    private fun getCityInfo(): Pair<String, String> {
+        val locale = lastLocation.getLocaleFromName(cityName)
+        val countryCode = lastLocation.getCountryCodeFromName(cityName)
+        return Pair(locale, countryCode)
+    }
+
 
     private fun clearInputText(textView: AutoCompleteTextView) {
         textView.setText("")
@@ -296,70 +308,6 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         }
 
         return result
-    }
-
-
-    fun getCountryCodeFromName(locationName: String): String {
-        val addressListFromName: ArrayList<Address>
-        val geocoder: Geocoder = Geocoder(this, Locale.getDefault())
-        addressListFromName = geocoder.getFromLocationName(locationName, 1) as ArrayList<Address>
-
-        val countryCode = addressListFromName.get(0).countryCode
-        return countryCode
-    }
-
-    fun getLocaleFromName(locationName: String): String {
-        var locale: String = "LOCALE_DEFAULT"
-        val addressList: ArrayList<Address>
-        val geocoder: Geocoder = Geocoder(this, Locale.getDefault())
-        try {
-            addressList =
-                geocoder.getFromLocationName(locationName, 1) as ArrayList<Address>
-            locale = addressList.get(0).locality
-
-        } catch (e: IOException) {
-            resultMessage = this.getString(R.string.service_not_available)
-            Log.e(TAG, resultMessage, e)
-        }
-
-        return locale
-    }
-
-
-    fun toLatitude(locationName: String = "Koblenz", context: Context): String {
-        val cAddressList: java.util.ArrayList<Address>
-        val geocoder: Geocoder = Geocoder(context, Locale.getDefault())
-        var lcLatitude: String = ""
-        try {
-            cAddressList =
-                geocoder.getFromLocationName(locationName, 1) as java.util.ArrayList<Address>
-            if (cAddressList.isNotEmpty() && cAddressList.size != 0) {
-                lcLatitude = cAddressList.get(0).latitude.toString()
-            }
-            if (cAddressList.size == 0) return "0"
-        } catch (e: IOException) {
-            Log.e(TAG, resultMessage, e)
-        }
-        return lcLatitude
-    }
-
-
-    fun toLongitude(locationName: String = "Koblenz", context: Context): String {
-        val cAddressList: java.util.ArrayList<Address>
-        val geocoder: Geocoder = Geocoder(context, Locale.getDefault())
-        var lcLongitude: String = ""
-        try {
-            cAddressList =
-                geocoder.getFromLocationName(locationName, 1) as java.util.ArrayList<Address>
-            if (cAddressList.isNotEmpty() && cAddressList.size != 0) {
-                lcLongitude = cAddressList.get(0).longitude.toString()
-            }
-            if (cAddressList.size == 0) return "0"
-        } catch (e: IOException) {
-            Log.e(TAG, resultMessage, e)
-        }
-
-        return lcLongitude
     }
 
 
