@@ -46,6 +46,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
     var searchedyCoordination = ""
     lateinit var lastLocation: LastLocation
     lateinit var binding: ActivityMainBinding
+    var searching = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,7 +79,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
     override fun onStart() {
         super.onStart()
         val mProgressBar = findViewById<ProgressBar>(R.id.Progress)
-        if (xCoordination.isEmpty()) {
+        if (!searching) {
             Handler().postDelayed({
                 binding.city.text = getString(R.string.City, locality, countryCode)
                 fetchWeather.getCurrentWeatherReport(
@@ -105,11 +106,15 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
             );
         } else {
-            binding.city.text = getString(R.string.City, locality, countryCode)
+            lastCityCache = cityName
+            cityName = searched
+            searchedxCoordination = lastLocation.toLatitude(cityName)
+            searchedyCoordination = lastLocation.toLongitude(cityName)
+            setSearchedCityInfoInTV()
             fetchWeather.getCurrentWeatherReport(
-                app_id = apiKey,
-                lat = xCoordination,
-                lon = yCoordination,
+                apiKey,
+                lat = searchedxCoordination,
+                lon = searchedyCoordination,
                 lang = lang,
                 units = units,
                 exclude = exclude,
@@ -123,6 +128,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
     private fun searchButtonAction() {
         binding.searchButton.setOnClickListener {
             searched = Search().get(search_input).toString()
+            searching = true
             if (searched.trim().isNotEmpty()) {
                 lastCityCache = cityName
                 cityName = searched
@@ -156,23 +162,30 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         }
     }
 
-    private fun activityButtonAction() {
-        binding.activityButton.setOnClickListener() {
-            val intent = Intent(this, SecondActivity::class.java)
-            intent.putExtra("xCoordination", searchedxCoordination);
-            intent.putExtra("yCoordination", searchedyCoordination);
-            Toast.makeText(
-                this,
-                "Forcast for:  $searchedxCoordination, $searchedyCoordination",
-                Toast.LENGTH_SHORT
-            ).show()
-            startActivity(intent)
 
+        private fun activityButtonAction() {
+            binding.activityButton.setOnClickListener() {
+                val intent = Intent(this, SecondActivity::class.java)
+                if (!searching) {
+                intent.putExtra("xCoordination", xCoordination);
+                intent.putExtra("yCoordination", yCoordination); } else {
+                    intent.putExtra("xCoordination", searchedxCoordination);
+                    intent.putExtra("yCoordination", searchedyCoordination);
+                }
+                Toast.makeText(
+                    this,
+                    "Forcast for:  $searchedxCoordination, $searchedyCoordination",
+                    Toast.LENGTH_SHORT
+                ).show()
+                startActivity(intent)
+
+            }
         }
-    }
 
     private fun swipeAction() {
+
         binding.swipe.setOnRefreshListener {
+            searching = false
             binding.city.text = getString(R.string.City, locality, countryCode)
             fetchWeather.getCurrentWeatherReport(
                 app_id = apiKey,

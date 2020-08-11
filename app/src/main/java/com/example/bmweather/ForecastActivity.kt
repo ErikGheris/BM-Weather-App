@@ -41,18 +41,6 @@ class SecondActivity : AppCompatActivity() {
             exclude = exclude,
             activity = this
         )
-        binding.swipeforecast.setOnRefreshListener {
-            fetchWeather.getForeCastWeatherReport(
-                app_id = apiKey,
-                lat = latitude,
-                lon = longitude,
-                lang = lang,
-                units = units,
-                exclude = exclude,
-                activity = this
-            )
-            Toast.makeText(this, "$latitude   $longitude", Toast.LENGTH_SHORT).show()
-        }
         binding.fragment2.setOnClickListener() {
             finish()
         }
