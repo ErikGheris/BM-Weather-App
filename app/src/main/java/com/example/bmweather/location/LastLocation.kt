@@ -1,4 +1,4 @@
-package com.example.bmweather.location2
+package com.example.bmweather.location
 
 import android.Manifest
 import android.annotation.SuppressLint
