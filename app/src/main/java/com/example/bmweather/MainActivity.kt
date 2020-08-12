@@ -271,7 +271,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         val handler = Handler()
         handler.postDelayed(Runnable {
             //wait x delay MS and then progress is done
-            Load().done(progress_widget)
+            load.done(binding.progressWidget)
         }, 1000) // 1000 milliseconds
 
     }
