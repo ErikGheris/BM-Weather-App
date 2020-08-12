@@ -47,6 +47,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
     private lateinit var binding: ActivityMainBinding
     private var searching = false
 
+    private var load:Load = Load()
     // TODO: 12.08.20   lazy declarataion vs inFunctionDeclaration
     //  val list : ArrayList by lazy { ArrayList() }
     // private lateinit var backToast: Toast
@@ -88,7 +89,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
 
     override fun onStart() {
         super.onStart()
-        val mProgressBar = findViewById<ProgressBar>(R.id.Progress)
+
         if (xCoordination.isEmpty()) {
             Handler().postDelayed({
                 binding.city.text = getString(R.string.City, locality, countryCode)
@@ -109,7 +110,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                 swipe.isRefreshing = false
 
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                mProgressBar.visibility = View.GONE
+              load.done(binding.Progress)
             }, 4000)
             window.setFlags(
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
@@ -135,7 +136,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                 swipe.isRefreshing = false
 
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                mProgressBar.visibility = View.GONE
+             load.done(binding.Progress)
 
             } else {
                 lastCityCache = cityName
@@ -152,7 +153,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                     exclude = exclude,
                     mainActivity = this
                 )
-                mProgressBar.visibility = View.GONE
+                load.done(binding.Progress)
             }
         }
     }
