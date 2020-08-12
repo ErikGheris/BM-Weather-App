@@ -14,7 +14,6 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.AutoCompleteTextView
 import android.widget.ProgressBar
-import android.widget.SimpleAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bmweather.databinding.ActivityMainBinding
@@ -48,6 +47,19 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
     private lateinit var binding: ActivityMainBinding
     private var searching = false
 
+    // TODO: 12.08.20   lazy declarataion vs inFunctionDeclaration
+    //  val list : ArrayList by lazy { ArrayList() }
+    // private lateinit var backToast: Toast
+
+    private val backToast: Toast by lazy {
+        Toast.makeText(
+            this,
+            "Press back again to leave the app.",
+            Toast.LENGTH_SHORT
+        )
+    }
+    private var backPressedTime: Long = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -64,14 +76,12 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
             this, this
         )
 
-        searchButtonAction()
-
         binding.searchInput.setOnClickListener {
             clearInputText(binding.searchInput)
         }
 
+        searchButtonAction()
         swipeAction()
-
         activityButtonAction()
     }
 
@@ -107,24 +117,24 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
             )
         } else {
             if (!searching) {
-                    binding.city.text = getString(R.string.City, locality, countryCode)
-                    fetchWeather.getCurrentWeatherReport(
-                        app_id = apiKey,
-                        lat = xCoordination,
-                        lon = yCoordination,
-                        lang = lang,
-                        units = units,
-                        exclude = exclude,
-                        mainActivity = this
-                    )
-                    Toast.makeText(
-                        this, "Data Updated, Coordinates are $xCoordination, $yCoordination",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    // Hide swipe to refresh icon animation
-                    swipe.isRefreshing = false
+                binding.city.text = getString(R.string.City, locality, countryCode)
+                fetchWeather.getCurrentWeatherReport(
+                    app_id = apiKey,
+                    lat = xCoordination,
+                    lon = yCoordination,
+                    lang = lang,
+                    units = units,
+                    exclude = exclude,
+                    mainActivity = this
+                )
+                Toast.makeText(
+                    this, "Data Updated, Coordinates are $xCoordination, $yCoordination",
+                    Toast.LENGTH_SHORT
+                ).show()
+                // Hide swipe to refresh icon animation
+                swipe.isRefreshing = false
 
-                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 mProgressBar.visibility = View.GONE
 
             } else {
@@ -145,6 +155,18 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                 mProgressBar.visibility = View.GONE
             }
         }
+    }
+
+    override fun onBackPressed() {
+        // backToast = Toast.makeText(this, "Press back again to leave the app.", Toast.LENGTH_SHORT)
+        if (backPressedTime + 2000 > System.currentTimeMillis()) {
+            backToast.cancel()
+            super.onBackPressed()
+            return
+        } else {
+            backToast.show()
+        }
+        backPressedTime = System.currentTimeMillis()
     }
 
 
@@ -186,24 +208,24 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
     }
 
 
-        private fun activityButtonAction() {
-            binding.activityButton.setOnClickListener {
-                val intent = Intent(this, SecondActivity::class.java)
-                if (!searching) {
+    private fun activityButtonAction() {
+        binding.activityButton.setOnClickListener {
+            val intent = Intent(this, SecondActivity::class.java)
+            if (!searching) {
                 intent.putExtra("xCoordination", xCoordination)
-                    intent.putExtra("yCoordination", yCoordination); } else {
-                    intent.putExtra("xCoordination", searchedxCoordination)
-                    intent.putExtra("yCoordination", searchedyCoordination)
-                }
-                Toast.makeText(
-                    this,
-                    "Forcast for:  $searchedxCoordination, $searchedyCoordination",
-                    Toast.LENGTH_SHORT
-                ).show()
-                startActivity(intent)
-
+                intent.putExtra("yCoordination", yCoordination); } else {
+                intent.putExtra("xCoordination", searchedxCoordination)
+                intent.putExtra("yCoordination", searchedyCoordination)
             }
+            Toast.makeText(
+                this,
+                "Forcast for:  $searchedxCoordination, $searchedyCoordination",
+                Toast.LENGTH_SHORT
+            ).show()
+            startActivity(intent)
+
         }
+    }
 
     private fun swipeAction() {
 
@@ -346,8 +368,6 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
 
         return result
     }
-
-
 
 
 }
