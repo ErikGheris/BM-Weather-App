@@ -1,10 +1,10 @@
 package com.example.bmweather
 
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Location
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
@@ -14,10 +14,12 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.AutoCompleteTextView
 import android.widget.ProgressBar
+import android.widget.SimpleAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.bmweather.Location.LastLocation
 import com.example.bmweather.databinding.ActivityMainBinding
+import com.example.bmweather.location.LastLocation
+import com.example.bmweather.location.Location
 import com.example.bmweather.response.Current
 import com.example.bmweather.response.Daily
 import com.squareup.picasso.Picasso
@@ -26,27 +28,25 @@ import kotlinx.coroutines.Runnable
 import java.text.SimpleDateFormat
 import kotlin.math.roundToInt
 
+@Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity(), LocationReceiver {
-    val TAG = "thisTAG"
-    var resultMessage = "SKSKSK"
-    lateinit var mLastLocation: Location
     override var xCoordination: String = ""
     override var yCoordination: String = ""
     override var countryCode: String = ""
     override var locality: String = ""
     private val apiKey = "6133b390a077c487bc9ac43311b3ba26"
-    var cityName = ""
+    private var cityName = ""
     private var units = "metric"
     private var lang = "de"
-    var lastCityCache = cityName
+    private var lastCityCache = cityName
     private var searched: String = ""
     private var exclude = "hourly,minutely"
     private val fetchWeather = FetchWeatherData
-    var searchedxCoordination = ""
-    var searchedyCoordination = ""
-    lateinit var lastLocation: LastLocation
-    lateinit var binding: ActivityMainBinding
-    var searching = false
+    private var searchedxCoordination = ""
+    private var searchedyCoordination = ""
+    private lateinit var lastLocation: LastLocation
+    private lateinit var binding: ActivityMainBinding
+    private var searching = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +55,8 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         setContentView(binding.root)
 
         val mainActivityContext = applicationContext
-        lastLocation = LastLocation(mainActivityContext)
+        lastLocation =
+            LastLocation(mainActivityContext)
 
         lastLocation.setupPermissions(this, this)
         //!!!!!!!!!!!!!!
@@ -72,7 +73,6 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         swipeAction()
 
         activityButtonAction()
-
     }
 
 
@@ -98,13 +98,13 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                 // Hide swipe to refresh icon animation
                 swipe.isRefreshing = false
 
-                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                mProgressBar.visibility = View.GONE;
+                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                mProgressBar.visibility = View.GONE
             }, 4000)
             window.setFlags(
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-            );
+            )
         } else {
             if (!searching) {
                     binding.city.text = getString(R.string.City, locality, countryCode)
@@ -124,8 +124,8 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                     // Hide swipe to refresh icon animation
                     swipe.isRefreshing = false
 
-                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    mProgressBar.visibility = View.GONE;
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                mProgressBar.visibility = View.GONE
 
             } else {
                 lastCityCache = cityName
@@ -142,7 +142,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                     exclude = exclude,
                     mainActivity = this
                 )
-                mProgressBar.visibility = View.GONE;
+                mProgressBar.visibility = View.GONE
             }
         }
     }
@@ -187,13 +187,13 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
 
 
         private fun activityButtonAction() {
-            binding.activityButton.setOnClickListener() {
+            binding.activityButton.setOnClickListener {
                 val intent = Intent(this, SecondActivity::class.java)
                 if (!searching) {
-                intent.putExtra("xCoordination", xCoordination);
-                intent.putExtra("yCoordination", yCoordination); } else {
-                    intent.putExtra("xCoordination", searchedxCoordination);
-                    intent.putExtra("yCoordination", searchedyCoordination);
+                intent.putExtra("xCoordination", xCoordination)
+                    intent.putExtra("yCoordination", yCoordination); } else {
+                    intent.putExtra("xCoordination", searchedxCoordination)
+                    intent.putExtra("yCoordination", searchedyCoordination)
                 }
                 Toast.makeText(
                     this,
@@ -253,7 +253,8 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
 
     }
 
-    val sunformat = SimpleDateFormat("kk:mm")
+    @SuppressLint("SimpleDateFormat")
+    private val sunformat = SimpleDateFormat("kk:mm")
 
     fun current(main: Current) {
         binding.mainTemp.text =
@@ -284,7 +285,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         grantResults: IntArray
     ) {
         when (requestCode) {
-            com.example.bmweather.Location.Location().permissionsList_request_Code -> {
+            Location().permissionslistRequestCode -> {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     lastLocation.setUpLocationListener(
                         this, this
@@ -294,7 +295,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
 
 
                     Log.i(
-                        com.example.bmweather.Location.Location().TAG,
+                        Location().tag,
                         "Permission has been denied by user"
                     )
                     Toast.makeText(
@@ -306,7 +307,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                         this, this
                     )
                     Log.i(
-                        com.example.bmweather.Location.Location().TAG,
+                        Location().tag,
                         "Permission has been granted by user"
                     )
                     Toast.makeText(
@@ -330,7 +331,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
 
 
     private fun networkAvailabilityStatus(context: Context): Boolean {
-        var result = false
+        val result: Boolean
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkCapabilities = connectivityManager.activeNetwork ?: return false
@@ -345,6 +346,8 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
 
         return result
     }
+
+
 
 
 }

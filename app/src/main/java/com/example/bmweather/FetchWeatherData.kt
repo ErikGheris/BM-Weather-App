@@ -11,7 +11,8 @@ import source.open.akash.mvvmlogin.Network.RetrofitRequest
 class FetchWeatherData {
     companion object FetchWeatherData {
         val TAG: String?=FetchWeatherData::class.java.simpleName
-        private val apiRequest: WeatherService  = RetrofitRequest.getRetrofitInstance().create(WeatherService::class.java)
+        private val apiRequest: WeatherService = RetrofitRequest.getRetrofitInstance().create(
+            WeatherService::class.java)
 
         fun getCurrentWeatherReport(app_id: String,lat: String, lon: String,lang: String,units: String,exclude: String, mainActivity: MainActivity) {
 

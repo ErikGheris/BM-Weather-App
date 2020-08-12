@@ -1,4 +1,4 @@
-package com.example.bmweather.Location
+package com.example.bmweather.location2
 
 import android.Manifest
 import android.content.Context
@@ -19,15 +19,15 @@ import com.google.android.gms.location.LocationServices
 class Location {
 
 
-    val TAG = "PermissionDemo"
+    val tag = "PermissionDemo"
 
     /*  these two have to be declare/initialised @Top */
-    var permissionsList = arrayOf(
+    private var permissionsList = arrayOf(
         Manifest.permission.ACCESS_COARSE_LOCATION,
         Manifest.permission.ACCESS_FINE_LOCATION
     )
 
-    val permissionsList_request_Code = 10
+    val permissionslistRequestCode = 10
 
     fun showToast(mContext: Context?, message: String?) {
         Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show()
@@ -37,7 +37,7 @@ class Location {
         ActivityCompat.requestPermissions(
             activity,
             permissionsList,
-            permissionsList_request_Code
+            permissionslistRequestCode
         )
     }
     //  THIS IS NOT COPIED TO THE OTHER CLASS YET

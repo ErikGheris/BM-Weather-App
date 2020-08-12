@@ -1,4 +1,4 @@
-package com.example.bmweather.Location
+package com.example.bmweather.location2
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -10,7 +10,6 @@ import android.location.Address
 import android.location.Geocoder
 import android.os.Looper
 import android.util.Log
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.bmweather.LocationReceiver
@@ -23,13 +22,10 @@ import kotlin.collections.ArrayList
 
 
 class LastLocation(context: Context) {
-    val geocoder: Geocoder = Geocoder(context, Locale.getDefault())
-    var resultMessage = "SKSKSK"
-    var location = false
-    private val TAG = "PermissionDemo"
-    lateinit var mLastLocation: Location
-    lateinit var mFusedLocationProviderClient: FusedLocationProviderClient
-    val REQUEST_LOCATION_PERMISSION = 87
+    private val geocoder: Geocoder = Geocoder(context, Locale.getDefault())
+    private var resultMessage = "SKSKSK"
+    private var location = false
+    private val tag = "PermissionDemo"
 
 
 /*
@@ -45,10 +41,6 @@ val addressListOfCurrentLocation:  ArrayList<Address>
     )
     private val permissionsRequestCode = 10
 
-    fun showToast(mContext: Context?, message: String?) {
-        Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show()
-    }
-
     private fun makeMultipleRequest(activity: MainActivity) {
         ActivityCompat.requestPermissions(
             activity,
@@ -59,17 +51,17 @@ val addressListOfCurrentLocation:  ArrayList<Address>
 
 
     fun setupPermissions(context: Context, activity: MainActivity) {
-        val FINE_LOCATION_PERMISSION = ContextCompat.checkSelfPermission(
+        val fineLocationPermission = ContextCompat.checkSelfPermission(
             context,
             Manifest.permission.ACCESS_FINE_LOCATION
         )
-        val COARSE_LOCATION_PERMISSION = ContextCompat.checkSelfPermission(
+        val coarseLocationPermission = ContextCompat.checkSelfPermission(
             context,
             Manifest.permission.ACCESS_COARSE_LOCATION
         )
 
-        if (FINE_LOCATION_PERMISSION != PackageManager.PERMISSION_GRANTED || COARSE_LOCATION_PERMISSION != PackageManager.PERMISSION_GRANTED) {
-            Log.i(TAG, "Permission to record denied")
+        if (fineLocationPermission != PackageManager.PERMISSION_GRANTED || coarseLocationPermission != PackageManager.PERMISSION_GRANTED) {
+            Log.i(tag, "Permission to record denied")
             if (ActivityCompat.shouldShowRequestPermissionRationale(
                     activity,
                     Manifest.permission.ACCESS_FINE_LOCATION
@@ -80,8 +72,8 @@ val addressListOfCurrentLocation:  ArrayList<Address>
                     .setTitle("Permission required")
                 builder.setPositiveButton(
                     "OK"
-                ) { dialog, id ->
-                    Log.i(TAG, "Clicked")
+                ) { _, _ ->
+                    Log.i(tag, "Clicked")
                     makeMultipleRequest(activity)
                 }
                 val dialog = builder.create()
@@ -117,7 +109,7 @@ val addressListOfCurrentLocation:  ArrayList<Address>
                 override fun onLocationResult(locationResult: LocationResult) {
                     super.onLocationResult(locationResult)
                     for (location in locationResult.locations) {
-                        var myAddressList: ArrayList<Address> = geocoder.getFromLocation(
+                        val myAddressList: ArrayList<Address> = geocoder.getFromLocation(
                             location.latitude,
                             location.longitude,
                             1
@@ -140,17 +132,17 @@ val addressListOfCurrentLocation:  ArrayList<Address>
 
     fun toLatitude(locationName: String = "Koblenz"): String {
         val cAddressList: java.util.ArrayList<Address>
-        var locationLatitude: String = ""
+        var locationLatitude = ""
         try {
             cAddressList =
                 geocoder.getFromLocationName(locationName, 1) as java.util.ArrayList<Address>
             if (cAddressList.isNotEmpty() && cAddressList.size != 0) {
-                locationLatitude = cAddressList.get(0).latitude.toString()
+                locationLatitude = cAddressList[0].latitude.toString()
 
             }
             if (cAddressList.size == 0) return "0"
         } catch (e: IOException) {
-            Log.e(TAG, resultMessage, e)
+            Log.e(tag, resultMessage, e)
         }
         return locationLatitude
     }
@@ -158,17 +150,17 @@ val addressListOfCurrentLocation:  ArrayList<Address>
 
     fun toLongitude(locationName: String = "Koblenz"): String {
         val cAddressList: java.util.ArrayList<Address>
-        var locationLongitude: String = ""
+        var locationLongitude = ""
         try {
 
             cAddressList =
                 geocoder.getFromLocationName(locationName, 1) as java.util.ArrayList<Address>
             if (cAddressList.isNotEmpty() && cAddressList.size != 0) {
-                locationLongitude = cAddressList.get(0).longitude.toString()
+                locationLongitude = cAddressList[0].longitude.toString()
             }
             if (cAddressList.size == 0) return "0"
         } catch (e: IOException) {
-            Log.e(TAG, resultMessage, e)
+            Log.e(tag, resultMessage, e)
         }
 
         return locationLongitude
@@ -190,7 +182,7 @@ val addressListOfCurrentLocation:  ArrayList<Address>
 
         } catch (e: IOException) {
             resultMessage = Resources.getSystem().getString(R.string.service_not_available)
-            Log.e(TAG, resultMessage, e)
+            Log.e(tag, resultMessage, e)
         }
         return locale
     }

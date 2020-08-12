@@ -13,16 +13,14 @@ class RetrofitRequest {
 
 
     companion object {
-        var BASE_URL = "https://api.openweathermap.org/"
+        private var BASE_URL = "https://api.openweathermap.org/"
 
         fun getRetrofitInstance(): Retrofit {
 
-            val retrofit = retrofit2.Retrofit.Builder()
+            return Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
-
-            return retrofit
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.bmweather.adapter
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
@@ -9,8 +10,10 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.example.bmweather.R
+import com.example.bmweather.binding
 import com.example.bmweather.response.Daily
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.daily_item.view.*
 import java.text.SimpleDateFormat
 import kotlin.math.roundToInt
 
@@ -22,7 +25,7 @@ class DailyArrayAdapter
     private val rentalProperties: ArrayList<Daily> = objects
 
 
-
+    @SuppressLint("InflateParams", "ViewHolder", "SimpleDateFormat")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val property = rentalProperties[position]
         val inflater = context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -36,6 +39,7 @@ class DailyArrayAdapter
 
 
         return view
+
     }
 
 
