@@ -44,7 +44,6 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
     private lateinit var lastLocation: LastLocation
     private lateinit var binding: ActivityMainBinding
     private var searching = false
-
     private var load: Load = Load()
     // TODO: 12.08.20   lazy declarataion vs inFunctionDeclaration
     //  val list : ArrayList by lazy { ArrayList() }
@@ -99,7 +98,6 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                 ).show()
                 // Hide swipe to refresh icon animation
                 swipe.isRefreshing = false
-
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 load.done(binding.Progress)
             }, 4000)
@@ -124,8 +122,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
             } else {
                 lastCityCache = cityName
                 cityName = searched
-                searchedXCoordination = lastLocation.toLatitude(cityName)
-                searchedYCoordination = lastLocation.toLongitude(cityName)
+                setSearchedCoordinates()
                 setSearchedCityInfoInTV()
                 makeSearchWeatherRequest()
                 load.done(binding.Progress)
@@ -153,8 +150,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
             if (searched.trim().isNotEmpty()) {
                 lastCityCache = cityName
                 cityName = searched
-                searchedXCoordination = lastLocation.toLatitude(cityName)
-                searchedYCoordination = lastLocation.toLongitude(cityName)
+                setSearchedCoordinates()
                 setSearchedCityInfoInTV()
                 makeSearchWeatherRequest()
                 //safe city
@@ -175,6 +171,11 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         }
     }
 
+    private fun setSearchedCoordinates() {
+        searchedXCoordination = lastLocation.toLatitude(cityName)
+        searchedYCoordination = lastLocation.toLongitude(cityName)
+    }
+
     private fun makeSearchWeatherRequest() {
         fetchWeather.getCurrentWeatherReport(
             apiKey,
@@ -186,6 +187,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
             mainActivity = this
         )
     }
+
     private fun makeCurrentLocationWeatherRequest() {
         fetchWeather.getCurrentWeatherReport(
             app_id = apiKey,
@@ -232,7 +234,6 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
             swipe.isRefreshing = false
         }
     }
-
 
 
     private fun setSearchedCityInfoInTV() {
@@ -297,10 +298,6 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                     lastLocation.setUpLocationListener(
                         this, this
                     )
-
-                    // getCurrentLocationName()
-
-
                     Log.i(
                         Location().tag,
                         "Permission has been denied by user"
@@ -325,6 +322,5 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
             }
         }
     }
-
 
 }
