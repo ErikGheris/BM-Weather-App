@@ -1,12 +1,8 @@
 package com.example.bmweather
 
-
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -99,7 +95,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                 // Hide swipe to refresh icon animation
                 swipe.isRefreshing = false
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                load.done(binding.Progress)
+         load.done(binding.Progress)
             }, 4000)
             window.setFlags(
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
@@ -117,7 +113,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                 swipe.isRefreshing = false
 
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                load.done(binding.Progress)
+             load.done(binding.Progress)
 
             } else {
                 lastCityCache = cityName
@@ -125,7 +121,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                 setSearchedCoordinates()
                 setSearchedCityInfoInTV()
                 makeSearchWeatherRequest()
-                load.done(binding.Progress)
+                  load.done(binding.Progress)
             }
         }
     }
@@ -184,7 +180,8 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
             lang = lang,
             units = units,
             exclude = exclude,
-            mainActivity = this
+            mainActivity = this,
+            progressBar = binding.Progress
         )
     }
 
@@ -196,7 +193,8 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
             lang = lang,
             units = units,
             exclude = exclude,
-            mainActivity = this
+            mainActivity = this,
+            progressBar = binding.Progress
         )
     }
 
@@ -212,11 +210,10 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
             }
             Toast.makeText(
                 this,
-                "Forcast for:  $searchedXCoordination, $searchedYCoordination",
+                " Forecast for:  $searchedXCoordination, $searchedYCoordination",
                 Toast.LENGTH_SHORT
             ).show()
             startActivity(intent)
-
         }
     }
 

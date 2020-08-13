@@ -1,6 +1,8 @@
 package com.example.bmweather
 
 import android.util.Log
+import android.view.View
+import android.widget.ProgressBar
 import android.widget.Toast
 import com.example.bmweather.Network.WeatherService
 import com.example.bmweather.response.WeatherReport
@@ -14,8 +16,8 @@ class FetchWeatherData {
         private val apiRequest: WeatherService = RetrofitRequest.getRetrofitInstance().create(
             WeatherService::class.java)
 
-        fun getCurrentWeatherReport(app_id: String,lat: String, lon: String,lang: String,units: String,exclude: String, mainActivity: MainActivity) {
-
+        fun getCurrentWeatherReport(app_id: String,lat: String, lon: String,lang: String,units: String,exclude: String, mainActivity: MainActivity, progressBar: View) {
+                Load().start(progressBar = progressBar)
 
             Log.d(TAG, "onResponse response:: $app_id  $lat $lon $lang $units $exclude")
             apiRequest.getCurrentWeatherData(lat, lon, units, lang, app_id, exclude)
@@ -30,7 +32,7 @@ class FetchWeatherData {
                             mainActivity.current(weatherReport.current)
                            // mainActivity.realTemp(weatherReport.current)
                             mainActivity.daily(weatherReport.daily[0])
-
+                            Load().done(progressBar = progressBar)
                         }
                         else
                             if (response.code()==404){
