@@ -7,6 +7,7 @@
     <string name="weather_des">"Wetter: "</string>
     <string name="min_temp">"min: "</string>
     <string name="sorry">Sorry</string>
+    <string name="no_internet">Internet is not Available</string>
     <string name="max_temp">"max: "</string>
     <string name="feels_like_temp">"Gefühlt wie: "</string>
     <string name="comma">" "</string>
