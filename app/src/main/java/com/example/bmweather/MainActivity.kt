@@ -10,6 +10,7 @@ import android.view.WindowManager
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.bmweather.Network.ConnectivityManagement
 import com.example.bmweather.databinding.ActivityMainBinding
 import com.example.bmweather.location.LastLocation
 import com.example.bmweather.location.Location
@@ -41,6 +42,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
     private lateinit var binding: ActivityMainBinding
     private var searching = false
     private var load: Load = Load()
+    lateinit var connectivityManagement: ConnectivityManagement
     // TODO: 12.08.20   lazy declarataion vs inFunctionDeclaration
     //  val list : ArrayList by lazy { ArrayList() }
     // private lateinit var backToast: Toast
@@ -63,6 +65,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         val mainActivityContext = applicationContext
         lastLocation =
             LastLocation(mainActivityContext)
+        connectivityManagement = ConnectivityManagement(mainActivityContext)
 
         lastLocation.setupPermissions(this, this)
         //!!!!!!!!!!!!!!
@@ -95,7 +98,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                 // Hide swipe to refresh icon animation
                 swipe.isRefreshing = false
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-         load.done(binding.Progress)
+                load.done(binding.Progress)
             }, 4000)
             window.setFlags(
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
@@ -113,7 +116,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                 swipe.isRefreshing = false
 
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-             load.done(binding.Progress)
+                load.done(binding.Progress)
 
             } else {
                 lastCityCache = cityName
@@ -121,7 +124,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                 setSearchedCoordinates()
                 setSearchedCityInfoInTV()
                 makeSearchWeatherRequest()
-                  load.done(binding.Progress)
+                load.done(binding.Progress)
             }
         }
     }
@@ -140,29 +143,33 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
 
 
     private fun searchButtonAction() {
-        binding.searchButton.setOnClickListener {
-            searched = Search().get(search_input).toString()
-            searching = true
-            if (searched.trim().isNotEmpty()) {
-                lastCityCache = cityName
-                cityName = searched
-                setSearchedCoordinates()
-                setSearchedCityInfoInTV()
-                makeSearchWeatherRequest()
-                //safe city
-                Toast.makeText(
-                    this,
-                    "looking for $searched's Weather Info, Coordinates are $searchedXCoordination $searchedYCoordination",
-                    Toast.LENGTH_SHORT
-                )
-                    .show()
-                clearInputText(binding.searchInput)
-            } else {
-                Toast.makeText(
-                    this, "Please enter a Location!",
-                    Toast.LENGTH_SHORT
-                ).show()
-                clearInputText(binding.searchInput)
+
+            binding.searchButton.setOnClickListener {
+
+                searched = Search().get(search_input).toString()
+                searching = true
+                if (searched.trim().isNotEmpty()) {
+                    lastCityCache = cityName
+                    cityName = searched
+                    if (connectivityManagement.networkCheck(this)) {
+                    setSearchedCoordinates()
+                    setSearchedCityInfoInTV()
+                    makeSearchWeatherRequest()
+                    //safe city
+                    Toast.makeText(
+                        this,
+                        "looking for $searched's Weather Info, Coordinates are $searchedXCoordination $searchedYCoordination",
+                        Toast.LENGTH_SHORT
+                    )
+                        .show()
+                    clearInputText(binding.searchInput)
+                } else {
+                    Toast.makeText(
+                        this, "Please enter a Location!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    clearInputText(binding.searchInput)
+                }
             }
         }
     }

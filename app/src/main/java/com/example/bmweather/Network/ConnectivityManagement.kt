@@ -11,8 +11,11 @@ import androidx.core.content.res.TypedArrayUtils.getString
 import com.example.bmweather.R
 
 class ConnectivityManagement(context: Context) {
-private val connectionStatusToast:Toast =  Toast.makeText(context, Resources.getSystem().getString(R.string.no_internet), Toast.LENGTH_SHORT)
+ private val connectionStatusToast:Toast =  Toast.makeText(context,
+  "No NET", Toast.LENGTH_SHORT)
 
+
+    // TODO: 13.08.20  connectionStatusToast should use :>      Resources.getSystem().getString(R.string.no_internet) as the text
 
  fun networkCheck(context: Context): Boolean {
         val statusCheck = networkAvailabilityStatus(context)
