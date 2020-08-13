@@ -141,17 +141,16 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         backPressedTime = System.currentTimeMillis()
     }
 
-
     private fun searchButtonAction() {
 
-            binding.searchButton.setOnClickListener {
+        binding.searchButton.setOnClickListener {
 
-                searched = Search().get(search_input).toString()
-                searching = true
-                if (searched.trim().isNotEmpty()) {
-                    lastCityCache = cityName
-                    cityName = searched
-                    if (connectivityManagement.networkCheck(this)) {
+            searched = Search().get(search_input).toString()
+            searching = true
+            if (searched.trim().isNotEmpty()) {
+                lastCityCache = cityName
+                cityName = searched
+                if (connectivityManagement.networkCheck(this)) {
                     setSearchedCoordinates()
                     setSearchedCityInfoInTV()
                     makeSearchWeatherRequest()
@@ -163,13 +162,13 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                     )
                         .show()
                     clearInputText(binding.searchInput)
-                } else {
-                    Toast.makeText(
-                        this, "Please enter a Location!",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    clearInputText(binding.searchInput)
                 }
+            } else {
+                Toast.makeText(
+                    this, "Please enter a Location!",
+                    Toast.LENGTH_SHORT
+                ).show()
+                clearInputText(binding.searchInput)
             }
         }
     }
