@@ -1,4 +1,4 @@
-package com.example.bmweather
+package com.example.bmweather.location
 
 interface LocationReceiver {
    var xCoordination:String

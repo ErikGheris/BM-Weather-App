@@ -11,6 +11,9 @@ class ConnectivityManagement(context: Context) {
   (R.string.no_internet), Toast.LENGTH_SHORT)
 
 
+
+
+
     // TODO: 13.08.20  connectionStatusToast should use :>      Resources.getSystem().getString(R.string.no_internet) as the text
 
  fun networkCheck(context: Context): Boolean {

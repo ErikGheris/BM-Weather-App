@@ -12,7 +12,6 @@ import android.os.Looper
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.bmweather.LocationReceiver
 import com.example.bmweather.MainActivity
 import com.example.bmweather.R
 import com.google.android.gms.location.*
@@ -22,10 +21,11 @@ import kotlin.collections.ArrayList
 
 
 class LastLocation(context: Context) {
+    val permissionsRequestCode = 10
     private val geocoder: Geocoder = Geocoder(context, Locale.getDefault())
     private var resultMessage = "SKSKSK"
     private var location = false
-    private val tag = "PermissionDemo"
+    val tag = "PermissionDemo"
 
 
 /*
@@ -33,19 +33,18 @@ val addressListOfCurrentLocation:  ArrayList<Address>
 */
 
 
-
     /*  these two have to be declare/initialised @Top */
     private var permissionsList = arrayOf(
         Manifest.permission.ACCESS_COARSE_LOCATION,
         Manifest.permission.ACCESS_FINE_LOCATION
     )
-    private val permissionsRequestCode = 10
+
 
     private fun makeMultipleRequest(activity: MainActivity) {
         ActivityCompat.requestPermissions(
             activity,
             permissionsList,
-            permissionsRequestCode
+            this.permissionsRequestCode
         )
     }
 
@@ -87,11 +86,8 @@ val addressListOfCurrentLocation:  ArrayList<Address>
     @Synchronized
     @SuppressLint("MissingPermission")
     fun setUpLocationListener(
-
         context: Context,
         LocationReceiver: LocationReceiver
-
-
     ) {
         if (location) return
 
@@ -167,18 +163,18 @@ val addressListOfCurrentLocation:  ArrayList<Address>
     }
 
 
-    fun getCountryCodeFromName(locationName: String= "Koblenz"): String {
+    fun getCountryCodeFromName(locationName: String = "Koblenz"): String {
         return cityNameReq(locationName)[0].countryCode
     }
 
-    private fun cityNameReq(locationName: String ="Koblenz"): ArrayList<Address> {
+    private fun cityNameReq(locationName: String = "Koblenz"): ArrayList<Address> {
         return geocoder.getFromLocationName(locationName, 1) as ArrayList<Address>
     }
 
     fun getLocaleFromName(locationName: String = "Koblenz"): String {
-    var locale = "Default_Locale"
+        var locale = "Default_Locale"
         try {
-          locale = cityNameReq(locationName)[0].locality
+            locale = cityNameReq(locationName)[0].locality
 
         } catch (e: IOException) {
             resultMessage = Resources.getSystem().getString(R.string.service_not_available)

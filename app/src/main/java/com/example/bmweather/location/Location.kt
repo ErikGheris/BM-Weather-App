@@ -7,9 +7,8 @@ import android.location.LocationManager
 import android.os.Looper
 import android.util.Log
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import com.example.bmweather.FetchWeatherData
+import com.example.bmweather.openweathermap.FetchWeatherData
 import com.example.bmweather.MainActivity
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -19,29 +18,8 @@ import com.google.android.gms.location.LocationServices
 class Location {
 
 
-    val tag = "PermissionDemo"
-
-    /*  these two have to be declare/initialised @Top */
-    private var permissionsList = arrayOf(
-        Manifest.permission.ACCESS_COARSE_LOCATION,
-        Manifest.permission.ACCESS_FINE_LOCATION
-    )
-
-    val permissionslistRequestCode = 10
-
-    fun showToast(mContext: Context?, message: String?) {
-        Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun makeMultipleRequest(activity: MainActivity) {
-        ActivityCompat.requestPermissions(
-            activity,
-            permissionsList,
-            permissionslistRequestCode
-        )
     }
     //  THIS IS NOT COPIED TO THE OTHER CLASS YET
-
     fun isLocationEnabled(context: Context): Boolean {
         val locationManager: LocationManager =
             context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -72,7 +50,7 @@ class Location {
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
             // if the permissions were not granted , ask for permissions
-            makeMultipleRequest(activity)
+                            //////   makeMultipleRequest(activity)
             return
         }
 
@@ -102,7 +80,7 @@ class Location {
     }
 
 
-}
+
 
 
 
