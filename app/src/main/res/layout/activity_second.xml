@@ -32,8 +32,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.498" />
 
-
-
     </FrameLayout>
     <ImageView
         android:id="@+id/imageView"
@@ -45,6 +43,7 @@
         android:scaleType="fitEnd"
         android:adjustViewBounds="true"
         app:srcCompat="@drawable/group_12_90b11781" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fragment2"
         android:layout_width="wrap_content"
@@ -53,6 +52,7 @@
         android:layout_margin="16dp"
         android:layout_marginEnd="50dp"
         android:layout_marginBottom="50dp"
+        app:backgroundTint="#c7d400"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/arrowleft" />

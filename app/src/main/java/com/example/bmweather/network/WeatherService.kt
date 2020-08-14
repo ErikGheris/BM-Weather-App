@@ -1,4 +1,4 @@
-package com.example.bmweather.Network
+package com.example.bmweather.network
 
 import com.example.bmweather.response.WeatherReport
 import retrofit2.Call

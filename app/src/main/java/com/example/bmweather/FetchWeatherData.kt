@@ -2,11 +2,11 @@ package com.example.bmweather
 
 import android.util.Log
 import android.widget.Toast
-import com.example.bmweather.Network.WeatherService
+import com.example.bmweather.network.WeatherService
 import com.example.bmweather.response.WeatherReport
 import retrofit2.Callback
 import retrofit2.Response
-import source.open.akash.mvvmlogin.Network.RetrofitRequest
+import com.example.bmweather.network.RetrofitRequest
 
 class FetchWeatherData {
     companion object FetchWeatherData {
@@ -30,7 +30,7 @@ class FetchWeatherData {
                             mainActivity.current(weatherReport.current)
                            // mainActivity.realTemp(weatherReport.current)
                             mainActivity.daily(weatherReport.daily[0])
-
+                            mainActivity.fetchHourlyWeather(weatherReport.hourly)
                         }
                         else
                             if (response.code()==404){

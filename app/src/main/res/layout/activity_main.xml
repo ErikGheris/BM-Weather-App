@@ -426,12 +426,16 @@
                     android:id="@+id/imageView"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
+                    android:adjustViewBounds="true"
+                    android:rotation="90"
+                    android:scaleType="fitEnd"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    android:scaleType="fitEnd"
-                    android:adjustViewBounds="true"
                     app:srcCompat="@drawable/group_12_90b11781" />
+
+
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -439,7 +443,13 @@
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </FrameLayout>
-
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/hourlylist"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginBottom="180dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
     <ProgressBar
         android:id="@+id/Progress"
         android:layout_width="45dp"
@@ -448,6 +458,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/frameLayout"
         app:layout_constraintTop_toTopOf="@+id/frameLayout" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 

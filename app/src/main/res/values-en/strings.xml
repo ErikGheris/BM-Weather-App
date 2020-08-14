@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">BM Weather</string>
-    <string name="search_button">Suchen</string>
-    <string name="searchHint">Suchen</string>
+    <string name="search_button">Search</string>
+    <string name="searchHint">Search</string>
     <string name="messageText">message_Text</string>
     <string name="temp_unit_c">°</string>
     <string name="weather_des">"Wetter: "</string>

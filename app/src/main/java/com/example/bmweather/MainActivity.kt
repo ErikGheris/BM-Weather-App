@@ -14,14 +14,16 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.AutoCompleteTextView
 import android.widget.ProgressBar
-import android.widget.SimpleAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.bmweather.adapter.HourlyArrayAdapter
 import com.example.bmweather.databinding.ActivityMainBinding
 import com.example.bmweather.location.LastLocation
 import com.example.bmweather.location.Location
 import com.example.bmweather.response.Current
 import com.example.bmweather.response.Daily
+import com.example.bmweather.response.Hourly
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Runnable
@@ -37,10 +39,10 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
     private val apiKey = "6133b390a077c487bc9ac43311b3ba26"
     private var cityName = ""
     private var units = "metric"
-    private var lang = "de"
+    private var lang = "en"
     private var lastCityCache = cityName
     private var searched: String = ""
-    private var exclude = "hourly,minutely"
+    private var exclude = "minutely"
     private val fetchWeather = FetchWeatherData
     private var searchedxCoordination = ""
     private var searchedyCoordination = ""
@@ -277,6 +279,11 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         binding.maxtemp.text =
             weather.temp.max.roundToInt().toString().plus(getString(R.string.temp_unit_c))
     }
+
+   fun fetchHourlyWeather(hourly: List<Hourly>) {
+       hourlylist.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+       hourlylist.adapter = HourlyArrayAdapter(hourly)
+   }
 
 
     override fun onRequestPermissionsResult(

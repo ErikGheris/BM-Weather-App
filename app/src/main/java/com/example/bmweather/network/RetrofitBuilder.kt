@@ -1,4 +1,4 @@
-package source.open.akash.mvvmlogin.Network
+package com.example.bmweather.network
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
