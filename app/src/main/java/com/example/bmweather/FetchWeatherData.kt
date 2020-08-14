@@ -5,11 +5,11 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
 import com.example.bmweather.Network.ConnectivityManagement
-import com.example.bmweather.Network.WeatherService
+import com.example.bmweather.network.RetrofitRequest
+import com.example.bmweather.network.WeatherService
 import com.example.bmweather.response.WeatherReport
 import retrofit2.Callback
 import retrofit2.Response
-import source.open.akash.mvvmlogin.Network.RetrofitRequest
 val load:Load = Load()
 
 class FetchWeatherData {
