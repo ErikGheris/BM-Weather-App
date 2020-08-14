@@ -8,12 +8,11 @@ import android.os.Handler
 import android.util.Log
 import android.view.WindowManager
 import android.widget.AutoCompleteTextView
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bmweather.adapter.HourlyArrayAdapter
-import com.example.bmweather.Network.ConnectivityManagement
+import com.example.bmweather.network.ConnectivityManagement
 import com.example.bmweather.databinding.ActivityMainBinding
 import com.example.bmweather.location.LastLocation
 import com.example.bmweather.location.Location

@@ -2,10 +2,8 @@ package com.example.bmweather
 
 import android.util.Log
 import android.view.View
-import android.widget.ProgressBar
 import android.widget.Toast
-import com.example.bmweather.Network.ConnectivityManagement
-import com.example.bmweather.network.RetrofitRequest
+import com.example.bmweather.network.RetrofitBuilder
 import com.example.bmweather.network.WeatherService
 import com.example.bmweather.response.WeatherReport
 import retrofit2.Callback
@@ -15,7 +13,7 @@ val load:Load = Load()
 class FetchWeatherData {
     companion object FetchWeatherData {
         val TAG: String?=FetchWeatherData::class.java.simpleName
-        private val apiRequest: WeatherService = RetrofitRequest.getRetrofitInstance().create(
+        private val apiRequest: WeatherService = RetrofitBuilder.getRetrofitInstance().create(
             WeatherService::class.java)
         fun getCurrentWeatherReport(app_id: String,lat: String, lon: String,lang: String,units: String,exclude: String, mainActivity: MainActivity, progressBar: View) {
                 load.start(progressBar = progressBar)
@@ -33,7 +31,7 @@ class FetchWeatherData {
                             mainActivity.current(weatherReport.current)
                            // mainActivity.realTemp(weatherReport.current)
                             mainActivity.daily(weatherReport.daily[0])
-                            mainActivity.fetchHourlyWeather(weatherReport.hourly)
+                            mainActivity.fetchHourlyWeather(weatherReport.hourly.take(24))
                             load.done(progressBar = progressBar)
                         }
                         else
@@ -68,7 +66,7 @@ class FetchWeatherData {
                         //On successful response builde string as defined later on
                         if (response.code() == 200 && response.code() != 400) {
                             val weatherReport = response.body()!!
-                            activity.fetchDailyWeather(weatherReport.daily)
+                            activity.fetchDailyWeather(weatherReport.daily.takeLast(7))
                         }
                         else
                             if (response.code()==404){

@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  * https://github.com/eduxcellence
  * akkr2017@gmail.com
  */
-class RetrofitRequest {
+class RetrofitBuilder {
 
 
 

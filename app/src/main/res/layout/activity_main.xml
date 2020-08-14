@@ -5,7 +5,8 @@
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:screenOrientation="portrait">
 
 
     <FrameLayout
@@ -422,19 +423,17 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+
                 <ImageView
                     android:id="@+id/imageView"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:adjustViewBounds="true"
-                    android:rotation="90"
-                    android:scaleType="fitEnd"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
+                    android:scaleType="fitEnd"
+                    android:adjustViewBounds="true"
                     app:srcCompat="@drawable/group_12_90b11781" />
-
 
 
 
@@ -458,6 +457,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/frameLayout"
         app:layout_constraintTop_toTopOf="@+id/frameLayout" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
