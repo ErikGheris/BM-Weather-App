@@ -1,21 +1,24 @@
 package com.example.bmweather
 
 import android.util.Log
+import android.view.View
+import android.widget.ProgressBar
 import android.widget.Toast
-import com.example.bmweather.network.WeatherService
+import com.example.bmweather.Network.ConnectivityManagement
+import com.example.bmweather.Network.WeatherService
 import com.example.bmweather.response.WeatherReport
 import retrofit2.Callback
 import retrofit2.Response
-import com.example.bmweather.network.RetrofitRequest
+import source.open.akash.mvvmlogin.Network.RetrofitRequest
+val load:Load = Load()
 
 class FetchWeatherData {
     companion object FetchWeatherData {
         val TAG: String?=FetchWeatherData::class.java.simpleName
         private val apiRequest: WeatherService = RetrofitRequest.getRetrofitInstance().create(
             WeatherService::class.java)
-
-        fun getCurrentWeatherReport(app_id: String,lat: String, lon: String,lang: String,units: String,exclude: String, mainActivity: MainActivity) {
-
+        fun getCurrentWeatherReport(app_id: String,lat: String, lon: String,lang: String,units: String,exclude: String, mainActivity: MainActivity, progressBar: View) {
+                load.start(progressBar = progressBar)
 
             Log.d(TAG, "onResponse response:: $app_id  $lat $lon $lang $units $exclude")
             apiRequest.getCurrentWeatherData(lat, lon, units, lang, app_id, exclude)
@@ -31,6 +34,7 @@ class FetchWeatherData {
                            // mainActivity.realTemp(weatherReport.current)
                             mainActivity.daily(weatherReport.daily[0])
                             mainActivity.fetchHourlyWeather(weatherReport.hourly)
+                            load.done(progressBar = progressBar)
                         }
                         else
                             if (response.code()==404){
