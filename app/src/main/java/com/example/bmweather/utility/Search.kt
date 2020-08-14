@@ -1,4 +1,4 @@
-package com.example.bmweather
+package com.example.bmweather.utility
 
 import android.text.Editable
 import android.widget.AutoCompleteTextView

@@ -1,6 +1,6 @@
 package com.example.bmweather.network
 
-import com.example.bmweather.response.WeatherReport
+import com.example.bmweather.openweathermap.response.WeatherReport
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query

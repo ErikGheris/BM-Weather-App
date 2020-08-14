@@ -12,7 +12,6 @@ import android.os.Looper
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.bmweather.LocationReceiver
 import com.example.bmweather.MainActivity
 import com.example.bmweather.R
 import com.google.android.gms.location.*

@@ -3,7 +3,8 @@ package com.example.bmweather
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bmweather.adapter.DailyArrayAdapter
 import com.example.bmweather.databinding.ActivitySecondBinding
-import com.example.bmweather.response.Daily
+import com.example.bmweather.openweathermap.FetchWeatherData
+import com.example.bmweather.openweathermap.response.Daily
 import kotlinx.android.synthetic.main.activity_second.*
 
 lateinit var binding: ActivitySecondBinding

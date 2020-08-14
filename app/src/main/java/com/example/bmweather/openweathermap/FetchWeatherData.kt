@@ -1,21 +1,26 @@
-package com.example.bmweather
+package com.example.bmweather.openweathermap
 
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import com.example.bmweather.utility.Load
+import com.example.bmweather.MainActivity
+import com.example.bmweather.SecondActivity
 import com.example.bmweather.network.RetrofitRequest
 import com.example.bmweather.network.WeatherService
-import com.example.bmweather.response.WeatherReport
+import com.example.bmweather.openweathermap.response.WeatherReport
 import retrofit2.Callback
 import retrofit2.Response
-val load:Load = Load()
+val load: Load =
+    Load()
 
 class FetchWeatherData {
     companion object FetchWeatherData {
-        val TAG: String?=FetchWeatherData::class.java.simpleName
+        val TAG: String?=
+            FetchWeatherData::class.java.simpleName
         private val apiRequest: WeatherService = RetrofitRequest.getRetrofitInstance().create(
             WeatherService::class.java)
-        fun getCurrentWeatherReport(app_id: String,lat: String, lon: String,lang: String,units: String,exclude: String, mainActivity: MainActivity, progressBar: View) {
+        fun getCurrentWeatherReport(app_id: String, lat: String, lon: String, lang: String, units: String, exclude: String, mainActivity: MainActivity, progressBar: View) {
                 load.start(progressBar = progressBar)
 
             Log.d(TAG, "onResponse response:: $app_id  $lat $lon $lang $units $exclude")

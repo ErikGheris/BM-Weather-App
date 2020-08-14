@@ -1,7 +1,5 @@
-package com.example.bmweather.response
+package com.example.bmweather.openweathermap.response
 
-
-import com.google.gson.annotations.SerializedName
 
 data class Weather(
     var description: String,

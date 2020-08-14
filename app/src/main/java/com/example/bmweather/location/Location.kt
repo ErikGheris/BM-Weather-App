@@ -7,9 +7,8 @@ import android.location.LocationManager
 import android.os.Looper
 import android.util.Log
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import com.example.bmweather.FetchWeatherData
+import com.example.bmweather.openweathermap.FetchWeatherData
 import com.example.bmweather.MainActivity
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest

@@ -1,4 +1,4 @@
-package com.example.bmweather
+package com.example.bmweather.utility
 
 import android.view.View
 

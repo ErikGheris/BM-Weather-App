@@ -1,12 +1,11 @@
 package com.example.bmweather.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bmweather.R
-import com.example.bmweather.response.Hourly
+import com.example.bmweather.openweathermap.response.Hourly
 import kotlinx.android.synthetic.main.hourly_item.view.*
 import java.text.SimpleDateFormat
 import kotlin.math.roundToInt

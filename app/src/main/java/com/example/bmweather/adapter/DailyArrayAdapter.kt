@@ -10,10 +10,8 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.example.bmweather.R
-import com.example.bmweather.binding
-import com.example.bmweather.response.Daily
+import com.example.bmweather.openweathermap.response.Daily
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.daily_item.view.*
 import java.text.SimpleDateFormat
 import kotlin.math.roundToInt
 

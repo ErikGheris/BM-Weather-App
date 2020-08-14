@@ -15,9 +15,13 @@ import com.example.bmweather.adapter.HourlyArrayAdapter
 import com.example.bmweather.network.ConnectivityManagement
 import com.example.bmweather.databinding.ActivityMainBinding
 import com.example.bmweather.location.LastLocation
-import com.example.bmweather.response.Current
-import com.example.bmweather.response.Daily
-import com.example.bmweather.response.Hourly
+import com.example.bmweather.location.LocationReceiver
+import com.example.bmweather.openweathermap.FetchWeatherData
+import com.example.bmweather.openweathermap.response.Current
+import com.example.bmweather.openweathermap.response.Daily
+import com.example.bmweather.openweathermap.response.Hourly
+import com.example.bmweather.utility.Load
+import com.example.bmweather.utility.Search
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Runnable
@@ -25,7 +29,8 @@ import java.text.SimpleDateFormat
 import kotlin.math.roundToInt
 
 @Suppress("DEPRECATION")
-class MainActivity : AppCompatActivity(), LocationReceiver {
+class MainActivity : AppCompatActivity(),
+    LocationReceiver {
     override var xCoordination: String = ""
     override var yCoordination: String = ""
     override var countryCode: String = ""
@@ -39,11 +44,13 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
     private var lastCityCache = cityName
     private var searched: String = ""
     private var exclude = "minutely"
-    private val fetchWeather = FetchWeatherData
+    private val fetchWeather =
+        FetchWeatherData
     private lateinit var lastLocation: LastLocation
     private lateinit var binding: ActivityMainBinding
     private var searching = false
-    private var load: Load = Load()
+    private var load: Load =
+        Load()
     lateinit var connectivityManagement: ConnectivityManagement
     // TODO: 12.08.20   lazy declarataion vs inFunctionDeclaration
     //  val list : ArrayList by lazy { ArrayList() }
