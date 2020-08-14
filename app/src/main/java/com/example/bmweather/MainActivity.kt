@@ -8,15 +8,13 @@ import android.os.Handler
 import android.util.Log
 import android.view.WindowManager
 import android.widget.AutoCompleteTextView
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bmweather.adapter.HourlyArrayAdapter
-import com.example.bmweather.Network.ConnectivityManagement
+import com.example.bmweather.network.ConnectivityManagement
 import com.example.bmweather.databinding.ActivityMainBinding
 import com.example.bmweather.location.LastLocation
-import com.example.bmweather.location.Location
 import com.example.bmweather.response.Current
 import com.example.bmweather.response.Daily
 import com.example.bmweather.response.Hourly
@@ -67,12 +65,11 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         setContentView(binding.root)
 
         val mainActivityContext = applicationContext
-        lastLocation =
-            LastLocation(mainActivityContext)
+        lastLocation = LastLocation(mainActivityContext)
         connectivityManagement = ConnectivityManagement(mainActivityContext)
 
         lastLocation.setupPermissions(this, this)
-        //!!!!!!!!!!!!!!
+
         lastLocation.setUpLocationListener(
             this, this
         )
@@ -145,6 +142,12 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         backPressedTime = System.currentTimeMillis()
     }
 
+
+    override fun onStop() {
+        super.onStop()
+
+
+    }
     private fun searchButtonAction() {
 
         binding.searchButton.setOnClickListener {
@@ -208,7 +211,6 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         )
     }
 
-
     private fun activityButtonAction() {
         binding.activityButton.setOnClickListener {
             val intent = Intent(this, SecondActivity::class.java)
@@ -242,7 +244,6 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         }
     }
 
-
     private fun setSearchedCityInfoInTV() {
         val (locale, countryCode) = getCityInfo()
         binding.city.text = getString(R.string.City, locale, countryCode)
@@ -253,7 +254,6 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         val countryCode = lastLocation.getCountryCodeFromName(cityName)
         return Pair(locale, countryCode)
     }
-
 
     private fun clearInputText(textView: AutoCompleteTextView) {
         textView.setText("")
@@ -305,13 +305,13 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
         grantResults: IntArray
     ) {
         when (requestCode) {
-            Location().permissionslistRequestCode -> {
+            lastLocation.permissionsRequestCode -> {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     lastLocation.setUpLocationListener(
                         this, this
                     )
                     Log.i(
-                        Location().tag,
+                        lastLocation.tag,
                         "Permission has been denied by user"
                     )
                     Toast.makeText(
@@ -323,7 +323,7 @@ class MainActivity : AppCompatActivity(), LocationReceiver {
                         this, this
                     )
                     Log.i(
-                        Location().tag,
+                lastLocation.tag,
                         "Permission has been granted by user"
                     )
                     Toast.makeText(

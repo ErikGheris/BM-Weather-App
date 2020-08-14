@@ -1,18 +1,17 @@
-package com.example.bmweather.Network
+package com.example.bmweather.network
 
 import android.content.Context
-import android.content.res.Resources
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.provider.Settings.Global.getString
-import android.provider.Settings.Secure.getString
 import android.widget.Toast
-import androidx.core.content.res.TypedArrayUtils.getString
 import com.example.bmweather.R
 
 class ConnectivityManagement(context: Context) {
  private val connectionStatusToast:Toast =  Toast.makeText(context,
   (R.string.no_internet), Toast.LENGTH_SHORT)
+
+
+
 
 
     // TODO: 13.08.20  connectionStatusToast should use :>      Resources.getSystem().getString(R.string.no_internet) as the text

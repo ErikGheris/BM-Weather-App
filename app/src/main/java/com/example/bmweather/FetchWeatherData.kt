@@ -2,9 +2,7 @@ package com.example.bmweather
 
 import android.util.Log
 import android.view.View
-import android.widget.ProgressBar
 import android.widget.Toast
-import com.example.bmweather.Network.ConnectivityManagement
 import com.example.bmweather.network.RetrofitRequest
 import com.example.bmweather.network.WeatherService
 import com.example.bmweather.response.WeatherReport
