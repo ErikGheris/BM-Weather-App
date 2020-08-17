@@ -5,10 +5,12 @@ import android.view.View
 import android.widget.Toast
 import com.example.bmweather.network.RetrofitBuilder
 import com.example.bmweather.network.WeatherService
-import com.example.bmweather.response.WeatherReport
+import com.example.bmweather.openweathermap.response.WeatherReport
+import com.example.bmweather.utility.Load
+import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-val load:Load = Load()
+val load: Load = Load()
 
 class FetchWeatherData {
     companion object FetchWeatherData {
@@ -22,7 +24,7 @@ class FetchWeatherData {
             apiRequest.getCurrentWeatherData(lat, lon, units, lang, app_id, exclude)
                 .enqueue(object : Callback<WeatherReport> {
                     override fun onResponse(
-                        call: retrofit2.Call<WeatherReport>,
+                        call: Call<WeatherReport>,
                         response: Response<WeatherReport>
                     ) {
                         //On successful response builde string as defined later on
@@ -47,7 +49,7 @@ class FetchWeatherData {
                             }
                     }
                     //Message in the case of failed API call
-                    override fun onFailure(call: retrofit2.Call<WeatherReport>, t: Throwable) {
+                    override fun onFailure(call: Call<WeatherReport>, t: Throwable) {
                         t.printStackTrace()
                     }
                 })
@@ -60,7 +62,7 @@ class FetchWeatherData {
             apiRequest.getCurrentWeatherData(lat, lon, units, lang, app_id, exclude)
                 .enqueue(object : Callback<WeatherReport> {
                     override fun onResponse(
-                        call: retrofit2.Call<WeatherReport>,
+                        call: Call<WeatherReport>,
                         response: Response<WeatherReport>
                     ) {
                         //On successful response builde string as defined later on
@@ -81,7 +83,7 @@ class FetchWeatherData {
                             }
                     }
                     //Message in the case of failed API call
-                    override fun onFailure(call: retrofit2.Call<WeatherReport>, t: Throwable) {
+                    override fun onFailure(call: Call<WeatherReport>, t: Throwable) {
                         t.printStackTrace()
                     }
                 })

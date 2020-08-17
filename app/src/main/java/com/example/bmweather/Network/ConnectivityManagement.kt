@@ -10,12 +10,6 @@ class ConnectivityManagement(context: Context) {
  private val connectionStatusToast:Toast =  Toast.makeText(context,
   (R.string.no_internet), Toast.LENGTH_SHORT)
 
-
-
-
-
-    // TODO: 13.08.20  connectionStatusToast should use :>      Resources.getSystem().getString(R.string.no_internet) as the text
-
  fun networkCheck(context: Context): Boolean {
         val statusCheck = networkAvailabilityStatus(context)
         return if (!statusCheck) {
@@ -24,7 +18,6 @@ class ConnectivityManagement(context: Context) {
         } else
             true
     }
-
 
  private fun networkAvailabilityStatus(context: Context): Boolean {
         val result: Boolean
@@ -39,8 +32,6 @@ class ConnectivityManagement(context: Context) {
             activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
             else -> false
         }
-
         return result
     }
-
 }

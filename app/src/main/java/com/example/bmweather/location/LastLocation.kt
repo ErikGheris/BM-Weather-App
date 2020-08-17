@@ -10,6 +10,7 @@ import android.location.Address
 import android.location.Geocoder
 import android.os.Looper
 import android.util.Log
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.bmweather.MainActivity
@@ -26,6 +27,7 @@ class LastLocation(context: Context) {
     private var resultMessage = "SKSKSK"
     private var location = false
     val tag = "PermissionDemo"
+    val PASSED_CONTEXT = context
 
 
 /*
@@ -183,5 +185,41 @@ val addressListOfCurrentLocation:  ArrayList<Address>
         return locale
     }
 
+    fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray,
+    LocationReceiver: LocationReceiver
+    ) {
+        when (requestCode) {
+        permissionsRequestCode -> {
+                if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+            setUpLocationListener(
+                        PASSED_CONTEXT, LocationReceiver
+                    )
+                    Log.i(
+                       tag,
+                        "Permission has been denied by user"
+                    )
+                    Toast.makeText(
+                        PASSED_CONTEXT, "Permission has been denied by user",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+           setUpLocationListener(
+                        PASSED_CONTEXT, LocationReceiver
+                    )
+                    Log.i(
+                   tag,
+                        "Permission has been granted by user"
+                    )
+                    Toast.makeText(
+                        PASSED_CONTEXT, "Permission has been granted by user",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+    }
 
 }

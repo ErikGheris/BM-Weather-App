@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bmweather.R
-import com.example.bmweather.response.Hourly
+import com.example.bmweather.openweathermap.response.Hourly
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.hourly_item.view.*
 import java.text.SimpleDateFormat

@@ -6,7 +6,7 @@ import android.widget.Toast
 import com.example.bmweather.utility.Load
 import com.example.bmweather.MainActivity
 import com.example.bmweather.SecondActivity
-import com.example.bmweather.network.RetrofitRequest
+import com.example.bmweather.network.RetrofitBuilder
 import com.example.bmweather.network.WeatherService
 import com.example.bmweather.openweathermap.response.WeatherReport
 import retrofit2.Callback
@@ -18,7 +18,7 @@ class FetchWeatherData {
     companion object FetchWeatherData {
         val TAG: String?=
             FetchWeatherData::class.java.simpleName
-        private val apiRequest: WeatherService = RetrofitRequest.getRetrofitInstance().create(
+        private val apiRequest: WeatherService = RetrofitBuilder.getRetrofitInstance().create(
             WeatherService::class.java)
         fun getCurrentWeatherReport(app_id: String, lat: String, lon: String, lang: String, units: String, exclude: String, mainActivity: MainActivity, progressBar: View) {
                 load.start(progressBar = progressBar)
