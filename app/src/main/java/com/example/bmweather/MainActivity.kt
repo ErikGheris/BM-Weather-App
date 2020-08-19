@@ -26,6 +26,7 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Runnable
 import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.math.roundToInt
 
 @Suppress("DEPRECATION")
@@ -197,7 +198,7 @@ class MainActivity : AppCompatActivity(),
             apiKey,
             lat = searchedXCoordination,
             lon = searchedYCoordination,
-            lang = lang,
+            lang = Locale.getDefault().language,
             units = units,
             exclude = exclude,
             mainActivity = this,
@@ -210,7 +211,7 @@ class MainActivity : AppCompatActivity(),
             app_id = apiKey,
             lat = xCoordination,
             lon = yCoordination,
-            lang = lang,
+            lang = Locale.getDefault().language,
             units = units,
             exclude = exclude,
             mainActivity = this,
