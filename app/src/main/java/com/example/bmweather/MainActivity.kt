@@ -209,9 +209,12 @@ class MainActivity : AppCompatActivity(),
 fun uiUtility(){
     load.done(binding.Progress)
     window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+    if(!searching){
         binding.city.text = getString(R.string.City, locality, countryCode)
+        }
+    else{
+      setSearchedCityInfoInTV()
     }
-}
 }
     private fun setSearchedCityInfoInTV() {
         val (locale, countryCode) = getCityInfo()
