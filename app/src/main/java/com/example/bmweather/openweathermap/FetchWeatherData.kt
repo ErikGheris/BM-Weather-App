@@ -57,6 +57,7 @@ class FetchWeatherData {
                         t.printStackTrace()
                     }
                 })
+            // TODO: 19.08.20 commented because it was causing a problem
             mainActivity.delayHandler()
         }
         fun getForeCastWeatherReport(app_id: String, lat: String, lon: String, lang: String, units: String, exclude: String, activity: SecondActivity) {
@@ -73,6 +74,7 @@ class FetchWeatherData {
                         if (response.code() == 200 && response.code() != 400) {
                             val weatherReport = response.body()!!
                             activity.fetchDailyWeather(weatherReport.daily)
+                            activity.uiUtility()
                         }
                         else
                             if (response.code()==404){

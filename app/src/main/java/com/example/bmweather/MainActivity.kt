@@ -24,7 +24,7 @@ import com.example.bmweather.utility.Load
 import com.example.bmweather.utility.Search
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.Runnable
+import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
@@ -34,6 +34,9 @@ class MainActivity : AppCompatActivity(),
     LocationReceiver {
     override var xCoordination: String = ""
     override var yCoordination: String = ""
+    override var firstLatitude: String = ""
+    override var firstLongitude: String = ""
+    override var time: Long = 0
     override var countryCode: String = ""
     override var locality: String = ""
     private var searchedXCoordination = ""
@@ -66,8 +69,14 @@ class MainActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+        )
 
         val mainActivityContext = applicationContext
         lastLocation = LastLocation(mainActivityContext)
@@ -106,11 +115,6 @@ class MainActivity : AppCompatActivity(),
     }
 
 
-    override fun onStop() {
-        super.onStop()
-
-
-    }
     private fun searchButtonAction() {
 
         binding.searchButton.setOnClickListener {
@@ -185,7 +189,7 @@ class MainActivity : AppCompatActivity(),
             }
             Toast.makeText(
                 this,
-                " Forecast for:  $searchedXCoordination, $searchedYCoordination",
+                "wait a sec... ",
                 Toast.LENGTH_SHORT
             ).show()
             startActivity(intent)
@@ -196,12 +200,12 @@ class MainActivity : AppCompatActivity(),
 
         binding.swipe.setOnRefreshListener {
             searching = false
-            binding.city.text = getString(R.string.City, locality, countryCode)
             makeCurrentLocationWeatherRequest()
             Toast.makeText(
                 this, "Data Updated, Coordinates are $xCoordination, $yCoordination",
                 Toast.LENGTH_SHORT
             ).show()
+          //  binding.city.text = getString(R.string.City, locality, countryCode)
             // Hide swipe to refresh icon animation
             swipe.isRefreshing = false
         }
@@ -265,10 +269,10 @@ fun uiUtility(){
             weather.temp.max.roundToInt().toString().plus(getString(R.string.temp_unit_c))
     }
 
-   fun fetchHourlyWeather(hourly: List<Hourly>) {
-       hourlylist.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-       hourlylist.adapter = HourlyArrayAdapter(hourly)
-   }
+    fun fetchHourlyWeather(hourly: List<Hourly>) {
+        hourlylist.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        hourlylist.adapter = HourlyArrayAdapter(hourly)
+    }
 
 
     override fun onRequestPermissionsResult(
@@ -280,8 +284,10 @@ fun uiUtility(){
             lastLocation.permissionsRequestCode -> {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     lastLocation.setUpLocationListener(
-                        this, this
-                    )
+                        this, this, binding.Progress
+                    ){
+
+                    }
                     Log.i(
                         lastLocation.tag,
                         "Permission has been denied by user"
@@ -292,12 +298,24 @@ fun uiUtility(){
                     ).show()
                 } else {
                     lastLocation.setUpLocationListener(
-                        this, this
-                    )
+                        this, this, binding.Progress
+                    ){
+
+                    }
                     Log.i(
-                lastLocation.tag,
+                        lastLocation.tag,
                         "Permission has been granted by user"
                     )
+
+                    lastLocation.setUpLocationListener(
+                        this, this, binding.Progress
+                    ){
+                        makeCurrentLocationWeatherRequest()
+                    }
+
+
+
+
                     Toast.makeText(
                         this, "Permission has been granted by user",
                         Toast.LENGTH_SHORT

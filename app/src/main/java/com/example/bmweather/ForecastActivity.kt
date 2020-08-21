@@ -1,5 +1,6 @@
 package com.example.bmweather
 
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bmweather.adapter.DailyArrayAdapter
 import com.example.bmweather.databinding.ActivitySecondBinding
@@ -18,6 +19,10 @@ var latitude: String = ""
 class SecondActivity : AppCompatActivity() {
     
     override fun onStart() {
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+        )
         latitude = intent.getStringExtra("xCoordination").toString().trim()
         longitude = intent.getStringExtra("yCoordination").toString().trim()
         super.onStart()
@@ -47,5 +52,6 @@ class SecondActivity : AppCompatActivity() {
 
     fun uiUtility(){
         load.done(binding.secondActivitySpinner)
+        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
 }
