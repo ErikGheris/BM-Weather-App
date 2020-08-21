@@ -19,8 +19,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.bmweather.FetchWeatherData
-import com.example.bmweather.FetchWeatherData.FetchWeatherData.TAG
+import com.example.bmweather.openweathermap.FetchWeatherData
+import com.example.bmweather.openweathermap.FetchWeatherData.FetchWeatherData.TAG
 import com.example.bmweather.MainActivity
 import com.example.bmweather.R
 import com.example.bmweather.utility.Load
@@ -109,7 +109,7 @@ val addressListOfCurrentLocation:  ArrayList<Address>
         //   load.start(progressBar)
 
         // for getting the current location update after every 10 seconds with high accuracy
-        val locationRequest = LocationRequest().setInterval(10000).setFastestInterval(10000)
+        val locationRequest = LocationRequest()
             .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
 
         fusedLocationProviderClient.requestLocationUpdates(
