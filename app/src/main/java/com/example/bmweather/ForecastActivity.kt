@@ -45,5 +45,7 @@ class SecondActivity : AppCompatActivity() {
 
     }
 
-
+    fun uiUtility(){
+        load.done(binding.secondActivitySpinner)
+    }
 }
