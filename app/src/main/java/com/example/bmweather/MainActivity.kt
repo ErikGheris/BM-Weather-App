@@ -209,6 +209,7 @@ class MainActivity : AppCompatActivity(),
 fun uiUtility(){
     load.done(binding.Progress)
     window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        binding.city.text = getString(R.string.City, locality, countryCode)
     }
 }
 }
