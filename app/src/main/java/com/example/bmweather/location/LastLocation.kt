@@ -2,6 +2,7 @@ package com.example.bmweather.location
 
 import  android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.pm.PackageManager
@@ -13,7 +14,9 @@ import android.os.Looper
 import android.util.Log
 import android.util.Pair
 import android.view.View
+import android.view.WindowManager
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.bmweather.FetchWeatherData
@@ -28,6 +31,7 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.concurrent.TimeUnit
+import javax.xml.xpath.XPathExpression
 import kotlin.collections.ArrayList
 import kotlin.time.ExperimentalTime
 import kotlin.time.seconds
@@ -68,29 +72,19 @@ val addressListOfCurrentLocation:  ArrayList<Address>
 
 
     fun setupPermissions(context: Context, activity: MainActivity) {
-        val fineLocationPermission = ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        )
-        val coarseLocationPermission = ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        )
+        val fineLocationPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+        val coarseLocationPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
 
         if (fineLocationPermission != PackageManager.PERMISSION_GRANTED || coarseLocationPermission != PackageManager.PERMISSION_GRANTED) {
             Log.i(tag, "Permission to record denied")
-            if (ActivityCompat.shouldShowRequestPermissionRationale(
-                    activity,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )
+            if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.ACCESS_FINE_LOCATION)
             ) {
                 val builder = AlertDialog.Builder(context)
                 builder.setMessage("Permission to access the Location is required for this app to Show results based on your LAST KNOWN LOCATION.")
                     .setTitle("Permission required")
-                builder.setPositiveButton(
-                    "OK"
-                ) { _, _ ->
+                builder.setPositiveButton("OK") { _, _ ->
                     Log.i(tag, "Clicked")
+                    // ask for requests again
                     makeMultipleRequest(activity)
                 }
                 val dialog = builder.create()
@@ -106,7 +100,8 @@ val addressListOfCurrentLocation:  ArrayList<Address>
     fun setUpLocationListener(
         context: Context,
         LocationReceiver: LocationReceiver,
-        progressBar: View
+        progressBar: View,
+        expression: (() -> Unit)
     ) {
         load.start(progressBar)
 
@@ -133,7 +128,7 @@ val addressListOfCurrentLocation:  ArrayList<Address>
                             LocationReceiver.locality = myAddressList[0].locality
                             LocationReceiver.xCoordination = location.latitude.toString()
                             LocationReceiver.yCoordination = location.longitude.toString()
-                            //   load.done( progressBar)
+                            expression.invoke()
                         }
                         //  load.done(progressBar)
                     } else {
@@ -170,23 +165,24 @@ val addressListOfCurrentLocation:  ArrayList<Address>
     }
 
 
+
     @SuppressLint("MissingPermission")
     fun getLastLocation(
-        LocationReceiver: LocationReceiver
+        LocationReceiver: LocationReceiver,  expression: (() -> Unit)
     )    {
 
+
      //  var mlastLocation: Location? = null
-            fusedLocationProviderClient?.lastLocation!!.addOnCompleteListener() { task ->
+
+        fusedLocationProviderClient?.lastLocation!!.addOnCompleteListener() { task ->
                 if (task.isSuccessful && task.result != null) {
                     task.result!!.time
                   val  mlastLocation = task.result
                     LocationReceiver.firstLatitude = mlastLocation?.latitude.toString()
                     LocationReceiver.firstLongitude =mlastLocation?.longitude.toString()
-
-
-
-
                     LocationReceiver.time = mlastLocation?.time!!
+                    expression.invoke()
+
 
                 }
                 else

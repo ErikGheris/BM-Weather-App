@@ -37,6 +37,7 @@ class FetchWeatherData {
                            // mainActivity.realTemp(weatherReport.current)
                             mainActivity.daily(weatherReport.daily[0])
                             mainActivity.fetchHourlyWeather(weatherReport.hourly)
+                            mainActivity.uiUtility()
                             load.done(progressBar = progressBar)
                         }
                         else

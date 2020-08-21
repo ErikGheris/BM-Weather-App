@@ -41,17 +41,14 @@ class MainActivity : AppCompatActivity(),
     private val apiKey = "6133b390a077c487bc9ac43311b3ba26"
     private var cityName = ""
     private var units = "metric"
-    private var lang = "en"
     private var lastCityCache = cityName
     private var searched: String = ""
     private var exclude = "minutely"
-    private val fetchWeather =
-        FetchWeatherData
+    private val fetchWeather = FetchWeatherData
     private lateinit var lastLocation: LastLocation
     private lateinit var binding: ActivityMainBinding
     private var searching = false
-    private var load: Load =
-        Load()
+    private var load: Load = Load()
     lateinit var connectivityManagement: ConnectivityManagement
     // TODO: 12.08.20   lazy declarataion vs inFunctionDeclaration
     //  val list : ArrayList by lazy { ArrayList() }
@@ -79,9 +76,14 @@ class MainActivity : AppCompatActivity(),
         lastLocation.setupPermissions(this, this)
 
         lastLocation.setUpLocationListener(
-            this, this
-        )
-
+            this, this, binding.Progress
+        ){
+            if(!searching){
+            makeCurrentLocationWeatherRequest()}
+            else{
+                makeSearchWeatherRequest()
+            }
+        }
         binding.searchInput.setOnClickListener {
             clearInputText(binding.searchInput)
         }
@@ -89,53 +91,6 @@ class MainActivity : AppCompatActivity(),
         searchButtonAction()
         swipeAction()
         activityButtonAction()
-
-    }
-
-
-    override fun onStart() {
-        super.onStart()
-
-        if (xCoordination.isEmpty()) {
-            Handler().postDelayed({
-                binding.city.text = getString(R.string.City, locality, countryCode)
-                makeCurrentLocationWeatherRequest()
-                Toast.makeText(
-                    this, "Data Updated, Coordinates are $xCoordination, $yCoordination",
-                    Toast.LENGTH_SHORT
-                ).show()
-                // Hide swipe to refresh icon animation
-                swipe.isRefreshing = false
-                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                load.done(binding.Progress)
-            }, 4000)
-            window.setFlags(
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-            )
-        } else {
-            if (!searching) {
-                binding.city.text = getString(R.string.City, locality, countryCode)
-                makeCurrentLocationWeatherRequest()
-                Toast.makeText(
-                    this, "Data Updated, Coordinates are $xCoordination, $yCoordination",
-                    Toast.LENGTH_SHORT
-                ).show()
-                // Hide swipe to refresh icon animation
-                swipe.isRefreshing = false
-
-                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                load.done(binding.Progress)
-
-            } else {
-                lastCityCache = cityName
-                cityName = searched
-                setSearchedCoordinates()
-                setSearchedCityInfoInTV()
-                makeSearchWeatherRequest()
-                load.done(binding.Progress)
-            }
-        }
     }
 
     override fun onBackPressed() {
@@ -251,7 +206,12 @@ class MainActivity : AppCompatActivity(),
             swipe.isRefreshing = false
         }
     }
-
+fun uiUtility(){
+    load.done(binding.Progress)
+    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+    }
+}
+}
     private fun setSearchedCityInfoInTV() {
         val (locale, countryCode) = getCityInfo()
         binding.city.text = getString(R.string.City, locale, countryCode)

@@ -15,6 +15,7 @@
     <string name="default_lng">Last Known Longitude: </string>
     <string name="empty">" " </string>
     <string name="City">"  %1$s, %2$s "</string>
+    <string name="timeF" translatable="false">"  %1$tT "</string>
     <string name="min_max">Min/Max</string>
     <string name="feels_like">Feels Like</string>
     <string name="find_me">Coordinations</string>
