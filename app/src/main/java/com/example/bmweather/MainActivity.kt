@@ -1,12 +1,14 @@
 package com.example.bmweather
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -113,7 +115,13 @@ class MainActivity : AppCompatActivity(),
         }
         backPressedTime = System.currentTimeMillis()
     }
-
+    private fun closeKeyboard() {
+        val view = this.currentFocus
+        if (view != null) {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+    }
 
     private fun searchButtonAction() {
 
@@ -144,6 +152,7 @@ class MainActivity : AppCompatActivity(),
                 ).show()
                 clearInputText(binding.searchInput)
             }
+            closeKeyboard()
         }
     }
 
