@@ -14,10 +14,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bmweather.adapter.HourlyArrayAdapter
-import com.example.bmweather.network.ConnectivityManagement
 import com.example.bmweather.databinding.ActivityMainBinding
 import com.example.bmweather.location.LastLocation
 import com.example.bmweather.location.LocationReceiver
+import com.example.bmweather.network.ConnectivityManagement
 import com.example.bmweather.openweathermap.FetchWeatherData
 import com.example.bmweather.openweathermap.response.Current
 import com.example.bmweather.openweathermap.response.Daily
@@ -26,7 +26,7 @@ import com.example.bmweather.utility.Load
 import com.example.bmweather.utility.Search
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Runnable
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
@@ -70,8 +70,6 @@ class MainActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -88,10 +86,10 @@ class MainActivity : AppCompatActivity(),
 
         lastLocation.setUpLocationListener(
             this, this, binding.Progress
-        ){
-            if(!searching){
-            makeCurrentLocationWeatherRequest()}
-            else{
+        ) {
+            if (!searching) {
+                makeCurrentLocationWeatherRequest()
+            } else {
                 makeSearchWeatherRequest()
             }
         }
@@ -102,6 +100,33 @@ class MainActivity : AppCompatActivity(),
         searchButtonAction()
         swipeAction()
         activityButtonAction()
+
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        lastLocation.setUpLocationListener(
+            this, this, binding.Progress
+        ) {
+            if (!searching) {
+                makeCurrentLocationWeatherRequest()
+            } else {
+                makeSearchWeatherRequest()
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        lastLocation.setUpLocationListener(
+            this, this, binding.Progress
+        ) {
+            if (!searching) {
+                makeCurrentLocationWeatherRequest()
+            } else {
+                makeSearchWeatherRequest()
+            }
+        }
     }
 
     override fun onBackPressed() {
@@ -115,6 +140,7 @@ class MainActivity : AppCompatActivity(),
         }
         backPressedTime = System.currentTimeMillis()
     }
+
     private fun closeKeyboard() {
         val view = this.currentFocus
         if (view != null) {
@@ -126,32 +152,39 @@ class MainActivity : AppCompatActivity(),
     private fun searchButtonAction() {
 
         binding.searchButton.setOnClickListener {
-
-            searched = Search().get(search_input).toString()
-            searching = true
-            if (searched.trim().isNotEmpty()) {
-                lastCityCache = cityName
-                cityName = searched
-                if (connectivityManagement.networkCheck(this)) {
-                    setSearchedCoordinates()
-                    setSearchedCityInfoInTV()
-                    makeSearchWeatherRequest()
-                    //safe city
-                    Toast.makeText(
-                        this,
-                        "looking for $searched's Weather Info, Coordinates are $searchedXCoordination $searchedYCoordination",
-                        Toast.LENGTH_SHORT
-                    )
-                        .show()
-                    clearInputText(binding.searchInput)
+            if (lastLocation.isLocationEnabled(this)) {
+                searched = Search().get(search_input).toString()
+                searching = true
+                if (searched.trim().isNotEmpty()) {
+                    lastCityCache = cityName
+                    cityName = searched
+                    if (connectivityManagement.networkCheck(this)) {
+                        setSearchedCoordinates()
+                        setSearchedCityInfoInTV()
+                        makeSearchWeatherRequest()
+                        //safe city
+                        Toast.makeText(
+                            this,
+                            "looking for $searched's Weather Info, Coordinates are $searchedXCoordination $searchedYCoordination",
+                            Toast.LENGTH_SHORT
+                        )
+                            .show()
+                        clearInputText(binding.searchInput)
+                    } else {
+                        Toast.makeText(
+                            this, "Please enter a Location!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        clearInputText(binding.searchInput)
+                    }
                 }
-            } else {
+            } else
                 Toast.makeText(
-                    this, "Please enter a Location!",
+                    this,
+                    getString(R.string.location_services_not_enabled),
                     Toast.LENGTH_SHORT
                 ).show()
-                clearInputText(binding.searchInput)
-            }
+
             closeKeyboard()
         }
     }
@@ -189,46 +222,63 @@ class MainActivity : AppCompatActivity(),
 
     private fun activityButtonAction() {
         binding.activityButton.setOnClickListener {
-            val intent = Intent(this, SecondActivity::class.java)
-            if (!searching) {
-                intent.putExtra("xCoordination", xCoordination)
-                intent.putExtra("yCoordination", yCoordination); } else {
-                intent.putExtra("xCoordination", searchedXCoordination)
-                intent.putExtra("yCoordination", searchedYCoordination)
-            }
-            Toast.makeText(
-                this,
-                "wait a sec... ",
-                Toast.LENGTH_SHORT
-            ).show()
-            startActivity(intent)
+            if (lastLocation.isLocationEnabled(this)) {
+                val intent = Intent(this, SecondActivity::class.java)
+                if (!searching) {
+                    intent.putExtra("xCoordination", xCoordination)
+                    intent.putExtra("yCoordination", yCoordination); } else {
+                    intent.putExtra("xCoordination", searchedXCoordination)
+                    intent.putExtra("yCoordination", searchedYCoordination)
+                }
+                Toast.makeText(
+                    this,
+                    "wait a sec... ",
+                    Toast.LENGTH_SHORT
+                ).show()
+                startActivity(intent)
+            } else
+                Toast.makeText(
+                    this,
+                    getString(R.string.location_services_not_enabled),
+                    Toast.LENGTH_SHORT
+                ).show()
         }
+
     }
 
     private fun swipeAction() {
-
         binding.swipe.setOnRefreshListener {
-            searching = false
-            makeCurrentLocationWeatherRequest()
-            Toast.makeText(
-                this, "Data Updated, Coordinates are $xCoordination, $yCoordination",
-                Toast.LENGTH_SHORT
-            ).show()
-          //  binding.city.text = getString(R.string.City, locality, countryCode)
-            // Hide swipe to refresh icon animation
-            swipe.isRefreshing = false
+            if (lastLocation.isLocationEnabled(this)) {
+                searching = false
+                makeCurrentLocationWeatherRequest()
+                Toast.makeText(
+                    this, "Data Updated, Coordinates are $xCoordination, $yCoordination",
+                    Toast.LENGTH_SHORT
+                ).show()
+                //  binding.city.text = getString(R.string.City, locality, countryCode)
+                // Hide swipe to refresh icon animation
+                swipe.isRefreshing = false
+            } else {
+                Toast.makeText(
+                    this,
+                    getString(R.string.location_services_not_enabled),
+                    Toast.LENGTH_SHORT
+                ).show()
+                swipe.isRefreshing = false
+            }
         }
     }
-fun uiUtility(){
-    load.done(binding.Progress)
-    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-    if(!searching){
-        binding.city.text = getString(R.string.City, locality, countryCode)
+
+    fun uiUtility() {
+        load.done(binding.Progress)
+        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        if (!searching) {
+            binding.city.text = getString(R.string.City, locality, countryCode)
+        } else {
+            setSearchedCityInfoInTV()
         }
-    else{
-      setSearchedCityInfoInTV()
     }
-}
+
     private fun setSearchedCityInfoInTV() {
         val (locale, countryCode) = getCityInfo()
         binding.city.text = getString(R.string.City, locale, countryCode)
@@ -289,45 +339,41 @@ fun uiUtility(){
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             lastLocation.permissionsRequestCode -> {
-                if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    lastLocation.setUpLocationListener(
-                        this, this, binding.Progress
-                    ){
-
-                    }
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.i(
                         lastLocation.tag,
-                        "Permission has been denied by user"
+                        "Permission has been granted by user"
                     )
                     Toast.makeText(
                         this, "Permission has been denied by user",
                         Toast.LENGTH_SHORT
                     ).show()
-                } else {
-                    lastLocation.setUpLocationListener(
-                        this, this, binding.Progress
-                    ){
-
+                    when {
+                        lastLocation.isLocationEnabled(this) -> {
+                            lastLocation.setUpLocationListener(
+                                this,
+                                this,
+                                binding.progressWidget
+                            ) {}
+                        }
+                        else -> {
+                            //TODO it should be ajdusted so that when the user comes back after activation# a new rqst will be sent
+                            lastLocation.showGPSNotEnabledDialog(this)
+                        }
                     }
+                } else {
                     Log.i(
                         lastLocation.tag,
-                        "Permission has been granted by user"
+                        "Permission has been denied by user"
                     )
 
-                    lastLocation.setUpLocationListener(
-                        this, this, binding.Progress
-                    ){
-                        makeCurrentLocationWeatherRequest()
-                    }
-
-
-
-
                     Toast.makeText(
-                        this, "Permission has been granted by user",
-                        Toast.LENGTH_SHORT
+                        this,
+                        getString(R.string.location_permission_not_granted),
+                        Toast.LENGTH_LONG
                     ).show()
                 }
             }
@@ -335,3 +381,5 @@ fun uiUtility(){
     }
 
 }
+
+

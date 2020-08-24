@@ -2,40 +2,30 @@ package com.example.bmweather.location
 
 import  android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
+import android.location.LocationManager
 import android.os.Looper
 import android.util.Log
-import android.util.Pair
 import android.view.View
-import android.view.WindowManager
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.bmweather.openweathermap.FetchWeatherData
 import com.example.bmweather.openweathermap.FetchWeatherData.FetchWeatherData.TAG
 import com.example.bmweather.MainActivity
 import com.example.bmweather.R
 import com.example.bmweather.utility.Load
 import com.google.android.gms.location.*
 import java.io.IOException
-import java.time.Instant
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 import java.util.*
-import java.util.concurrent.TimeUnit
-import javax.xml.xpath.XPathExpression
 import kotlin.collections.ArrayList
-import kotlin.time.ExperimentalTime
-import kotlin.time.seconds
-import kotlin.time.toDuration
+import android.provider.Settings;
 
 // TODO: 17.08.20 Implement the following interface to write override onRequestPermissionResult here and not in MainActivity anymore
 //:ActivityCompat.OnRequestPermissionsResultCallback
@@ -61,6 +51,57 @@ val addressListOfCurrentLocation:  ArrayList<Address>
         Manifest.permission.ACCESS_FINE_LOCATION
     )
 
+    fun isLocationServiceEnabled(context: Context) :Boolean{
+
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        var gps_enabled = false
+        var network_enabled = false
+        try {
+            gps_enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        } catch (ex: Exception) {
+        }
+        try {
+            network_enabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+        } catch (ex: Exception) {
+        }
+        return if (!gps_enabled && !network_enabled) {
+            AlertDialog.Builder(context)
+                .setMessage(R.string.gps_network_not_enabled)
+                .setNegativeButton(R.string.Cancel, null)
+                .setPositiveButton(
+                    R.string.open_location_settings
+                ) { dialogInterface_, int ->
+                    context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                }
+                .show()
+            true
+        }else
+            false
+
+    }
+
+    fun isLocationEnabled(context: Context): Boolean {
+        val locationManager: LocationManager =
+            context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+    }
+
+    /**
+     * Function to show the "enable GPS" Dialog box
+     */
+    fun showGPSNotEnabledDialog(context: Context) {
+        AlertDialog.Builder(context)
+            .setTitle(context.getString(R.string.enable_gps))
+            .setMessage(context.getString(R.string.required_for_this_app))
+            .setCancelable(false)
+            .setPositiveButton(context.getString(R.string.enable_now)) { _, _ ->
+                context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+            }
+            .show()
+    }
+
+
 
     private fun makeMultipleRequest(activity: MainActivity) {
         ActivityCompat.requestPermissions(
@@ -72,12 +113,17 @@ val addressListOfCurrentLocation:  ArrayList<Address>
 
 
     fun setupPermissions(context: Context, activity: MainActivity) {
-        val fineLocationPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-        val coarseLocationPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
+        val fineLocationPermission =
+            ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+        val coarseLocationPermission =
+            ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
 
         if (fineLocationPermission != PackageManager.PERMISSION_GRANTED || coarseLocationPermission != PackageManager.PERMISSION_GRANTED) {
             Log.i(tag, "Permission to record denied")
-            if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.ACCESS_FINE_LOCATION)
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    activity,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
             ) {
                 val builder = AlertDialog.Builder(context)
                 builder.setMessage("Permission to access the Location is required for this app to Show results based on your LAST KNOWN LOCATION.")
@@ -165,31 +211,28 @@ val addressListOfCurrentLocation:  ArrayList<Address>
     }
 
 
-
     @SuppressLint("MissingPermission")
     fun getLastLocation(
-        LocationReceiver: LocationReceiver,  expression: (() -> Unit)
-    )    {
+        LocationReceiver: LocationReceiver, expression: (() -> Unit)
+    ) {
 
 
-     //  var mlastLocation: Location? = null
+        //  var mlastLocation: Location? = null
 
         fusedLocationProviderClient?.lastLocation!!.addOnCompleteListener() { task ->
-                if (task.isSuccessful && task.result != null) {
-                    task.result!!.time
-                  val  mlastLocation = task.result
-                    LocationReceiver.firstLatitude = mlastLocation?.latitude.toString()
-                    LocationReceiver.firstLongitude =mlastLocation?.longitude.toString()
-                    LocationReceiver.time = mlastLocation?.time!!
-                    expression.invoke()
+            if (task.isSuccessful && task.result != null) {
+                task.result!!.time
+                val mlastLocation = task.result
+                LocationReceiver.firstLatitude = mlastLocation?.latitude.toString()
+                LocationReceiver.firstLongitude = mlastLocation?.longitude.toString()
+                LocationReceiver.time = mlastLocation?.time!!
+                expression.invoke()
 
 
-                }
-                else
-                {
-                    Log.w(TAG, "getLastLocation:exception", task.exception)
-                }
+            } else {
+                Log.w(TAG, "getLastLocation:exception", task.exception)
             }
+        }
     }
 
 

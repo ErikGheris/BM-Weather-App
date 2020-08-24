@@ -32,4 +32,12 @@
     <string name="des_pic">des_pic</string>
     <string name="service_not_available">service is not available</string>
     <string name="tvCityPlaceholder" />
+    <string name="enable_gps">GPS service required</string>
+    <string name="required_for_this_app">Please enable GPS service</string>
+    <string name="enable_now">Enable now</string>
+    <string name="location_permission_not_granted">Permission has been denied by the user</string>
+    <string name="gps_network_not_enabled">GPS Network is not enabled</string>
+    <string name="location_services_not_enabled">location services are not enabled</string>
+    <string name="open_location_settings">Open location settings</string>
+    <string name="Cancel">Cancel</string>
 </resources>
