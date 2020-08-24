@@ -1,1 +1,1 @@
-BMW BM Weather
+BMW is a Weather App written in Kotlin 
