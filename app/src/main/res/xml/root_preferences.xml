@@ -3,7 +3,7 @@
     <PreferenceCategory>
 
         <ListPreference
-            app:defaultValue="date"
+            app:defaultValue="EEEE',' dd.MM.yy"
             app:entries="@array/date_entries"
             app:entryValues="@array/date_values"
             app:key="date"
@@ -11,7 +11,7 @@
             app:useSimpleSummaryProvider="true" />
 
         <ListPreference
-            app:defaultValue="reply"
+            app:defaultValue="metric"
             app:entries="@array/reply_entries"
             app:entryValues="@array/reply_values"
             app:key="reply"

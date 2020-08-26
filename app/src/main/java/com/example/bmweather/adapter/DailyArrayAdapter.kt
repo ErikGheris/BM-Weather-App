@@ -28,7 +28,7 @@ class DailyArrayAdapter
     @SuppressLint("InflateParams", "ViewHolder", "SimpleDateFormat")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-        val date = preferences.getString("date", "metric")
+        val date = preferences.getString("date", """EEEE',' dd.MM.yy""")
         val property = rentalProperties[position]
         val inflater = context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = inflater.inflate(R.layout.daily_item, null)
