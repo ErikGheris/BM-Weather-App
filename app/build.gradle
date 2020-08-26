@@ -24,7 +24,6 @@ android {
     }
    //viewBinding Added and enabled
     viewBinding{
-
         enabled = true
     }
 }

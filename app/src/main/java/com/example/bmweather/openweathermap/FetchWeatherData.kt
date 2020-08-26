@@ -58,7 +58,7 @@ class FetchWeatherData {
                     }
                 })
             // TODO: 19.08.20 commented because it was causing a problem
-            mainActivity.delayHandler()
+         //   mainActivity.delayHandler()
         }
         fun getForeCastWeatherReport(app_id: String, lat: String, lon: String, lang: String, units: String, exclude: String, activity: SecondActivity) {
 

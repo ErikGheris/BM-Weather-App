@@ -57,6 +57,7 @@ class MainActivity : AppCompatActivity(),
     private var searching = false
     private var load: Load = Load()
     lateinit var connectivityManagement: ConnectivityManagement
+    private val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
     // TODO: 12.08.20   lazy declarataion vs inFunctionDeclaration
     //  val list : ArrayList by lazy { ArrayList() }
     // private lateinit var backToast: Toast
@@ -110,7 +111,7 @@ class MainActivity : AppCompatActivity(),
 
     }
 
-    override fun onRestart() {
+   /* override fun onRestart() {
         super.onRestart()
         lastLocation.setUpLocationListener(
             this, this, binding.Progress
@@ -134,7 +135,7 @@ class MainActivity : AppCompatActivity(),
                 makeSearchWeatherRequest()
             }
         }
-    }
+    }*/
 
     override fun onBackPressed() {
         // backToast = Toast.makeText(this, "Press back again to leave the app.", Toast.LENGTH_SHORT)
@@ -204,7 +205,6 @@ class MainActivity : AppCompatActivity(),
 
 
     private fun makeSearchWeatherRequest() {
-        val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         val lang = preferences.getString("reply", "metric")
         fetchWeather.getCurrentWeatherReport(
             apiKey,
@@ -219,7 +219,6 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun makeCurrentLocationWeatherRequest() {
-        val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         val lang = preferences.getString("reply", "metric")
         fetchWeather.getCurrentWeatherReport(
             app_id = apiKey,
@@ -361,7 +360,7 @@ class MainActivity : AppCompatActivity(),
                         "Permission has been granted by user"
                     )
                     Toast.makeText(
-                        this, "Permission has been denied by user",
+                        this, "Permission has been granted by user",
                         Toast.LENGTH_SHORT
                     ).show()
                     when {

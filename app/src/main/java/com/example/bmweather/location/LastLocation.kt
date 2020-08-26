@@ -37,7 +37,7 @@ class LastLocation(context: Context) {
     val tag = "PermissionDemo"
     val PASSED_CONTEXT = context
     val load: Load = Load()
-    val fusedLocationProviderClient =
+    private val fusedLocationProviderClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(context)
     val geocode = Geocoder(context, Locale.getDefault())
 /*
@@ -80,7 +80,7 @@ val addressListOfCurrentLocation:  ArrayList<Address>
 
     }
 
-    fun isLocationEnabled(context: Context): Boolean {
+         fun isLocationEnabled(context: Context): Boolean {
         val locationManager: LocationManager =
             context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
@@ -271,6 +271,7 @@ val addressListOfCurrentLocation:  ArrayList<Address>
             }
             if (cAddressList.size == 0) return "0"
         } catch (e: IOException) {
+            Log.e(tag, resultMessage, e)
             Log.e(tag, resultMessage, e)
         }
 
