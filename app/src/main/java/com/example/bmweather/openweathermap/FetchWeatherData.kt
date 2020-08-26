@@ -61,8 +61,6 @@ class FetchWeatherData {
          //   mainActivity.delayHandler()
         }
         fun getForeCastWeatherReport(app_id: String, lat: String, lon: String, lang: String, units: String, exclude: String, activity: SecondActivity) {
-
-
             Log.d(TAG, "onResponse response:: $app_id  $lat $lon $lang $units $exclude")
             apiRequest.getCurrentWeatherData(lat, lon, units, lang, app_id, exclude)
                 .enqueue(object : Callback<WeatherReport> {

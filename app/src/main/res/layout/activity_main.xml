@@ -75,19 +75,6 @@
                     app:layout_constraintVertical_bias="0.039" />
 
 
-                <ProgressBar
-                    android:id="@+id/progress_widget"
-                    style="?android:attr/progressBarStyle"
-                    android:layout_width="118dp"
-                    android:layout_height="86dp"
-                    android:progressDrawable="@drawable/gradient"
-                    android:visibility="invisible"
-
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-
                 <TextView
                     android:id="@+id/latTextView"
                     android:layout_width="wrap_content"

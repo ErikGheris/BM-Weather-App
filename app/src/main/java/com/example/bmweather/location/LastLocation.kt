@@ -274,10 +274,8 @@ val addressListOfCurrentLocation:  ArrayList<Address>
             Log.e(tag, resultMessage, e)
             Log.e(tag, resultMessage, e)
         }
-
         return locationLongitude
     }
-
 
     fun getCountryCodeFromName(locationName: String = "Koblenz"): String {
         return cityNameReq(locationName)[0].countryCode

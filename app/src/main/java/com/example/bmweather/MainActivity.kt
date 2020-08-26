@@ -57,11 +57,13 @@ class MainActivity : AppCompatActivity(),
     private var searching = false
     private var load: Load = Load()
     lateinit var connectivityManagement: ConnectivityManagement
-    private val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
     // TODO: 12.08.20   lazy declarataion vs inFunctionDeclaration
     //  val list : ArrayList by lazy { ArrayList() }
     // private lateinit var backToast: Toast
 
+    val preferences: SharedPreferences by lazy {
+       PreferenceManager.getDefaultSharedPreferences(this)
+    }
     private val backToast: Toast by lazy {
         Toast.makeText(
             this,
@@ -111,31 +113,31 @@ class MainActivity : AppCompatActivity(),
 
     }
 
-   /* override fun onRestart() {
-        super.onRestart()
-        lastLocation.setUpLocationListener(
-            this, this, binding.Progress
-        ) {
-            if (!searching) {
-                makeCurrentLocationWeatherRequest()
-            } else {
-                makeSearchWeatherRequest()
-            }
-        }
-    }
+    /* override fun onRestart() {
+         super.onRestart()
+         lastLocation.setUpLocationListener(
+             this, this, binding.Progress
+         ) {
+             if (!searching) {
+                 makeCurrentLocationWeatherRequest()
+             } else {
+                 makeSearchWeatherRequest()
+             }
+         }
+     }
 
-    override fun onResume() {
-        super.onResume()
-        lastLocation.setUpLocationListener(
-            this, this, binding.Progress
-        ) {
-            if (!searching) {
-                makeCurrentLocationWeatherRequest()
-            } else {
-                makeSearchWeatherRequest()
-            }
-        }
-    }*/
+     override fun onResume() {
+         super.onResume()
+         lastLocation.setUpLocationListener(
+             this, this, binding.Progress
+         ) {
+             if (!searching) {
+                 makeCurrentLocationWeatherRequest()
+             } else {
+                 makeSearchWeatherRequest()
+             }
+         }
+     }*/
 
     override fun onBackPressed() {
         // backToast = Toast.makeText(this, "Press back again to leave the app.", Toast.LENGTH_SHORT)
@@ -201,7 +203,6 @@ class MainActivity : AppCompatActivity(),
         searchedXCoordination = lastLocation.toLatitude(cityName)
         searchedYCoordination = lastLocation.toLongitude(cityName)
     }
-
 
 
     private fun makeSearchWeatherRequest() {
@@ -306,14 +307,7 @@ class MainActivity : AppCompatActivity(),
         textView.setText("")
     }
 
-    fun delayHandler() {
-        val handler = Handler()
-        handler.postDelayed(Runnable {
-            //wait x delay MS and then progress is done
-            load.done(binding.progressWidget)
-        }, 1000) // 1000 milliseconds
 
-    }
 
     @SuppressLint("SimpleDateFormat")
     private val sunformat = SimpleDateFormat("HH:mm")
@@ -364,11 +358,10 @@ class MainActivity : AppCompatActivity(),
                         Toast.LENGTH_SHORT
                     ).show()
                     when {
-                        lastLocation.isLocationEnabled(this) -> {
+                                lastLocation.isLocationEnabled(this) -> {
                             lastLocation.setUpLocationListener(
                                 this,
-                                this,
-                                binding.progressWidget
+                                this,binding.Progress
                             ) {}
                         }
                         else -> {
