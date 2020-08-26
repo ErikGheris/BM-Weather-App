@@ -1,0 +1,22 @@
+<resources>
+    <!-- Reply Preference -->
+    <string-array name="reply_entries">
+        <item>Metric</item>
+        <item>Imperial</item>
+    </string-array>
+
+    <string-array name="reply_values">
+        <item>metric</item>
+        <item>imperial</item>
+    </string-array>
+
+    <string-array name="date_entries">
+        <item>day-month-year</item>
+        <item>month-day-year</item>
+    </string-array>
+
+    <string-array name="date_values">
+        <item>"EEEE',' dd.MM.yy"</item>
+        <item>"EEEE',' MM/dd/yy"</item>
+    </string-array>
+</resources>
