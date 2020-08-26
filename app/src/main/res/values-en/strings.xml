@@ -30,4 +30,7 @@
     <string name="des_pic">des_pic</string>
     <string name="service_not_available">service is not available</string>
     <string name="tvCityPlaceholder" />
+    <string name="reply_title">Change units format</string>
+    <string name="date_format">Change date format</string>
+
 </resources>

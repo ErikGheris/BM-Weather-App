@@ -2,6 +2,7 @@ package com.example.bmweather
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
@@ -10,6 +11,7 @@ import android.view.WindowManager
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bmweather.adapter.HourlyArrayAdapter
 import com.example.bmweather.network.ConnectivityManagement
@@ -97,6 +99,11 @@ class MainActivity : AppCompatActivity(),
             clearInputText(binding.searchInput)
         }
 
+        binding.settings.setOnClickListener {
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
+        }
+
         searchButtonAction()
         swipeAction()
         activityButtonAction()
@@ -152,13 +159,17 @@ class MainActivity : AppCompatActivity(),
         searchedYCoordination = lastLocation.toLongitude(cityName)
     }
 
+
+
     private fun makeSearchWeatherRequest() {
+        val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val lang = preferences.getString("reply", "metric")
         fetchWeather.getCurrentWeatherReport(
             apiKey,
             lat = searchedXCoordination,
             lon = searchedYCoordination,
             lang = Locale.getDefault().language,
-            units = units,
+            units = lang.toString(),
             exclude = exclude,
             mainActivity = this,
             progressBar = binding.Progress
@@ -166,12 +177,14 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun makeCurrentLocationWeatherRequest() {
+        val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val lang = preferences.getString("reply", "metric")
         fetchWeather.getCurrentWeatherReport(
             app_id = apiKey,
             lat = xCoordination,
             lon = yCoordination,
             lang = Locale.getDefault().language,
-            units = units,
+            units = lang.toString(),
             exclude = exclude,
             mainActivity = this,
             progressBar = binding.Progress
@@ -245,7 +258,7 @@ fun uiUtility(){
     }
 
     @SuppressLint("SimpleDateFormat")
-    private val sunformat = SimpleDateFormat("kk:mm")
+    private val sunformat = SimpleDateFormat("HH:mm")
 
     fun current(main: Current) {
         binding.mainTemp.text =
