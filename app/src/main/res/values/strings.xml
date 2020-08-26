@@ -48,6 +48,7 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+<<<<<<< HEAD
     <string name="enable_gps">GPS service required</string>
     <string name="required_for_this_app">Please enable GPS service</string>
     <string name="enable_now">Enable now</string>
@@ -56,4 +57,6 @@
     <string name="location_services_not_enabled">location services are not enabled</string>
     <string name="open_location_settings">Open location settings</string>
     <string name="Cancel">Cancel</string>
+=======
+>>>>>>> A2-30
 </resources>
