@@ -27,7 +27,6 @@ import com.example.bmweather.adapter.HourlyArrayAdapter
 import com.example.bmweather.databinding.ActivityMainBinding
 import com.example.bmweather.location.LastLocation
 import com.example.bmweather.location.LocationReceiver
-import com.example.bmweather.location.isLocationEnabled
 import com.example.bmweather.network.ConnectivityManagement
 import com.example.bmweather.openweathermap.FetchWeatherData
 import com.example.bmweather.openweathermap.response.Current
@@ -213,13 +212,13 @@ class MainActivity : AppCompatActivity(),
                         )
                             .show()
                         clearInputText(binding.searchInput)
-                    } else {
-                        Toast.makeText(
-                            this, "Please enter a Location!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        clearInputText(binding.searchInput)
                     }
+                }else {
+                    Toast.makeText(
+                        this, "Please enter a Location!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    clearInputText(binding.searchInput)
                 }
             } else
                 Toast.makeText(
@@ -228,6 +227,9 @@ class MainActivity : AppCompatActivity(),
                     Toast.LENGTH_SHORT
                 ).show()
 
+
+
+            
             closeKeyboard()
             if (!isLocationEnabled(this)) {
                 showLocationIsDisabledAlert(this)
