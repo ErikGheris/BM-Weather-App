@@ -1,24 +1,33 @@
 package com.example.bmweather
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.location.LocationManager
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.os.Bundle
 import android.os.Handler
+import android.provider.Settings
 import android.util.Log
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.AutoCompleteTextView
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.location.LocationManagerCompat
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bmweather.adapter.HourlyArrayAdapter
 import com.example.bmweather.databinding.ActivityMainBinding
 import com.example.bmweather.location.LastLocation
 import com.example.bmweather.location.LocationReceiver
+import com.example.bmweather.location.isLocationEnabled
 import com.example.bmweather.network.ConnectivityManagement
 import com.example.bmweather.openweathermap.FetchWeatherData
 import com.example.bmweather.openweathermap.response.Current
@@ -47,7 +56,6 @@ class MainActivity : AppCompatActivity(),
     private var searchedYCoordination = ""
     private val apiKey = "6133b390a077c487bc9ac43311b3ba26"
     private var cityName = ""
-    private var units = "metric"
     private var lastCityCache = cityName
     private var searched: String = ""
     private var exclude = "minutely"
@@ -125,6 +133,11 @@ class MainActivity : AppCompatActivity(),
              }
          }
      }
+    fun isLocationEnabled(mContext: Context): Boolean {
+        val lm = mContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return lm.isProviderEnabled(LocationManager.GPS_PROVIDER) || lm.isProviderEnabled(
+            LocationManager.NETWORK_PROVIDER)
+    }
 
      override fun onResume() {
          super.onResume()
@@ -138,6 +151,25 @@ class MainActivity : AppCompatActivity(),
              }
          }
      }*/
+    fun showLocationIsDisabledAlert(context: Context) {
+        AlertDialog.Builder(context)
+            .setTitle(context.getString(R.string.enable_gps))
+            .setMessage(context.getString(R.string.required_for_this_app))
+            .setCancelable(false)
+            .setPositiveButton(context.getString(R.string.enable_now)) { _, _ ->
+                context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+            }
+            .show()
+    }
+
+    fun internetConnection(context: Context) {
+        AlertDialog.Builder(context)
+            .setTitle(context.getString(R.string.no_internet))
+            .setMessage(context.getString(R.string.required_internet))
+            .setCancelable(true)
+            .show()
+    }
+
 
     override fun onBackPressed() {
         // backToast = Toast.makeText(this, "Press back again to leave the app.", Toast.LENGTH_SHORT)
@@ -196,6 +228,12 @@ class MainActivity : AppCompatActivity(),
                 ).show()
 
             closeKeyboard()
+            if (!isLocationEnabled(this)) {
+                showLocationIsDisabledAlert(this)
+            }
+            if (!connectivityManagement.networkAvailabilityStatus(this)) {
+                internetConnection(this)
+            }
         }
     }
 
@@ -212,7 +250,7 @@ class MainActivity : AppCompatActivity(),
             lat = searchedXCoordination,
             lon = searchedYCoordination,
             lang = Locale.getDefault().language,
-            units = lang.toString(),
+            units = PreferenceManager.getDefaultSharedPreferences(this).getString("reply", """metric""").toString(),
             exclude = exclude,
             mainActivity = this,
             progressBar = binding.Progress
@@ -226,7 +264,7 @@ class MainActivity : AppCompatActivity(),
             lat = xCoordination,
             lon = yCoordination,
             lang = Locale.getDefault().language,
-            units = lang.toString(),
+            units = PreferenceManager.getDefaultSharedPreferences(this).getString("reply", """metric""").toString(),
             exclude = exclude,
             mainActivity = this,
             progressBar = binding.Progress
@@ -278,6 +316,12 @@ class MainActivity : AppCompatActivity(),
                     Toast.LENGTH_SHORT
                 ).show()
                 swipe.isRefreshing = false
+            }
+            if (!isLocationEnabled(this)) {
+                showLocationIsDisabledAlert(this)
+            }
+            if (!connectivityManagement.networkAvailabilityStatus(this)) {
+                internetConnection(this)
             }
         }
     }
@@ -340,6 +384,11 @@ class MainActivity : AppCompatActivity(),
     }
 
 
+
+
+
+
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -386,5 +435,4 @@ class MainActivity : AppCompatActivity(),
     }
 
 }
-
 
