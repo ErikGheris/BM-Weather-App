@@ -3,7 +3,7 @@
     <PreferenceCategory>
 
         <ListPreference
-            app:defaultValue="EEEE',' dd.MM.yy"
+            app:defaultValue="true"
             app:entries="@array/date_entries"
             app:entryValues="@array/date_values"
             app:key="date"

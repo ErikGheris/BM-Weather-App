@@ -19,7 +19,7 @@ class ConnectivityManagement(context: Context) {
             true
     }
 
- private fun networkAvailabilityStatus(context: Context): Boolean {
+ fun networkAvailabilityStatus(context: Context): Boolean {
         val result: Boolean
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
