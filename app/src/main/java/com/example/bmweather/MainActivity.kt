@@ -7,27 +7,20 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.LocationManager
-import android.net.ConnectivityManager
-import android.net.NetworkInfo
 import android.os.Bundle
-import android.os.Handler
 import android.provider.Settings
 import android.util.Log
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.AutoCompleteTextView
-import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.core.location.LocationManagerCompat
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bmweather.adapter.HourlyArrayAdapter
 import com.example.bmweather.databinding.ActivityMainBinding
 import com.example.bmweather.location.LastLocation
 import com.example.bmweather.location.LocationReceiver
-import com.example.bmweather.location.isLocationEnabled
 import com.example.bmweather.network.ConnectivityManagement
 import com.example.bmweather.openweathermap.FetchWeatherData
 import com.example.bmweather.openweathermap.response.Current
@@ -37,7 +30,6 @@ import com.example.bmweather.utility.Load
 import com.example.bmweather.utility.Search
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.Runnable
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
@@ -163,13 +155,6 @@ class MainActivity : AppCompatActivity(),
             .show()
     }
 
-    fun internetConnection(context: Context) {
-        AlertDialog.Builder(context)
-            .setTitle(context.getString(R.string.no_internet))
-            .setMessage(context.getString(R.string.required_internet))
-            .setCancelable(true)
-            .show()
-    }
 
 
     override fun onBackPressed() {
@@ -201,39 +186,78 @@ class MainActivity : AppCompatActivity(),
                 if (searched.trim().isNotEmpty()) {
                     lastCityCache = cityName
                     cityName = searched
-                    if (connectivityManagement.networkCheck(this)) {
-                        setSearchedCoordinates()
-                        setSearchedCityInfoInTV()
-                        makeSearchWeatherRequest()
-                        //safe city
-                        Toast.makeText(
-                            this,
-                            "looking for $searched's Weather Info, Coordinates are $searchedXCoordination $searchedYCoordination",
-                            Toast.LENGTH_SHORT
-                        )
-                            .show()
-                        clearInputText(binding.searchInput)
-                    } else {
-                        Toast.makeText(
-                            this, "Please enter a Location!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        clearInputText(binding.searchInput)
-                    }
+                    connectionCheck()
+                } else {
+                    Toast.makeText(
+                        this, "Please enter a Location!",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
-            } else
+            } else{
                 Toast.makeText(
                     this,
                     getString(R.string.location_services_not_enabled),
                     Toast.LENGTH_SHORT
                 ).show()
-
             closeKeyboard()
-            if (!isLocationEnabled(this)) {
                 showLocationIsDisabledAlert(this)
             }
-            if (!connectivityManagement.networkAvailabilityStatus(this)) {
-                internetConnection(this)
+        }
+    }
+
+    private fun connectionCheck() {
+        if (connectivityManagement.networkCheck(this)) {
+            setSearchedCoordinates()
+            setSearchedCityInfoInTV()
+            makeSearchWeatherRequest()
+            //safe city
+            Toast.makeText(
+                this,
+                "looking for $searched's Weather Info, Coordinates are $searchedXCoordination $searchedYCoordination",
+                Toast.LENGTH_SHORT
+            )
+                .show()
+        } else {
+            Toast.makeText(
+                this,
+                getString(R.string.no_internet),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+        clearInputText(binding.searchInput)
+    }
+
+    private fun swipeAction() {
+        binding.swipe.setOnRefreshListener {
+            if (lastLocation.isLocationEnabled(this)) {
+                searching = false
+                if (connectivityManagement.networkCheck(this)) {
+                    makeCurrentLocationWeatherRequest()
+                    Toast.makeText(
+                        this, "Data Updated, Coordinates are $xCoordination, $yCoordination",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    //  binding.city.text = getString(R.string.City, locality, countryCode)
+                    // Hide swipe to refresh icon animation
+                    swipe.isRefreshing = false
+                } else {
+                    Toast.makeText(
+                        this,
+                        getString(R.string.no_internet),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    swipe.isRefreshing = false
+                }
+            } else {
+                Toast.makeText(
+                    this,
+                    getString(R.string.location_services_not_enabled),
+                    Toast.LENGTH_SHORT
+                ).show()
+                swipe.isRefreshing = false
+            }
+            if (!isLocationEnabled(this)) {
+                showLocationIsDisabledAlert(this)
             }
         }
     }
@@ -298,34 +322,7 @@ class MainActivity : AppCompatActivity(),
 
     }
 
-    private fun swipeAction() {
-        binding.swipe.setOnRefreshListener {
-            if (lastLocation.isLocationEnabled(this)) {
-                searching = false
-                makeCurrentLocationWeatherRequest()
-                Toast.makeText(
-                    this, "Data Updated, Coordinates are $xCoordination, $yCoordination",
-                    Toast.LENGTH_SHORT
-                ).show()
-                //  binding.city.text = getString(R.string.City, locality, countryCode)
-                // Hide swipe to refresh icon animation
-                swipe.isRefreshing = false
-            } else {
-                Toast.makeText(
-                    this,
-                    getString(R.string.location_services_not_enabled),
-                    Toast.LENGTH_SHORT
-                ).show()
-                swipe.isRefreshing = false
-            }
-            if (!isLocationEnabled(this)) {
-                showLocationIsDisabledAlert(this)
-            }
-            if (!connectivityManagement.networkAvailabilityStatus(this)) {
-                internetConnection(this)
-            }
-        }
-    }
+
 
     fun uiUtility() {
         load.done(binding.Progress)
