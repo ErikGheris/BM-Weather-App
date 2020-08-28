@@ -36,7 +36,7 @@ class FetchWeatherData {
                             mainActivity.current(weatherReport.current)
                            // mainActivity.realTemp(weatherReport.current)
                             mainActivity.daily(weatherReport.daily[0])
-                            mainActivity.fetchHourlyWeather(weatherReport.hourly)
+                            mainActivity.fetchHourlyWeather(weatherReport.hourly.take(24))
                             mainActivity.uiUtility()
                             load.done(progressBar = progressBar)
                         }
@@ -71,7 +71,7 @@ class FetchWeatherData {
                         //On successful response builde string as defined later on
                         if (response.code() == 200 && response.code() != 400) {
                             val weatherReport = response.body()!!
-                            activity.fetchDailyWeather(weatherReport.daily)
+                            activity.fetchDailyWeather(weatherReport.daily.takeLast(7))
                             activity.uiUtility()
                         }
                         else
