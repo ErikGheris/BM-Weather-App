@@ -133,11 +133,7 @@ class MainActivity : AppCompatActivity(),
              }
          }
      }
-    fun isLocationEnabled(mContext: Context): Boolean {
-        val lm = mContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        return lm.isProviderEnabled(LocationManager.GPS_PROVIDER) || lm.isProviderEnabled(
-            LocationManager.NETWORK_PROVIDER)
-    }
+
 
      override fun onResume() {
          super.onResume()
@@ -151,6 +147,11 @@ class MainActivity : AppCompatActivity(),
              }
          }
      }*/
+    fun isLocationEnabled(mContext: Context): Boolean {
+        val lm = mContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return lm.isProviderEnabled(LocationManager.GPS_PROVIDER) || lm.isProviderEnabled(
+            LocationManager.NETWORK_PROVIDER)
+    }
     fun showLocationIsDisabledAlert(context: Context) {
         AlertDialog.Builder(context)
             .setTitle(context.getString(R.string.enable_gps))
