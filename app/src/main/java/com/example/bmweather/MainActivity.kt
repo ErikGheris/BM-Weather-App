@@ -251,7 +251,8 @@ class MainActivity : AppCompatActivity(),
 
         binding.searchButton.setOnClickListener {
             if (lastLocation.isLocationEnabled(this)) {
-                searched = Search().get(search_input).toString()
+
+                searched = binding.searchInput.query.toString()
                 searching = true
                 if (searched.trim().isNotEmpty()) {
                     lastCityCache = cityName
@@ -270,9 +271,9 @@ class MainActivity : AppCompatActivity(),
                     getString(R.string.location_services_not_enabled),
                     Toast.LENGTH_SHORT
                 ).show()
-                closeKeyboard()
                 showLocationIsDisabledAlert(this)
             }
+            closeKeyboard()
         }
     }
 
