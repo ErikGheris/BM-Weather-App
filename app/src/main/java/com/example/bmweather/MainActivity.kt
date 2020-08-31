@@ -107,7 +107,45 @@ class MainActivity : AppCompatActivity(),
         searchButtonAction()
         swipeAction()
         activityButtonAction()
-        //    binding.searchInput.setOnSearchClickListener()
+        binding.searchInput.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if (lastLocation.isLocationEnabled(this@MainActivity)) {
+                    searched = binding.searchInput.query.toString()
+                    searching = true
+                    if (searched.trim().isNotEmpty()) {
+                        lastCityCache = cityName
+                        cityName = binding.searchInput.query.toString()
+                        connectionCheck()
+                    } else {
+                        Toast.makeText(
+                            this@MainActivity, "Please enter a Location!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                } else {
+                    Toast.makeText(
+                        this@MainActivity,
+                        getString(R.string.location_services_not_enabled),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    closeKeyboard()
+                    showLocationIsDisabledAlert(this@MainActivity)
+                }
+
+
+                val mySValue = binding.searchInput.query.toString()
+                Log.i("TxT", "$mySValue")
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+
+                Log.i("TxT", "Press querytextchange")
+                return false
+            }
+
+        })
+
 
     }
 
