@@ -1,5 +1,8 @@
 package com.example.bmweather
 
+import android.content.Intent
+import android.view.Menu
+import android.view.MenuItem
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bmweather.adapter.DailyArrayAdapter
@@ -24,6 +27,13 @@ class SecondActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
         )
+
+
+        // Get a support ActionBar corresponding to this toolbar and enable the Up button
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+
+
         latitude = intent.getStringExtra("xCoordination").toString().trim()
         longitude = intent.getStringExtra("yCoordination").toString().trim()
         super.onStart()
@@ -55,4 +65,22 @@ class SecondActivity : AppCompatActivity() {
         load.done(binding.secondActivitySpinner)
         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.forecast_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.settings ->    { val intent = Intent(this, SettingsActivity::class.java)
+                startActivity(intent)}
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
 }
