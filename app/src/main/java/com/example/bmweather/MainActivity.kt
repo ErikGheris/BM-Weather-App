@@ -10,11 +10,15 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.AutoCompleteTextView
+
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bmweather.adapter.HourlyArrayAdapter
@@ -62,7 +66,7 @@ class MainActivity : AppCompatActivity(),
     // private lateinit var backToast: Toast
 
     val preferences: SharedPreferences by lazy {
-       PreferenceManager.getDefaultSharedPreferences(this)
+        PreferenceManager.getDefaultSharedPreferences(this)
     }
     private val backToast: Toast by lazy {
         Toast.makeText(
@@ -98,20 +102,47 @@ class MainActivity : AppCompatActivity(),
                 makeSearchWeatherRequest()
             }
         }
-        binding.searchInput.setOnClickListener {
-            clearInputText(binding.searchInput)
-        }
 
-        binding.settings.setOnClickListener {
-            val intent = Intent(this, SettingsActivity::class.java)
-            startActivity(intent)
-        }
 
         searchButtonAction()
         swipeAction()
         activityButtonAction()
+        //    binding.searchInput.setOnSearchClickListener()
 
     }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.nav_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.settings -> {
+                val intent = Intent(this, SettingsActivity::class.java)
+                startActivity(intent)
+            }
+
+        }
+        return super.onOptionsItemSelected(item)
+    }
+    /*  val searchItem = menu.findItem(R.id.search_city)
+      searchView = searchItem.actionView as SearchView
+      searchView.setQueryHint("Search View Hint")
+
+      searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+
+          override fun onQueryTextChange(newText: String): Boolean {
+              return false
+          }
+
+          override fun onQueryTextSubmit(query: String): Boolean {
+              // task HERE
+              return false
+          }
+
+      })
+  */
 
     /* override fun onRestart() {
          super.onRestart()
@@ -142,8 +173,10 @@ class MainActivity : AppCompatActivity(),
     fun isLocationEnabled(mContext: Context): Boolean {
         val lm = mContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return lm.isProviderEnabled(LocationManager.GPS_PROVIDER) || lm.isProviderEnabled(
-            LocationManager.NETWORK_PROVIDER)
+            LocationManager.NETWORK_PROVIDER
+        )
     }
+
     fun showLocationIsDisabledAlert(context: Context) {
         AlertDialog.Builder(context)
             .setTitle(context.getString(R.string.enable_gps))
@@ -154,7 +187,6 @@ class MainActivity : AppCompatActivity(),
             }
             .show()
     }
-
 
 
     override fun onBackPressed() {
@@ -193,14 +225,14 @@ class MainActivity : AppCompatActivity(),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-                
-            } else{
+
+            } else {
                 Toast.makeText(
                     this,
                     getString(R.string.location_services_not_enabled),
                     Toast.LENGTH_SHORT
                 ).show()
-            closeKeyboard()
+                closeKeyboard()
                 showLocationIsDisabledAlert(this)
             }
         }
@@ -225,7 +257,7 @@ class MainActivity : AppCompatActivity(),
                 Toast.LENGTH_SHORT
             ).show()
         }
-        clearInputText(binding.searchInput)
+
     }
 
     private fun swipeAction() {
@@ -276,7 +308,8 @@ class MainActivity : AppCompatActivity(),
             lat = searchedXCoordination,
             lon = searchedYCoordination,
             lang = Locale.getDefault().language,
-            units = PreferenceManager.getDefaultSharedPreferences(this).getString("reply", """metric""").toString(),
+            units = PreferenceManager.getDefaultSharedPreferences(this)
+                .getString("reply", """metric""").toString(),
             exclude = exclude,
             mainActivity = this,
             progressBar = binding.Progress
@@ -290,7 +323,8 @@ class MainActivity : AppCompatActivity(),
             lat = xCoordination,
             lon = yCoordination,
             lang = Locale.getDefault().language,
-            units = PreferenceManager.getDefaultSharedPreferences(this).getString("reply", """metric""").toString(),
+            units = PreferenceManager.getDefaultSharedPreferences(this)
+                .getString("reply", """metric""").toString(),
             exclude = exclude,
             mainActivity = this,
             progressBar = binding.Progress
@@ -324,7 +358,6 @@ class MainActivity : AppCompatActivity(),
     }
 
 
-
     fun uiUtility() {
         load.done(binding.Progress)
         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
@@ -349,7 +382,6 @@ class MainActivity : AppCompatActivity(),
     private fun clearInputText(textView: AutoCompleteTextView) {
         textView.setText("")
     }
-
 
 
     @SuppressLint("SimpleDateFormat")
@@ -383,11 +415,6 @@ class MainActivity : AppCompatActivity(),
     }
 
 
-
-
-
-
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -406,10 +433,10 @@ class MainActivity : AppCompatActivity(),
                         Toast.LENGTH_SHORT
                     ).show()
                     when {
-                                lastLocation.isLocationEnabled(this) -> {
+                        lastLocation.isLocationEnabled(this) -> {
                             lastLocation.setUpLocationListener(
                                 this,
-                                this,binding.Progress
+                                this, binding.Progress
                             ) {}
                         }
                         else -> {
