@@ -53,9 +53,9 @@
                     tools:text="search" />
 
 
-                <AutoCompleteTextView
+                <androidx.appcompat.widget.SearchView
                     android:id="@+id/search_input"
-                    android:layout_width="160dp"
+                    android:layout_width="180dp"
                     android:layout_height="60dp"
                     android:drawableStart="@drawable/ic_baseline_search_24"
                     android:labelFor="@android:id/autofill"
