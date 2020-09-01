@@ -464,7 +464,7 @@ class MainActivity : AppCompatActivity(),
             lastLocation.permissionsRequestCode -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.i(
-                        lastLocation.tag,
+                   "permission granted",
                         "Permission has been granted by user"
                     )
                     Toast.makeText(
@@ -485,7 +485,7 @@ class MainActivity : AppCompatActivity(),
                     }
                 } else {
                     Log.i(
-                        lastLocation.tag,
+                      "permissionDenied",
                         "Permission has been denied by user"
                     )
 

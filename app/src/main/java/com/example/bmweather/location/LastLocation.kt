@@ -278,7 +278,17 @@ val addressListOfCurrentLocation:  ArrayList<Address>
     }
 
     fun getCountryCodeFromName(locationName: String = "Koblenz"): String {
-        return cityNameReq(locationName)[0].countryCode
+        var countryCode:String = "Snap!"
+        try {
+            if (cityNameReq(locationName).size !=0)
+               countryCode = cityNameReq(locationName)[0].countryCode
+
+        } catch (e: Exception) {
+            resultMessage = Resources.getSystem().getString(R.string.service_not_available)
+            Log.e("GETLOCALEFROMNAME", resultMessage, e)
+        }
+
+        return countryCode
     }
 
     private fun cityNameReq(locationName: String = "Koblenz"): ArrayList<Address> {
@@ -286,13 +296,14 @@ val addressListOfCurrentLocation:  ArrayList<Address>
     }
 
     fun getLocaleFromName(locationName: String = "Koblenz"): String {
-        var locale = "Default_Locale"
+        var locale = "Oh..!"
         try {
+            if (cityNameReq(locationName).size !=0)
             locale = cityNameReq(locationName)[0].locality
 
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             resultMessage = Resources.getSystem().getString(R.string.service_not_available)
-            Log.e(tag, resultMessage, e)
+            Log.e("GETLOCALEFROMNAME", resultMessage, e)
         }
         return locale
     }
