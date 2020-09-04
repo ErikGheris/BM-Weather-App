@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity(),
         lastLocation.setupPermissions(this, this)
 
 
-
+/*
 
         if (myUtilities.locationPermissionsAvailable(this, this)) {
             Log.i(debugTag, "permission available, making location request ")
@@ -123,6 +123,7 @@ class MainActivity : AppCompatActivity(),
             }
         } else {
 
+*/
 /*          val builder = AlertDialog.Builder(this)
                       builder.setMessage("Permission to access the Location is required for this app to Show results based on your LAST KNOWN LOCATION.")
                           .setTitle("Permission required")
@@ -132,11 +133,12 @@ class MainActivity : AppCompatActivity(),
                           lastLocation.permissionRequests(this)
                       }
                       val dialog = builder.create()
-                      dialog.show()*/
+                      dialog.show()*//*
+
 
             Log.i(debugTag, "permission aint available ")
         }
-
+*/
 
 
         /*      lastLocation.setUpLocationListener(
@@ -257,19 +259,25 @@ class MainActivity : AppCompatActivity(),
          }
      }
 
-
-     override fun onResume() {
-         super.onResume()
-         lastLocation.setUpLocationListener(
+*/
+    override fun onResume() {
+        super.onResume()
+        /* lastLocation.setUpLocationListener(
              this, this, binding.Progress
-         ) {
-             if (!searching) {
-                 makeCurrentLocationWeatherRequest()
-             } else {
-                 makeSearchWeatherRequest()
-             }
-         }
-     }*/
+         ) {*/
+        if (lastLocation.isLocationEnabled(this)) {
+            Log.i(debugTag,"location is available onResume")
+            if (!searching) {
+                lastLocation.setUpLocationListener(this,this,binding.Progress){
+                Log.i("THISISBS","$longitude and $latitude are the coordinates ")
+                makeCurrentLocationWeatherRequest()}
+            } else {
+                makeSearchWeatherRequest()
+            }
+        }
+        //  }
+    }
+
     fun isLocationEnabled(mContext: Context): Boolean {
         val lm = mContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return lm.isProviderEnabled(LocationManager.GPS_PROVIDER) || lm.isProviderEnabled(

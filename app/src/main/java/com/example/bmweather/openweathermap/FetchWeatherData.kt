@@ -31,6 +31,7 @@ class FetchWeatherData {
                         call: retrofit2.Call<WeatherReport>,
                         response: Response<WeatherReport>
                     ) {
+                        Log.i("THISISBS","fetching Response is working")
                         //On successful response builde string as defined later on
                         if (response.code() == 200 && response.code() != 400) {
                             val weatherReport = response.body()!!
@@ -41,8 +42,10 @@ class FetchWeatherData {
                             mainActivity.uiUtility()
                             load.done(progressBar = progressBar)
                         }
-                        else
+                        else{
+                            Log.i("THISISBS","response is not Successful")
                             if (response.code()==404){
+                                Log.i("THISISBS","ERROR404")
 
                               /*  mainActivity.cityName = mainActivity.lastCityCache
                                 mainActivity.sorryDisplayView()
@@ -51,7 +54,7 @@ class FetchWeatherData {
                                     Toast.LENGTH_SHORT
                                 ).show()*/
 
-                            }
+                            } }
                     }
                     //Message in the case of failed API call
                     override fun onFailure(call: retrofit2.Call<WeatherReport>, t: Throwable) {

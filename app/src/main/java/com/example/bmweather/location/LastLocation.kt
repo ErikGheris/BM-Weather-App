@@ -153,26 +153,33 @@ val addressListOfCurrentLocation:  ArrayList<Address>
         if (fineLocationPermission == PackageManager.PERMISSION_GRANTED || coarseLocationPermission == PackageManager.PERMISSION_GRANTED) {
             permissionRequests(activity)
         } else {
-            /*Log.i(tag, "Permission to record denied")
+          Log.i(tag, "Permission to record denied")
             if (ActivityCompat.shouldShowRequestPermissionRationale(
                     activity,
                     Manifest.permission.ACCESS_FINE_LOCATION
                 )
             ) {
-                val builder = AlertDialog.Builder(context)
-                builder.setMessage("Permission to access the Location is required for this app to Show results based on your LAST KNOWN LOCATION.")
-                    .setTitle("Permission required")
-                builder.setPositiveButton("OK") { _, _ ->
-                    Log.i(tag, "Clicked")
-                    // ask for requests again
-                    permissionRequests(activity)
-                }
-                val dialog = builder.create()
-                dialog.show()
-            } else {*/
+                retryRequest(context, activity)
+            } else {
                 permissionRequests(activity)
-            //}
+           }
         }
+    }
+
+    private fun retryRequest(
+        context: Context,
+        activity: MainActivity
+    ) {
+        val builder = AlertDialog.Builder(context)
+        builder.setMessage("Permission to access the Location is required for this app to Show results based on your LAST KNOWN LOCATION.")
+            .setTitle("Permission required")
+        builder.setPositiveButton("OK") { _, _ ->
+            Log.i(tag, "Clicked")
+            // ask for requests again
+            permissionRequests(activity)
+        }
+        val dialog = builder.create()
+        dialog.show()
     }
 
 
@@ -189,7 +196,6 @@ val addressListOfCurrentLocation:  ArrayList<Address>
 
         if (bLocation) return
         //   load.start(progressBar)
-        Log.i("THISISBS", "after return")
         // for getting the current location update after every 10 seconds with high accuracy
         val locationRequest = LocationRequest()
             .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
@@ -199,6 +205,7 @@ val addressListOfCurrentLocation:  ArrayList<Address>
             object : LocationCallback() {
 
                 override fun onLocationResult(locationResult: LocationResult?) {
+        Log.i("THISISBS", "location CallBack")
                     super.onLocationResult(locationResult)
                     Log.i(debugTag, "callBack ")
                     if (locationResult?.lastLocation != null) {
