@@ -31,7 +31,7 @@ import com.example.bmweather.openweathermap.response.Current
 import com.example.bmweather.openweathermap.response.Daily
 import com.example.bmweather.openweathermap.response.Hourly
 import com.example.bmweather.utility.Load
-import com.example.bmweather.utility.Search
+import com.example.bmweather.utility.Utility
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
 import java.text.SimpleDateFormat
@@ -61,10 +61,13 @@ class MainActivity : AppCompatActivity(),
     private var searching = false
     private var load: Load = Load()
     lateinit var connectivityManagement: ConnectivityManagement
-    // TODO: 12.08.20   lazy declarataion vs inFunctionDeclaration
+    val debugTag = "THISISBS"
+
+    // TODO: 12.08.20   (reason: )lazy declarataion vs inFunctionDeclaration
+    var myUtilities = Utility()
+
     //  val list : ArrayList by lazy { ArrayList() }
     // private lateinit var backToast: Toast
-
     val preferences: SharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(this)
     }
@@ -87,21 +90,79 @@ class MainActivity : AppCompatActivity(),
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
         )
 
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
+
         val mainActivityContext = applicationContext
         lastLocation = LastLocation(mainActivityContext)
         connectivityManagement = ConnectivityManagement(mainActivityContext)
 
+
+        /*   lastLocation.setUpLocationListener(this,this,binding.Progress){
+               Log.i("THISISBS","location request successful ")
+           }*/
+
+
         lastLocation.setupPermissions(this, this)
 
-        lastLocation.setUpLocationListener(
-            this, this, binding.Progress
-        ) {
-            if (!searching) {
-                makeCurrentLocationWeatherRequest()
-            } else {
-                makeSearchWeatherRequest()
+
+
+
+        if (myUtilities.locationPermissionsAvailable(this, this)) {
+            Log.i(debugTag, "permission available, making location request ")
+            lastLocation.setUpLocationListener(this, this, binding.Progress) {
+                Log.i(
+                    debugTag,
+                    "permission available and location request are fine, making weather request "
+                )
+                if (!searching) {
+                    makeCurrentLocationWeatherRequest()
+                } else {
+                    makeSearchWeatherRequest()
+                }
             }
+        } else {
+
+/*          val builder = AlertDialog.Builder(this)
+                      builder.setMessage("Permission to access the Location is required for this app to Show results based on your LAST KNOWN LOCATION.")
+                          .setTitle("Permission required")
+                      builder.setPositiveButton("OK") { _, _ ->
+                          Log.i("tag", "Clicked")
+                          // ask for requests again
+                          lastLocation.permissionRequests(this)
+                      }
+                      val dialog = builder.create()
+                      dialog.show()*/
+
+            Log.i(debugTag, "permission aint available ")
         }
+
+
+
+        /*      lastLocation.setUpLocationListener(
+                  this, this, binding.Progress
+              ) {
+                  Log.i("THISISBS","location request successful ")
+                  // makeCurrentLocationWeatherRequest()
+                  if (!searching) {
+                      makeCurrentLocationWeatherRequest()
+                  } else {
+                      makeSearchWeatherRequest()
+                  }
+              }
+
+
+*/
+
+
+
+
+
+
+
+
+
+
 
 
         searchButtonAction()
@@ -148,6 +209,7 @@ class MainActivity : AppCompatActivity(),
 
 
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.nav_menu, menu)
@@ -464,7 +526,7 @@ class MainActivity : AppCompatActivity(),
             lastLocation.permissionsRequestCode -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.i(
-                   "permission granted",
+                        "permission granted",
                         "Permission has been granted by user"
                     )
                     Toast.makeText(
@@ -476,7 +538,11 @@ class MainActivity : AppCompatActivity(),
                             lastLocation.setUpLocationListener(
                                 this,
                                 this, binding.Progress
-                            ) {}
+                            ) {
+                                makeCurrentLocationWeatherRequest()
+                                Log.i("THISISBS", "rq")
+                            }
+
                         }
                         else -> {
                             //TODO it should be ajdusted so that when the user comes back after activation# a new rqst will be sent
@@ -485,7 +551,7 @@ class MainActivity : AppCompatActivity(),
                     }
                 } else {
                     Log.i(
-                      "permissionDenied",
+                        "permissionDenied",
                         "Permission has been denied by user"
                     )
 

@@ -4,7 +4,6 @@ import  android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources
@@ -26,6 +25,7 @@ import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
 import android.provider.Settings;
+import com.google.android.gms.tasks.OnCompleteListener
 
 // TODO: 17.08.20 Implement the following interface to write override onRequestPermissionResult here and not in MainActivity anymore
 //:ActivityCompat.OnRequestPermissionsResultCallback
@@ -34,6 +34,7 @@ class LastLocation(context: Context) {
     private val geocoder: Geocoder = Geocoder(context, Locale.getDefault())
     private var resultMessage = "SKSKSK"
     private var bLocation = false
+    val debugTag= "THISISBS"
     val tag = "PermissionDemo"
     val PASSED_CONTEXT = context
     val load: Load = Load()
@@ -51,7 +52,7 @@ val addressListOfCurrentLocation:  ArrayList<Address>
         Manifest.permission.ACCESS_FINE_LOCATION
     )
 
-    fun isLocationServiceEnabled(context: Context) :Boolean{
+    fun isLocationServiceEnabled(context: Context): Boolean {
 
         val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         var gps_enabled = false
@@ -75,12 +76,12 @@ val addressListOfCurrentLocation:  ArrayList<Address>
                 }
                 .show()
             true
-        }else
+        } else
             false
 
     }
 
-         fun isLocationEnabled(context: Context): Boolean {
+    fun isLocationEnabled(context: Context): Boolean {
         val locationManager: LocationManager =
             context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
@@ -102,8 +103,7 @@ val addressListOfCurrentLocation:  ArrayList<Address>
     }
 
 
-
-    private fun makeMultipleRequest(activity: MainActivity) {
+    fun permissionRequests(activity: MainActivity) {
         ActivityCompat.requestPermissions(
             activity,
             permissionsList,
@@ -112,6 +112,7 @@ val addressListOfCurrentLocation:  ArrayList<Address>
     }
 
 
+/*
     fun setupPermissions(context: Context, activity: MainActivity) {
         val fineLocationPermission =
             ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -131,15 +132,49 @@ val addressListOfCurrentLocation:  ArrayList<Address>
                 builder.setPositiveButton("OK") { _, _ ->
                     Log.i(tag, "Clicked")
                     // ask for requests again
-                    makeMultipleRequest(activity)
+                    permissionRequests(activity)
                 }
                 val dialog = builder.create()
                 dialog.show()
             } else {
-                makeMultipleRequest(activity)
+                permissionRequests(activity)
             }
+        } else {
+            permissionRequests(activity)
         }
     }
+*/
+
+    fun setupPermissions(context: Context, activity: MainActivity) {
+        val fineLocationPermission =
+            ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+        val coarseLocationPermission =
+            ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
+        if (fineLocationPermission == PackageManager.PERMISSION_GRANTED || coarseLocationPermission == PackageManager.PERMISSION_GRANTED) {
+            permissionRequests(activity)
+        } else {
+            /*Log.i(tag, "Permission to record denied")
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    activity,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
+            ) {
+                val builder = AlertDialog.Builder(context)
+                builder.setMessage("Permission to access the Location is required for this app to Show results based on your LAST KNOWN LOCATION.")
+                    .setTitle("Permission required")
+                builder.setPositiveButton("OK") { _, _ ->
+                    Log.i(tag, "Clicked")
+                    // ask for requests again
+                    permissionRequests(activity)
+                }
+                val dialog = builder.create()
+                dialog.show()
+            } else {*/
+                permissionRequests(activity)
+            //}
+        }
+    }
+
 
     @Synchronized
     @SuppressLint("MissingPermission")
@@ -149,11 +184,12 @@ val addressListOfCurrentLocation:  ArrayList<Address>
         progressBar: View,
         expression: (() -> Unit)
     ) {
+        Log.i("THISISBS", "location listening ")
         load.start(progressBar)
 
         if (bLocation) return
         //   load.start(progressBar)
-
+        Log.i("THISISBS", "after return")
         // for getting the current location update after every 10 seconds with high accuracy
         val locationRequest = LocationRequest()
             .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
@@ -161,9 +197,12 @@ val addressListOfCurrentLocation:  ArrayList<Address>
         fusedLocationProviderClient.requestLocationUpdates(
             locationRequest,
             object : LocationCallback() {
+
                 override fun onLocationResult(locationResult: LocationResult?) {
                     super.onLocationResult(locationResult)
+                    Log.i(debugTag, "callBack ")
                     if (locationResult?.lastLocation != null) {
+                        Log.i(debugTag, "runn ,ing")
                         for (location in locationResult.locations) {
                             val myAddressList: ArrayList<Address> = geocode.getFromLocation(
                                 location.latitude,
@@ -174,15 +213,18 @@ val addressListOfCurrentLocation:  ArrayList<Address>
                             LocationReceiver.locality = myAddressList[0].locality
                             LocationReceiver.xCoordination = location.latitude.toString()
                             LocationReceiver.yCoordination = location.longitude.toString()
+                            Log.i(debugTag, "${location.longitude} , ${location.latitude}")
                             expression.invoke()
                         }
                         //  load.done(progressBar)
                     } else {
+                        Log.i(debugTag, "location is null ")
                         load.done(progressBar)
                         Log.d(TAG, "Location information is not available!")
 
                     }
                     // Few more things we can do here:
+                    Log.i(debugTag, "location loop is going on ")
                 }
             },
             Looper.myLooper()
@@ -197,19 +239,64 @@ val addressListOfCurrentLocation:  ArrayList<Address>
     @SuppressLint("MissingPermission")
     fun firstRequest(
         LocationReceiver: LocationReceiver,
-        progressBar: View
+        progressBar: View, expression: (() -> Unit)
     ) {
         load.start(progressBar)
-        fusedLocationProviderClient.lastLocation.addOnSuccessListener { mlocation: Location? ->
-            if (mlocation != null) {
+        Log.i("THISISBS", " progress spinner is activated")
+        fusedLocationProviderClient.locationAvailability.addOnCompleteListener {
+            OnCompleteListener<LocationAvailability?> {
+                /*         object :
+                OnCompleteListener<LocationAvailability?> {
+                override fun onComplete(p0: Task<LocationAvailability?>) {
+
+*/
+                Log.i("THISISBS", " complete listening")
+
+
+            }
+
+            fusedLocationProviderClient.lastLocation.addOnSuccessListener { mlocation: Location? ->
+                Log.i("THISISBS", "listening !!")
+                /* if (mlocation != null) {
                 LocationReceiver.firstLatitude = mlocation.latitude.toString()
                 LocationReceiver.firstLongitude = mlocation.longitude.toString()
+                Log.i("first","${mlocation.longitude} , ${mlocation.latitude}")
+                expression.invoke()
+            }*/
+
+
+
+                if (mlocation != null) {
+                    Log.i("THISISBS", "runn ,ing")
+                    val myAddressList: ArrayList<Address> = geocode.getFromLocation(
+                        mlocation.latitude,
+                        mlocation.longitude,
+                        1
+                    ) as ArrayList<Address>
+                    LocationReceiver.countryCode = myAddressList[0].countryCode
+                    LocationReceiver.locality = myAddressList[0].locality
+                    LocationReceiver.xCoordination = mlocation.latitude.toString()
+                    LocationReceiver.yCoordination = mlocation.longitude.toString()
+                    Log.i("THISISBS", "${mlocation.longitude} , ${mlocation.latitude}")
+                    expression.invoke()
+
+                    //  load.done(progressBar)
+                } else {
+                    Log.i("THISISBS", "location is null ")
+                    load.done(progressBar)
+                    Log.d(TAG, "Location information is not available!")
+
+                }
+
+            }
+            // load.done(progressBar)
+            fusedLocationProviderClient.lastLocation.addOnFailureListener {
+
+                Log.i("THISISBS", " failed ")
+                load.done(progressBar)
             }
         }
-        load.done(progressBar)
-        fusedLocationProviderClient.lastLocation.addOnFailureListener { }
     }
-
 
     @SuppressLint("MissingPermission")
     fun getLastLocation(
@@ -278,10 +365,10 @@ val addressListOfCurrentLocation:  ArrayList<Address>
     }
 
     fun getCountryCodeFromName(locationName: String = "Koblenz"): String {
-        var countryCode:String = "Snap!"
+        var countryCode: String = "Snap!"
         try {
-            if (cityNameReq(locationName).size !=0)
-               countryCode = cityNameReq(locationName)[0].countryCode
+            if (cityNameReq(locationName).size != 0)
+                countryCode = cityNameReq(locationName)[0].countryCode
 
         } catch (e: Exception) {
             resultMessage = Resources.getSystem().getString(R.string.service_not_available)
@@ -298,8 +385,8 @@ val addressListOfCurrentLocation:  ArrayList<Address>
     fun getLocaleFromName(locationName: String = "Koblenz"): String {
         var locale = "Oh..!"
         try {
-            if (cityNameReq(locationName).size !=0)
-            locale = cityNameReq(locationName)[0].locality
+            if (cityNameReq(locationName).size != 0)
+                locale = cityNameReq(locationName)[0].locality
 
         } catch (e: Exception) {
             resultMessage = Resources.getSystem().getString(R.string.service_not_available)

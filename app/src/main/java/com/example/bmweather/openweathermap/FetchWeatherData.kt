@@ -22,6 +22,7 @@ class FetchWeatherData {
             WeatherService::class.java)
         fun getCurrentWeatherReport(app_id: String, lat: String, lon: String, lang: String, units: String, exclude: String, mainActivity: MainActivity, progressBar: View) {
                 load.start(progressBar = progressBar)
+            Log.i("THISISBS","fetching started")
 
             Log.d(TAG, "onResponse response:: $app_id  $lat $lon $lang $units $exclude")
             apiRequest.getCurrentWeatherData(lat, lon, units, lang, app_id, exclude)
