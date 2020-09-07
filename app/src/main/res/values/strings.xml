@@ -9,7 +9,7 @@
     <string name="sorry">Sorry</string>
     <string name="no_internet">Internet is not Available</string>
     <string name="max_temp">"max: "</string>
-    <string name="feels_like_temp">"Gefühlt wie: "</string>
+    <string name="feels_like_temp">"Gefühlt: "</string>
     <string name="comma">" "</string>
     <string name="default_lat">Last Known Latitude: </string>
     <string name="default_lng">Last Known Longitude: </string>
@@ -47,19 +47,26 @@
     <string name="attachment_title">Eingegangene Anhänge herunterladen</string>
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
-    <string name="enable_gps">GPS-Dienst ist erforderlich.</string>
-    <string name="required_for_this_app">Bitte den GPS-Dienst aktivieren</string>
-    <string name="required_internet">Bitte den Internet-Dienst aktivieren</string>
-    <string name="enable_now">Jetzt Aktivieren</string>
-    <string name="location_permission_not_granted">Die Berechtigung wurde vom Benutzer verweigert</string>
-    <string name="location_services_not_enabled">Standortdienste sind nicht aktiviert</string>
-    <string name="Cancel">Abbrechen</string>
-    <string name="Settings">Menü</string>
-    <string name="menu_search">Suche</string>
-    <string name="missingPermissionsDialogTitle">Fehlende Berechtigungen</string>
-    <string name="missingPermissionsdialogMessage">Um diese App nutzen zu können, ist ein Standortzugang erforderlich. Bitte geben Sie die Berechtigungen für den Zugriff auf den Standort des Geräts und starten Sie die App neu, um sie zu nutzen.</string>
-    <string name="attachment_summary_off">Anhänge nur herunterladen, wenn sie manuell verlangt werden</string>
-    <string name="gps_network_not_enabled">GPS-Netzwerk ist nicht aktiviert</string>
-    <string name="open_location_settings">Standort-Einstellungen öffnen.</string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="enable_gps">GPS service required</string>
+    <string name="required_for_this_app">Please enable GPS service</string>
+    <string name="required_internet">Please enable Internet service</string>
+    <string name="enable_now">Enable now</string>
+    <string name="location_permission_not_granted">Permission has been denied by the user</string>
+    <string name="gps_network_not_enabled">GPS Network is not enabled</string>
+    <string name="location_services_not_enabled">location services are not enabled</string>
+    <string name="open_location_settings">Open location settings</string>
+    <string name="Cancel">Cancel</string>
+    <string name="Settings">Menu</string>
+    <string name="menu_search">Search</string>
+    <string name="title_activity_main2">MainActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 
 </resources>

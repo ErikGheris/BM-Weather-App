@@ -8,7 +8,7 @@
     <string name="min_temp">"min: "</string>
     <string name="sorry">Sorry</string>
     <string name="max_temp">"max: "</string>
-    <string name="feels_like_temp">"Gefühlt wie: "</string>
+    <string name="feels_like_temp">"Feels like: "</string>
     <string name="comma">" "</string>
     <string name="default_lat">Last Known Latitude: </string>
     <string name="default_lng">Last Known Longitude: </string>

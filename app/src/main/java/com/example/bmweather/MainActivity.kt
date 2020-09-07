@@ -499,23 +499,22 @@ class MainActivity : AppCompatActivity(),
     fun current(main: Current) {
         binding.mainTemp.text =
             main.temp.roundToInt().toString().plus(getString(R.string.temp_unit_c))
-        binding.sunrise.text = sunformat.format(main.sunrise * 1000L).toString()
-        binding.sunset.text = sunformat.format(main.sunset * 1000L).toString()
+        binding.sunriseText.text = sunformat.format(main.sunrise * 1000L).toString()
+        binding.sunsetText.text = sunformat.format(main.sunset * 1000L).toString()
+        binding.humText.text = main.humidity.toString().plus(" %")
         binding.feelslike.text =
-            main.feelsLike.roundToInt().toString().plus(getString(R.string.temp_unit_c))
-        binding.wind.text = main.windSpeed.roundToInt().toString().plus(getString(R.string.kmh))
+            getString(R.string.feels_like_temp).plus(main.feelsLike.roundToInt().toString()).plus(getString(R.string.temp_unit_c))
+       binding.windText.text = main.windSpeed.roundToInt().toString().plus(getString(R.string.kmh))
         binding.description.text = main.weather[0].description
         Picasso.get()
             .load("http://openweathermap.org/img/wn/" + main.weather[0].icon + "@2x.png")
-            .resize(250, 250)
+            .resize(350, 350)
             .into(ic_description)
     }
 
     fun daily(weather: Daily) {
-        binding.mintemp.text =
-            weather.temp.min.roundToInt().toString().plus(getString(R.string.temp_unit_c))
-        binding.maxtemp.text =
-            weather.temp.max.roundToInt().toString().plus(getString(R.string.temp_unit_c))
+        binding.daytemp.text =
+            weather.temp.min.roundToInt().toString().plus(getString(R.string.temp_unit_c)).plus(" / ").plus( weather.temp.max.roundToInt().toString().plus(getString(R.string.temp_unit_c)))
     }
 
     fun fetchHourlyWeather(hourly: List<Hourly>) {
