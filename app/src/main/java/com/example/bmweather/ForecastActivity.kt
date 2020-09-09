@@ -1,6 +1,7 @@
 package com.example.bmweather
 
 import android.content.Intent
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.WindowManager
@@ -19,9 +20,10 @@ var lang = "de"
 var exclude = "hourly,minutely"
 var longitude: String = ""
 var latitude: String = ""
+        val fetchWeather = FetchWeatherData
 
 class SecondActivity : AppCompatActivity() {
-    
+
     override fun onStart() {
         window.setFlags(
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
@@ -32,14 +34,13 @@ class SecondActivity : AppCompatActivity() {
         // Get a support ActionBar corresponding to this toolbar and enable the Up button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-
-
         latitude = intent.getStringExtra("xCoordination").toString().trim()
         longitude = intent.getStringExtra("yCoordination").toString().trim()
+
+
         super.onStart()
         binding = ActivitySecondBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val fetchWeather = FetchWeatherData
         fetchWeather.getForeCastWeatherReport(
             app_id = apiKey,
             lat = latitude,

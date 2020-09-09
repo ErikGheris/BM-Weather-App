@@ -43,8 +43,8 @@
 
                 <Button
                     android:id="@+id/search_button"
-                    android:layout_width="81dp"
-                    android:layout_height="38dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="@string/searchHint"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -57,43 +57,17 @@
 
                 <androidx.appcompat.widget.SearchView
                     android:id="@+id/search_input"
-                    android:layout_width="98dp"
+                    android:layout_width="150dp"
                     android:layout_height="32dp"
                     android:drawableStart="@drawable/ic_baseline_search_24"
                     android:labelFor="@android:id/autofill"
                     android:singleLine="true"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.932"
+                    app:layout_constraintHorizontal_bias="0.16"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.092" />
-
-                <TextView
-                    android:id="@+id/latTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="60sp"
-                    android:gravity="center"
-                    android:text="@string/default_lat"
-
-                    android:visibility="invisible"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.985"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-                <TextView
-                    android:id="@+id/lngTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="60sp"
-                    android:gravity="center"
-                    android:text="@string/default_lng"
-                    android:visibility="invisible"
-                    app:layout_constraintBottom_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/description"
-                    app:layout_constraintVertical_bias="0.92" />
+                    app:layout_constraintVertical_bias="0.029999971" />
 
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton

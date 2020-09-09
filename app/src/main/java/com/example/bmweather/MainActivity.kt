@@ -15,6 +15,8 @@ import android.view.MenuItem
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.AutoCompleteTextView
+import android.widget.EditText
+import android.widget.TextView
 
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -60,11 +62,12 @@ class MainActivity : AppCompatActivity(),
     private lateinit var binding: ActivityMainBinding
     private var searching = false
     private var load: Load = Load()
+    private lateinit var myUtilities: Utility
     lateinit var connectivityManagement: ConnectivityManagement
     val debugTag = "THISISBS"
 
     // TODO: 12.08.20   (reason: )lazy declarataion vs inFunctionDeclaration
-    var myUtilities = Utility()
+
 
     //  val list : ArrayList by lazy { ArrayList() }
     // private lateinit var backToast: Toast
@@ -84,89 +87,16 @@ class MainActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        myUtilities = Utility(binding)
         window.setFlags(
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
         )
-
         supportActionBar?.setDisplayShowTitleEnabled(false)
-
-
         val mainActivityContext = applicationContext
         lastLocation = LastLocation(mainActivityContext)
         connectivityManagement = ConnectivityManagement(mainActivityContext)
-
-
-        /*   lastLocation.setUpLocationListener(this,this,binding.Progress){
-               Log.i("THISISBS","location request successful ")
-           }*/
-
-
         lastLocation.setupPermissions(this, this)
-
-
-/*
-
-        if (myUtilities.locationPermissionsAvailable(this, this)) {
-            Log.i(debugTag, "permission available, making location request ")
-            lastLocation.setUpLocationListener(this, this, binding.Progress) {
-                Log.i(
-                    debugTag,
-                    "permission available and location request are fine, making weather request "
-                )
-                if (!searching) {
-                    makeCurrentLocationWeatherRequest()
-                } else {
-                    makeSearchWeatherRequest()
-                }
-            }
-        } else {
-
-*/
-/*          val builder = AlertDialog.Builder(this)
-                      builder.setMessage("Permission to access the Location is required for this app to Show results based on your LAST KNOWN LOCATION.")
-                          .setTitle("Permission required")
-                      builder.setPositiveButton("OK") { _, _ ->
-                          Log.i("tag", "Clicked")
-                          // ask for requests again
-                          lastLocation.permissionRequests(this)
-                      }
-                      val dialog = builder.create()
-                      dialog.show()*//*
-
-
-            Log.i(debugTag, "permission aint available ")
-        }
-*/
-
-
-        /*      lastLocation.setUpLocationListener(
-                  this, this, binding.Progress
-              ) {
-                  Log.i("THISISBS","location request successful ")
-                  // makeCurrentLocationWeatherRequest()
-                  if (!searching) {
-                      makeCurrentLocationWeatherRequest()
-                  } else {
-                      makeSearchWeatherRequest()
-                  }
-              }
-
-
-*/
-
-
-
-
-
-
-
-
-
-
-
-
         searchButtonAction()
         swipeAction()
         activityButtonAction()
@@ -206,10 +136,22 @@ class MainActivity : AppCompatActivity(),
                 Log.i("TxT", "Press querytextchange")
                 return false
             }
-
         })
+    }
 
-
+      fun wipeOff() {
+        val myList = listOf(
+            binding.description,
+            binding.city,
+            binding.daytemp,
+            binding.mainTemp,
+            binding.feelslike,
+            binding.humText,
+            binding.windText,
+            binding.sunriseText,
+            binding.sunsetText
+        )
+        myUtilities.clearAllTextViews(myList)
     }
 
 
@@ -224,58 +166,60 @@ class MainActivity : AppCompatActivity(),
                 val intent = Intent(this, SettingsActivity::class.java)
                 startActivity(intent)
             }
-
         }
         return super.onOptionsItemSelected(item)
     }
-    /*  val searchItem = menu.findItem(R.id.search_city)
-      searchView = searchItem.actionView as SearchView
-      searchView.setQueryHint("Search View Hint")
 
-      searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
-          override fun onQueryTextChange(newText: String): Boolean {
-              return false
-          }
+    override fun onRestart() {
+        super.onRestart()
 
-          override fun onQueryTextSubmit(query: String): Boolean {
-              // task HERE
-              return false
-          }
 
-      })
-  */
+        lastLocation.setUpLocationListener(
+            this, this, binding.Progress
+        ) {
+            Log.i(debugTag, "  onResume")
+            if (lastLocation.isLocationEnabled(this)) {
+                Log.i(debugTag, "location request is sent onResume")
+                if (!searching) {
+                    makeCurrentLocationWeatherRequest()
+                    Log.i(debugTag, "location request is sent onResume: !searching")
 
-    /* override fun onRestart() {
-         super.onRestart()
-         lastLocation.setUpLocationListener(
-             this, this, binding.Progress
-         ) {
-             if (!searching) {
-                 makeCurrentLocationWeatherRequest()
-             } else {
-                 makeSearchWeatherRequest()
-             }
-         }
-     }
+                    lastLocation.setUpLocationListener(this, this, binding.Progress) {
+                        Log.i("THISISBS", "$longitude and $latitude are the coordinates ")
+                        makeCurrentLocationWeatherRequest()
+                    }
 
-*/
-    override fun onResume() {
-        super.onResume()
-        /* lastLocation.setUpLocationListener(
-             this, this, binding.Progress
-         ) {*/
-        if (lastLocation.isLocationEnabled(this)) {
-            Log.i(debugTag,"location is available onResume")
-            if (!searching) {
-                lastLocation.setUpLocationListener(this,this,binding.Progress){
-                Log.i("THISISBS","$longitude and $latitude are the coordinates ")
-                makeCurrentLocationWeatherRequest()}
-            } else {
-                makeSearchWeatherRequest()
+                } else {
+                    Log.i(debugTag, "location request is sent onResume: else")
+                    makeSearchWeatherRequest()
+                }
             }
         }
-        //  }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        lastLocation.setUpLocationListener(
+            this, this, binding.Progress
+        ) {
+            Log.i(debugTag, "  onResume")
+            if (lastLocation.isLocationEnabled(this)) {
+                Log.i(debugTag, "location request is sent onResume")
+                if (!searching) {
+                    makeCurrentLocationWeatherRequest()
+                    Log.i(debugTag, "location request is sent onResume: !searching")
+                    lastLocation.setUpLocationListener(this, this, binding.Progress) {
+                        Log.i(debugTag, "$longitude and $latitude are the coordinates ")
+                        makeCurrentLocationWeatherRequest()
+                    }
+                } else {
+                    Log.i(debugTag, "location request is sent onResume: else")
+                    makeSearchWeatherRequest()
+                }
+            }
+        }
     }
 
     fun isLocationEnabled(mContext: Context): Boolean {
@@ -318,7 +262,6 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun searchButtonAction() {
-
         binding.searchButton.setOnClickListener {
             if (lastLocation.isLocationEnabled(this)) {
 
@@ -334,7 +277,6 @@ class MainActivity : AppCompatActivity(),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-
             } else {
                 Toast.makeText(
                     this,
@@ -346,6 +288,7 @@ class MainActivity : AppCompatActivity(),
             closeKeyboard()
         }
     }
+
 
     private fun connectionCheck() {
         if (connectivityManagement.networkCheck(this)) {
@@ -366,7 +309,6 @@ class MainActivity : AppCompatActivity(),
                 Toast.LENGTH_SHORT
             ).show()
         }
-
     }
 
     private fun swipeAction() {
@@ -397,10 +339,9 @@ class MainActivity : AppCompatActivity(),
                     Toast.LENGTH_SHORT
                 ).show()
                 swipe.isRefreshing = false
-            }
-            if (!isLocationEnabled(this)) {
                 showLocationIsDisabledAlert(this)
             }
+
         }
     }
 
@@ -503,8 +444,9 @@ class MainActivity : AppCompatActivity(),
         binding.sunsetText.text = sunformat.format(main.sunset * 1000L).toString()
         binding.humText.text = main.humidity.toString().plus(" %")
         binding.feelslike.text =
-            getString(R.string.feels_like_temp).plus(main.feelsLike.roundToInt().toString()).plus(getString(R.string.temp_unit_c))
-       binding.windText.text = main.windSpeed.roundToInt().toString().plus(getString(R.string.kmh))
+            getString(R.string.feels_like_temp).plus(main.feelsLike.roundToInt().toString())
+                .plus(getString(R.string.temp_unit_c))
+        binding.windText.text = main.windSpeed.roundToInt().toString().plus(getString(R.string.kmh))
         binding.description.text = main.weather[0].description
         Picasso.get()
             .load("http://openweathermap.org/img/wn/" + main.weather[0].icon + "@2x.png")
@@ -514,7 +456,10 @@ class MainActivity : AppCompatActivity(),
 
     fun daily(weather: Daily) {
         binding.daytemp.text =
-            weather.temp.min.roundToInt().toString().plus(getString(R.string.temp_unit_c)).plus(" / ").plus( weather.temp.max.roundToInt().toString().plus(getString(R.string.temp_unit_c)))
+            weather.temp.min.roundToInt().toString().plus(getString(R.string.temp_unit_c))
+                .plus(" / ").plus(
+                    weather.temp.max.roundToInt().toString().plus(getString(R.string.temp_unit_c))
+                )
     }
 
     fun fetchHourlyWeather(hourly: List<Hourly>) {
@@ -549,7 +494,6 @@ class MainActivity : AppCompatActivity(),
                                 makeCurrentLocationWeatherRequest()
                                 Log.i("THISISBS", "rq")
                             }
-
                         }
                         else -> {
                             //TODO it should be ajdusted so that when the user comes back after activation# a new rqst will be sent
@@ -561,7 +505,6 @@ class MainActivity : AppCompatActivity(),
                         "permissionDenied",
                         "Permission has been denied by user"
                     )
-
                     Toast.makeText(
                         this,
                         getString(R.string.location_permission_not_granted),
@@ -573,4 +516,5 @@ class MainActivity : AppCompatActivity(),
     }
 
 }
+
 

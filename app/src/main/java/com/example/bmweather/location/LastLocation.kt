@@ -34,7 +34,7 @@ class LastLocation(context: Context) {
     private val geocoder: Geocoder = Geocoder(context, Locale.getDefault())
     private var resultMessage = "SKSKSK"
     private var bLocation = false
-    val debugTag= "THISISBS"
+    val debugTag = "THISISBS"
     val tag = "PermissionDemo"
     val PASSED_CONTEXT = context
     val load: Load = Load()
@@ -153,7 +153,7 @@ val addressListOfCurrentLocation:  ArrayList<Address>
         if (fineLocationPermission == PackageManager.PERMISSION_GRANTED || coarseLocationPermission == PackageManager.PERMISSION_GRANTED) {
             permissionRequests(activity)
         } else {
-          Log.i(tag, "Permission to record denied")
+            Log.i(tag, "Permission to record denied")
             if (ActivityCompat.shouldShowRequestPermissionRationale(
                     activity,
                     Manifest.permission.ACCESS_FINE_LOCATION
@@ -162,7 +162,7 @@ val addressListOfCurrentLocation:  ArrayList<Address>
                 retryRequest(context, activity)
             } else {
                 permissionRequests(activity)
-           }
+            }
         }
     }
 
@@ -191,21 +191,25 @@ val addressListOfCurrentLocation:  ArrayList<Address>
         progressBar: View,
         expression: (() -> Unit)
     ) {
-        Log.i("THISISBS", "location listening ")
+        Log.i(debugTag, "location listening ")
         load.start(progressBar)
-
-        if (bLocation) return
+/*
+        if (bLocation) {
+            Log.i(debugTag, "return ")
+            load.done(progressBar)
+            return
+         }*/
         //   load.start(progressBar)
         // for getting the current location update after every 10 seconds with high accuracy
         val locationRequest = LocationRequest()
             .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-
+        Log.i(debugTag, "not ret ")
         fusedLocationProviderClient.requestLocationUpdates(
             locationRequest,
             object : LocationCallback() {
 
                 override fun onLocationResult(locationResult: LocationResult?) {
-        Log.i("THISISBS", "location CallBack")
+                    Log.i(debugTag, "location CallBack")
                     super.onLocationResult(locationResult)
                     Log.i(debugTag, "callBack ")
                     if (locationResult?.lastLocation != null) {
@@ -237,7 +241,7 @@ val addressListOfCurrentLocation:  ArrayList<Address>
             Looper.myLooper()
         )
         // load.done( progressBar)
-        bLocation = true
+/*        bLocation = true*/
 
 
     }
@@ -249,7 +253,7 @@ val addressListOfCurrentLocation:  ArrayList<Address>
         progressBar: View, expression: (() -> Unit)
     ) {
         load.start(progressBar)
-        Log.i("THISISBS", " progress spinner is activated")
+        Log.i(debugTag, " progress spinner is activated")
         fusedLocationProviderClient.locationAvailability.addOnCompleteListener {
             OnCompleteListener<LocationAvailability?> {
                 /*         object :
@@ -257,13 +261,13 @@ val addressListOfCurrentLocation:  ArrayList<Address>
                 override fun onComplete(p0: Task<LocationAvailability?>) {
 
 */
-                Log.i("THISISBS", " complete listening")
+                Log.i(debugTag, " complete listening")
 
 
             }
 
             fusedLocationProviderClient.lastLocation.addOnSuccessListener { mlocation: Location? ->
-                Log.i("THISISBS", "listening !!")
+                Log.i(debugTag, "listening !!")
                 /* if (mlocation != null) {
                 LocationReceiver.firstLatitude = mlocation.latitude.toString()
                 LocationReceiver.firstLongitude = mlocation.longitude.toString()
@@ -274,7 +278,7 @@ val addressListOfCurrentLocation:  ArrayList<Address>
 
 
                 if (mlocation != null) {
-                    Log.i("THISISBS", "runn ,ing")
+                    Log.i(debugTag, "runn ,ing")
                     val myAddressList: ArrayList<Address> = geocode.getFromLocation(
                         mlocation.latitude,
                         mlocation.longitude,
@@ -284,12 +288,12 @@ val addressListOfCurrentLocation:  ArrayList<Address>
                     LocationReceiver.locality = myAddressList[0].locality
                     LocationReceiver.xCoordination = mlocation.latitude.toString()
                     LocationReceiver.yCoordination = mlocation.longitude.toString()
-                    Log.i("THISISBS", "${mlocation.longitude} , ${mlocation.latitude}")
+                    Log.i(debugTag, "${mlocation.longitude} , ${mlocation.latitude}")
                     expression.invoke()
 
                     //  load.done(progressBar)
                 } else {
-                    Log.i("THISISBS", "location is null ")
+                    Log.i(debugTag, "location is null ")
                     load.done(progressBar)
                     Log.d(TAG, "Location information is not available!")
 
@@ -299,7 +303,7 @@ val addressListOfCurrentLocation:  ArrayList<Address>
             // load.done(progressBar)
             fusedLocationProviderClient.lastLocation.addOnFailureListener {
 
-                Log.i("THISISBS", " failed ")
+                Log.i(debugTag, " failed ")
                 load.done(progressBar)
             }
         }

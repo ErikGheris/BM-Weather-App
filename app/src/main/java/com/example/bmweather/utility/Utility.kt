@@ -4,14 +4,17 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.util.Log
+import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.bmweather.MainActivity
 import com.example.bmweather.R
+import com.example.bmweather.databinding.ActivityMainBinding
 
-class Utility {
+class Utility(val binding: ActivityMainBinding) {
     private val tag = "Utility"
 
 
@@ -30,6 +33,18 @@ class Utility {
                 return false
         }
         return true
+    }
+
+    fun clearTextView(textView: TextView) {
+        textView.text = ""
+    }
+
+    fun clearAllTextViews(list: List<TextView>) {
+        list.map { clearTextView(it) }
+    }
+
+    private fun TextView.utilities() {
+        this.text = ""
     }
 
 /*
