@@ -15,8 +15,6 @@ import android.view.MenuItem
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.AutoCompleteTextView
-import android.widget.EditText
-import android.widget.TextView
 
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -59,10 +57,10 @@ class MainActivity : AppCompatActivity(),
     private var exclude = "minutely"
     private val fetchWeather = FetchWeatherData
     private lateinit var lastLocation: LastLocation
-    private lateinit var binding: ActivityMainBinding
+ lateinit var binding: ActivityMainBinding
     private var searching = false
     private var load: Load = Load()
-    private lateinit var myUtilities: Utility
+    lateinit var myUtilities: Utility
     lateinit var connectivityManagement: ConnectivityManagement
     val debugTag = "THISISBS"
 
@@ -106,6 +104,7 @@ class MainActivity : AppCompatActivity(),
                     searched = binding.searchInput.query.toString()
                     searching = true
                     if (searched.trim().isNotEmpty()) {
+                        wipeOff()
                         lastCityCache = cityName
                         cityName = binding.searchInput.query.toString()
                         connectionCheck()
@@ -125,14 +124,12 @@ class MainActivity : AppCompatActivity(),
                     showLocationIsDisabledAlert(this@MainActivity)
                 }
 
-
                 val mySValue = binding.searchInput.query.toString()
                 Log.i("TxT", "$mySValue")
                 return false
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-
                 Log.i("TxT", "Press querytextchange")
                 return false
             }
@@ -151,6 +148,7 @@ class MainActivity : AppCompatActivity(),
             binding.sunriseText,
             binding.sunsetText
         )
+          if(binding.daytemp.text.isNotBlank() )
         myUtilities.clearAllTextViews(myList)
     }
 
@@ -173,8 +171,6 @@ class MainActivity : AppCompatActivity(),
 
     override fun onRestart() {
         super.onRestart()
-
-
         lastLocation.setUpLocationListener(
             this, this, binding.Progress
         ) {
@@ -196,7 +192,6 @@ class MainActivity : AppCompatActivity(),
                 }
             }
         }
-
     }
 
     override fun onResume() {
@@ -264,7 +259,6 @@ class MainActivity : AppCompatActivity(),
     private fun searchButtonAction() {
         binding.searchButton.setOnClickListener {
             if (lastLocation.isLocationEnabled(this)) {
-
                 searched = binding.searchInput.query.toString()
                 searching = true
                 if (searched.trim().isNotEmpty()) {
@@ -313,6 +307,7 @@ class MainActivity : AppCompatActivity(),
 
     private fun swipeAction() {
         binding.swipe.setOnRefreshListener {
+            wipeOff()
             if (lastLocation.isLocationEnabled(this)) {
                 searching = false
                 if (connectivityManagement.networkCheck(this)) {
@@ -362,7 +357,8 @@ class MainActivity : AppCompatActivity(),
                 .getString("reply", """metric""").toString(),
             exclude = exclude,
             mainActivity = this,
-            progressBar = binding.Progress
+            progressBar = binding.Progress,
+            debugTag = "THISISBS"
         )
     }
 
@@ -377,7 +373,8 @@ class MainActivity : AppCompatActivity(),
                 .getString("reply", """metric""").toString(),
             exclude = exclude,
             mainActivity = this,
-            progressBar = binding.Progress
+            progressBar = binding.Progress,
+            debugTag = "THISISBS"
         )
     }
 

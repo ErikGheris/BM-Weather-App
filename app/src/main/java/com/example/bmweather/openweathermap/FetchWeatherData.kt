@@ -9,7 +9,6 @@ import com.example.bmweather.SecondActivity
 import com.example.bmweather.network.RetrofitBuilder
 import com.example.bmweather.network.WeatherService
 import com.example.bmweather.openweathermap.response.WeatherReport
-import com.example.bmweather.utility.Utility
 import retrofit2.Callback
 import retrofit2.Response
 
@@ -33,11 +32,11 @@ class FetchWeatherData {
             units: String,
             exclude: String,
             mainActivity: MainActivity,
-            progressBar: View
+            progressBar: View,
+            debugTag: String
         ) {
             load.start(progressBar = progressBar)
-            Log.i("THISISBS", "fetching started")
-
+            Log.i(debugTag, "fetching started")
             Log.d(TAG, "onResponse response:: $app_id  $lat $lon $lang $units $exclude")
             apiRequest.getCurrentWeatherData(lat, lon, units, lang, app_id, exclude)
                 .enqueue(object : Callback<WeatherReport> {
@@ -45,7 +44,7 @@ class FetchWeatherData {
                         call: retrofit2.Call<WeatherReport>,
                         response: Response<WeatherReport>
                     ) {
-                        Log.i("THISISBS", "fetching Response is working")
+                        Log.i(debugTag, "fetching Response is working")
                         //On successful response builde string as defined later on
                         if (response.code() == 200 && response.code() != 400) {
                             val weatherReport = response.body()!!
@@ -56,9 +55,9 @@ class FetchWeatherData {
                             mainActivity.uiUtility()
                             load.done(progressBar = progressBar)
                         } else {
-                            Log.i("THISISBS", "response is not Successful")
+                            Log.i(debugTag, "response is not Successful")
                             if (response.code() == 404) {
-                                Log.i("THISISBS", "ERROR404")
+                                Log.i(debugTag, "ERROR404")
                                 mainActivityInstance.wipeOff()
                                 /*  mainActivity.cityName = mainActivity.lastCityCache
                                   mainActivity.sorryDisplayView()
@@ -90,12 +89,14 @@ class FetchWeatherData {
             activity: SecondActivity
         ) {
             Log.d(TAG, "onResponse response:: $app_id  $lat $lon $lang $units $exclude")
+            Log.i("SecAct", "request sent")
             apiRequest.getCurrentWeatherData(lat, lon, units, lang, app_id, exclude)
                 .enqueue(object : Callback<WeatherReport> {
                     override fun onResponse(
                         call: retrofit2.Call<WeatherReport>,
                         response: Response<WeatherReport>
                     ) {
+                        Log.i("SecAct", "responding")
                         //On successful response builde string as defined later on
                         if (response.code() == 200 && response.code() != 400) {
                             val weatherReport = response.body()!!
@@ -103,6 +104,7 @@ class FetchWeatherData {
                             activity.uiUtility()
                         } else
                             if (response.code() == 404) {
+                                Log.i("SecAct", "404")
                                 mainActivityInstance.wipeOff()
                                 /*mainActivity.cityName = mainActivity.lastCityCache
                                 mainActivity.sorryDisplayView()*/

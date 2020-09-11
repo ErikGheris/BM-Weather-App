@@ -63,7 +63,7 @@
         app:srcCompat="@drawable/group_12_90b11781" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fragment2"
+        android:id="@+id/secondActivityButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
