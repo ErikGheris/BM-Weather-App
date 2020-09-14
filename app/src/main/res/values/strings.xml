@@ -70,5 +70,6 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="cityTextView">City</string>
 
+    <string name="invalid_city_name">Ungültiger Stadtname, bitte versuchen Sie es mal mit einem gültigen Namen</string>
     <string name="white_screen_msg">Hoppla! Etwas ist schief gelaufen. Bitte versuchen Sie es noch einmal. Wenn das Problem weiterhin besteht, überprüfen Sie bitte Ihre Eingaben noch einmal oder versuchen Sie es zu einem späteren Zeitpunkt erneut.</string>
 </resources>

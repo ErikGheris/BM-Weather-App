@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.Toast
 import com.example.bmweather.utility.Load
 import com.example.bmweather.MainActivity
+import com.example.bmweather.R
 import com.example.bmweather.SecondActivity
 import com.example.bmweather.network.RetrofitBuilder
 import com.example.bmweather.network.WeatherService
@@ -16,7 +17,7 @@ import retrofit2.Response
 var imageIsInvisible = false
 val load: Load = Load()
 val mainActivityInstance = MainActivity()
-val myUtility: Utility = Utility()
+val myUtilities: Utility = Utility()
 
 class FetchWeatherData {
     companion object FetchWeatherData {
@@ -49,6 +50,7 @@ class FetchWeatherData {
                         Log.i(debugTag, "fetching Response is working")
                         //On successful response builde string as defined later on
                         if (response.code() == 200 && response.code() != 400) {
+                            Log.i(debugTag, "responding")
                             val weatherReport = response.body()!!
                             mainActivity.current(weatherReport.current)
                             // mainActivity.realTemp(weatherReport.current)
@@ -59,16 +61,39 @@ class FetchWeatherData {
                             mainActivity.displayCheck(imageIsInvisible)
                             load.done(progressBar = progressBar)
                         } else {
-                            imageIsInvisible = true
-                            myUtility.clearAllTextViews(mainActivity.getTextViewList())
-                            mainActivity.displayCheck(imageIsInvisible)
-                            load.done(progressBar = progressBar)
-                            if (response.code() == 404) {
-                                Log.i(debugTag, "ERROR404")
+                            if (response.code() == 400) {
+                                Log.i(debugTag, "bad  ®esponse 400")
                                 imageIsInvisible = true
-                                myUtility.clearAllTextViews(mainActivity.getTextViewList())
+                                myUtilities.clearAllTextViews(mainActivity.getTextViewList())
+                                mainActivity.displayCheck(imageIsInvisible)
+                                myUtilities.longToastMsg(
+                                    mainActivity,
+                                    R.string.invalid_city_name
+                                )
+                                load.done(progressBar = progressBar)
+                            }
+
+                            if (response.code() == 401) {
+                                Log.i(debugTag, "bad  ®esponse ,401")
+                                imageIsInvisible = true
+                                myUtilities.clearAllTextViews(mainActivity.getTextViewList())
+                                mainActivity.displayCheck(imageIsInvisible)
+                                myUtilities.longToastMsg(
+                                    mainActivity,
+                                    R.string.white_screen_msg
+                                )
+                                load.done(progressBar = progressBar)
+                            }
+                            if (response.code() == 404) {
+                                Log.i(debugTag, "bad  ®esponse ERROR404")
+                                imageIsInvisible = true
+                                myUtilities.clearAllTextViews(mainActivity.getTextViewList())
                                 mainActivity.displayCheck(imageIsInvisible)
                                 load.done(progressBar = progressBar)
+                                myUtilities.longToastMsg(
+                                    mainActivity,
+                                    R.string.white_screen_msg
+                                )
                                 //    mainActivityInstance.displayCheck()
                                 /*  mainActivity.cityName = mainActivity.lastCityCache
                                   mainActivity.sorryDisplayView()
@@ -116,13 +141,13 @@ class FetchWeatherData {
                             activity.uiUtility()
                         } else {
                             imageIsInvisible = true
-                            myUtility.clearAllTextViews(mainActivityInstance.getTextViewList())
+                            myUtilities.clearAllTextViews(mainActivityInstance.getTextViewList())
                             mainActivityInstance.displayCheck(imageIsInvisible)
 
                             if (response.code() == 404) {
                                 imageIsInvisible = true
-                                myUtility.clearAllTextViews(mainActivityInstance.getTextViewList())
-                            mainActivityInstance.displayCheck(imageIsInvisible)
+                                myUtilities.clearAllTextViews(mainActivityInstance.getTextViewList())
+                                mainActivityInstance.displayCheck(imageIsInvisible)
 
 
 

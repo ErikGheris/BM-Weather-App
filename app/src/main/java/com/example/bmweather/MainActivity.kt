@@ -161,10 +161,7 @@ class MainActivity : AppCompatActivity(),
         if ( imageIsInvisible) {
             viewVisibilityState(View.INVISIBLE)
           //  imageIsInvisible = !imageIsInvisible
-            myUtilities.longToastMsg(
-                this,
-                R.string.white_screen_msg
-            )
+
         } else {
             viewVisibilityState(View.VISIBLE)
         }
@@ -448,7 +445,10 @@ class MainActivity : AppCompatActivity(),
 
     fun setSearchedCityInfoInTV() {
         val (locale, countryCode) = getCityInfo()
+        if (locale !="null" && countryCode != "null")
         binding.city.text = getString(R.string.City, locale, countryCode)
+        /*else    Todo "just when we need to tell the user that city name is invalid **onSubmit**!"
+            myUtilities.longToastMsg(this, R.string.invalid_city_name)*/
     }
 
     private fun getCityInfo(): Pair<String, String> {
@@ -456,11 +456,6 @@ class MainActivity : AppCompatActivity(),
         val countryCode = lastLocation.getCountryCodeFromName(cityName)
         return Pair(locale, countryCode)
     }
-
-    private fun clearInputText(textView: AutoCompleteTextView) {
-        textView.setText("")
-    }
-
 
     @SuppressLint("SimpleDateFormat")
     private val sunformat = SimpleDateFormat("HH:mm")
