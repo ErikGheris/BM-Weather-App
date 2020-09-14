@@ -129,14 +129,16 @@ class MainActivity : AppCompatActivity(),
 
                 val mySValue = binding.searchInput.query.toString()
                 Log.i("TxT", "$mySValue")
+                binding.searchInput.setQuery("",false)
+                binding.searchInput.clearFocus();
                 return false
-            }
 
+            }
             override fun onQueryTextChange(newText: String?): Boolean {
                 Log.i("TxT", "Press querytextchange")
                 return false
             }
-        })
+        })      
     }
 
     fun wipeTextsOff(list: List<TextView>) {
@@ -307,7 +309,8 @@ class MainActivity : AppCompatActivity(),
                 showLocationIsDisabledAlert(this)
             }
             closeKeyboard()
-
+            binding.searchInput.setQuery("",false)
+            binding.searchInput.clearFocus();
         }
     }
 
