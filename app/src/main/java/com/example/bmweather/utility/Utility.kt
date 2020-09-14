@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.util.Log
+import android.widget.AutoCompleteTextView
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -54,6 +55,10 @@ class Utility {
 
     private fun TextView.utilities() {
         this.text = ""
+    }
+
+    private fun clearInputText(textView: AutoCompleteTextView) {
+        textView.setText("")
     }
 
 /*

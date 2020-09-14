@@ -372,24 +372,26 @@ val addressListOfCurrentLocation:  ArrayList<Address>
             }
             if (cAddressList.size == 0) return "null"
         } catch (e: IOException) {
-            Log.e(tag, resultMessage, e)
-            Log.e(tag, resultMessage, e)
+            Log.e(debugTag, resultMessage, e)
+
         }
+        Log.i(debugTag," name to Coor® $locationLongitude")
         return locationLongitude
     }
 
     fun getCountryCodeFromName(locationName: String = "Koblenz"): String {
-        var countryCode: String = "Snap!"
+
         try {
-            if (cityNameReq(locationName).size != 0)
-                countryCode = cityNameReq(locationName)[0].countryCode
+            if (cityNameReq(locationName).size != 0) {
+                return cityNameReq(locationName)[0].countryCode.toString()
+            }
 
         } catch (e: Exception) {
             resultMessage = Resources.getSystem().getString(R.string.service_not_available)
             Log.e("GETLOCALEFROMNAME", resultMessage, e)
         }
 
-        return countryCode
+        return "null"
     }
 
     private fun cityNameReq(locationName: String = "Koblenz"): ArrayList<Address> {
@@ -397,16 +399,16 @@ val addressListOfCurrentLocation:  ArrayList<Address>
     }
 
     fun getLocaleFromName(locationName: String = "Koblenz"): String {
-        var locale = "Oh..!"
-        try {
-            if (cityNameReq(locationName).size != 0)
-                locale = cityNameReq(locationName)[0].locality
 
+        try {
+            if (cityNameReq(locationName).size != 0){
+          return  cityNameReq(locationName)[0].locality.toString()
+ }
         } catch (e: Exception) {
             resultMessage = Resources.getSystem().getString(R.string.service_not_available)
-            Log.e("GETLOCALEFROMNAME", resultMessage, e)
+            Log.e(debugTag, resultMessage, e)
         }
-        return locale
+        return "null"
     }
 
     /*override fun onRequestPermissionsResult(

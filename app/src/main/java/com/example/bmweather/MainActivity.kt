@@ -129,8 +129,7 @@ class MainActivity : AppCompatActivity(),
 
                 val mySValue = binding.searchInput.query.toString()
                 Log.i("TxT", "$mySValue")
-                binding.searchInput.setQuery("",false)
-                binding.searchInput.clearFocus();
+                clearSearchView(binding.searchInput)
                 return false
 
             }
@@ -138,7 +137,7 @@ class MainActivity : AppCompatActivity(),
                 Log.i("TxT", "Press querytextchange")
                 return false
             }
-        })      
+        })
     }
 
     fun wipeTextsOff(list: List<TextView>) {
@@ -306,9 +305,13 @@ class MainActivity : AppCompatActivity(),
                 showLocationIsDisabledAlert(this)
             }
             closeKeyboard()
-            binding.searchInput.setQuery("",false)
-            binding.searchInput.clearFocus();
+            clearSearchView( binding.searchInput)
         }
+    }
+
+    private fun clearSearchView(searchView: SearchView) {
+      searchView.setQuery("", false)
+  searchView.clearFocus();
     }
 
 
