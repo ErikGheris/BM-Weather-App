@@ -13,9 +13,17 @@ import androidx.core.content.ContextCompat
 import com.example.bmweather.MainActivity
 import com.example.bmweather.R
 import com.example.bmweather.databinding.ActivityMainBinding
-
-class Utility(val binding: ActivityMainBinding) {
+//val binding: ActivityMainBinding
+class Utility {
     private val tag = "Utility"
+
+    fun longToastMsg(context: Context, stringID: Int) {
+        Toast.makeText(
+            context,
+            context.getString(stringID),
+            Toast.LENGTH_LONG
+        ).show()
+    }
 
 
     fun locationPermissionsAvailable(context: Context, activity: MainActivity): Boolean {
@@ -40,7 +48,8 @@ class Utility(val binding: ActivityMainBinding) {
     }
 
     fun clearAllTextViews(list: List<TextView>) {
-        list.map { clearTextView(it) }
+        list.map { clearTextView(it)
+        }
     }
 
     private fun TextView.utilities() {

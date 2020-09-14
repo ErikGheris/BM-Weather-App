@@ -9,12 +9,14 @@ import com.example.bmweather.SecondActivity
 import com.example.bmweather.network.RetrofitBuilder
 import com.example.bmweather.network.WeatherService
 import com.example.bmweather.openweathermap.response.WeatherReport
+import com.example.bmweather.utility.Utility
 import retrofit2.Callback
 import retrofit2.Response
 
-val load: Load =
-    Load()
+var imageIsInvisible = false
+val load: Load = Load()
 val mainActivityInstance = MainActivity()
+val myUtility: Utility = Utility()
 
 class FetchWeatherData {
     companion object FetchWeatherData {
@@ -53,19 +55,27 @@ class FetchWeatherData {
                             mainActivity.daily(weatherReport.daily[0])
                             mainActivity.fetchHourlyWeather(weatherReport.hourly.take(24))
                             mainActivity.uiUtility()
+                            imageIsInvisible = false
+                            mainActivity.displayCheck(imageIsInvisible)
                             load.done(progressBar = progressBar)
                         } else {
-                            Log.i(debugTag, "response is not Successful")
+                            imageIsInvisible = true
+                            myUtility.clearAllTextViews(mainActivity.getTextViewList())
+                            mainActivity.displayCheck(imageIsInvisible)
+                            load.done(progressBar = progressBar)
                             if (response.code() == 404) {
                                 Log.i(debugTag, "ERROR404")
-                                mainActivityInstance.wipeOff()
+                                imageIsInvisible = true
+                                myUtility.clearAllTextViews(mainActivity.getTextViewList())
+                                mainActivity.displayCheck(imageIsInvisible)
+                                load.done(progressBar = progressBar)
+                                //    mainActivityInstance.displayCheck()
                                 /*  mainActivity.cityName = mainActivity.lastCityCache
                                   mainActivity.sorryDisplayView()
                                   Toast.makeText(
                                       mainActivity.applicationContext, "City NoT Found.",
                                       Toast.LENGTH_SHORT
                                   ).show()*/
-
                             }
                         }
                     }
@@ -99,21 +109,32 @@ class FetchWeatherData {
                         Log.i("SecAct", "responding")
                         //On successful response builde string as defined later on
                         if (response.code() == 200 && response.code() != 400) {
+                            imageIsInvisible = false
+                            mainActivityInstance.displayCheck(imageIsInvisible)
                             val weatherReport = response.body()!!
                             activity.fetchDailyWeather(weatherReport.daily.takeLast(7))
                             activity.uiUtility()
-                        } else
+                        } else {
+                            imageIsInvisible = true
+                            myUtility.clearAllTextViews(mainActivityInstance.getTextViewList())
+                            mainActivityInstance.displayCheck(imageIsInvisible)
+
                             if (response.code() == 404) {
+                                imageIsInvisible = true
+                                myUtility.clearAllTextViews(mainActivityInstance.getTextViewList())
+                            mainActivityInstance.displayCheck(imageIsInvisible)
+
+
+
                                 Log.i("SecAct", "404")
-                                mainActivityInstance.wipeOff()
                                 /*mainActivity.cityName = mainActivity.lastCityCache
                                 mainActivity.sorryDisplayView()*/
                                 Toast.makeText(
                                     activity.applicationContext, "City NoT Found.",
                                     Toast.LENGTH_SHORT
                                 ).show()
-
                             }
+                        }
                     }
 
                     //Message in the case of failed API call

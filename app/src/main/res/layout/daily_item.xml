@@ -28,7 +28,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/temp"
+            android:id="@+id/temp_daily"
             android:layout_width="wrap_content"
             android:layout_height="60dp"
             android:layout_marginEnd="20dp"

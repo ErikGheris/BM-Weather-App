@@ -32,7 +32,7 @@ class HourlyArrayAdapter(val hourly : List<Hourly>) : RecyclerView.Adapter<Hourl
     }
 
 
-    class HourlyViewHolder(val view: View) : RecyclerView.ViewHolder( view) {
+    class HourlyViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         @SuppressLint("SimpleDateFormat")
         private val format = SimpleDateFormat("HH:mm" )
         val hourly_pic = view.findViewById<ImageView>(R.id.hourly_pic)

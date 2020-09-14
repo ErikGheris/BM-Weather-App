@@ -54,6 +54,7 @@
     <string name="messages_header">Messages</string>
     <string name="signature_title">Your signature</string>
     <string name="title_activity_settings">SettingsActivity</string>
+    <string name="white_screen_msg">Oops! Something went wrong. Please try again. If the problem persists please double check your entries or try again later.</string>
 
 
 </resources>

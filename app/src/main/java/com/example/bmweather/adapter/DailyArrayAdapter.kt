@@ -35,7 +35,7 @@ class DailyArrayAdapter
         val desPic = view.findViewById<ImageView>(R.id.des_pic)
         val format = SimpleDateFormat(date.toString())
 
-        view.findViewById<TextView>(R.id.temp).text = context.getString(R.string.min_temp).plus(property.temp.min.roundToInt().toString()).plus(context.getString(R.string.empty)).plus(context.getString(R.string.max_temp)).plus(property.temp.max.roundToInt().toString())
+        view.findViewById<TextView>(R.id.temp_daily).text = context.getString(R.string.min_temp).plus(property.temp.min.roundToInt().toString()).plus(context.getString(R.string.empty)).plus(context.getString(R.string.max_temp)).plus(property.temp.max.roundToInt().toString())
         Picasso.get().load("http://openweathermap.org/img/wn/" + property.weather[0].icon + "@2x.png").into(desPic)
         view.findViewById<TextView>(R.id.day).text = format.format(property.dt * 1000L).toString()
 

@@ -70,4 +70,5 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="cityTextView">City</string>
 
+    <string name="white_screen_msg">Hoppla! Etwas ist schief gelaufen. Bitte versuchen Sie es noch einmal. Wenn das Problem weiterhin besteht, überprüfen Sie bitte Ihre Eingaben noch einmal oder versuchen Sie es zu einem späteren Zeitpunkt erneut.</string>
 </resources>

@@ -12,9 +12,11 @@ import android.provider.Settings
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.AutoCompleteTextView
+import android.widget.TextView
 
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -57,10 +59,10 @@ class MainActivity : AppCompatActivity(),
     private var exclude = "minutely"
     private val fetchWeather = FetchWeatherData
     private lateinit var lastLocation: LastLocation
- lateinit var binding: ActivityMainBinding
+    lateinit var binding: ActivityMainBinding
     private var searching = false
     private var load: Load = Load()
-    lateinit var myUtilities: Utility
+  val myUtilities: Utility = Utility()
     lateinit var connectivityManagement: ConnectivityManagement
     val debugTag = "THISISBS"
 
@@ -80,12 +82,12 @@ class MainActivity : AppCompatActivity(),
         )
     }
     private var backPressedTime: Long = 0
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
+
         setContentView(binding.root)
-        myUtilities = Utility(binding)
+       // myUtilities = Utility(binding)
         window.setFlags(
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
@@ -104,10 +106,11 @@ class MainActivity : AppCompatActivity(),
                     searched = binding.searchInput.query.toString()
                     searching = true
                     if (searched.trim().isNotEmpty()) {
-                        wipeOff()
+                        wipeTextsOff(getTextViewList())
                         lastCityCache = cityName
                         cityName = binding.searchInput.query.toString()
                         connectionCheck()
+                        setSearchedCityInfoInTV()
                     } else {
                         Toast.makeText(
                             this@MainActivity, "Please enter a Location!",
@@ -136,8 +139,11 @@ class MainActivity : AppCompatActivity(),
         })
     }
 
-      fun wipeOff() {
-        val myList = listOf(
+    fun wipeTextsOff(list: List<TextView>) {
+            myUtilities.clearAllTextViews(list)
+    }
+    fun getTextViewList(): List<TextView> {
+        return listOf(
             binding.description,
             binding.city,
             binding.daytemp,
@@ -148,10 +154,30 @@ class MainActivity : AppCompatActivity(),
             binding.sunriseText,
             binding.sunsetText
         )
-          if(binding.daytemp.text.isNotBlank() )
-        myUtilities.clearAllTextViews(myList)
+    }
+    fun displayCheck(imageIsInvisible: Boolean) {
+        if ( imageIsInvisible) {
+            viewVisibilityState(View.INVISIBLE)
+          //  imageIsInvisible = !imageIsInvisible
+            myUtilities.longToastMsg(
+                this,
+                R.string.white_screen_msg
+            )
+        } else {
+            viewVisibilityState(View.VISIBLE)
+        }
+
+
     }
 
+ private fun viewVisibilityState(visibility: Int) {
+        binding.hourlylist.visibility = visibility
+        binding.sunrise.visibility = visibility
+        binding.sunset.visibility = visibility
+        binding.humidity.visibility = visibility
+        binding.wind.visibility = visibility
+        binding.icDescription.visibility = visibility
+    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.nav_menu, menu)
@@ -265,6 +291,7 @@ class MainActivity : AppCompatActivity(),
                     lastCityCache = cityName
                     cityName = searched
                     connectionCheck()
+                    setSearchedCityInfoInTV()
                 } else {
                     Toast.makeText(
                         this, "Please enter a Location!",
@@ -280,6 +307,7 @@ class MainActivity : AppCompatActivity(),
                 showLocationIsDisabledAlert(this)
             }
             closeKeyboard()
+
         }
     }
 
@@ -287,7 +315,7 @@ class MainActivity : AppCompatActivity(),
     private fun connectionCheck() {
         if (connectivityManagement.networkCheck(this)) {
             setSearchedCoordinates()
-            setSearchedCityInfoInTV()
+            //    setSearchedCityInfoInTV()
             makeSearchWeatherRequest()
             //safe city
             Toast.makeText(
@@ -307,7 +335,7 @@ class MainActivity : AppCompatActivity(),
 
     private fun swipeAction() {
         binding.swipe.setOnRefreshListener {
-            wipeOff()
+            wipeTextsOff(getTextViewList())
             if (lastLocation.isLocationEnabled(this)) {
                 searching = false
                 if (connectivityManagement.networkCheck(this)) {
@@ -415,7 +443,7 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    private fun setSearchedCityInfoInTV() {
+    fun setSearchedCityInfoInTV() {
         val (locale, countryCode) = getCityInfo()
         binding.city.text = getString(R.string.City, locale, countryCode)
     }

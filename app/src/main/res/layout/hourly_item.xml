@@ -43,7 +43,7 @@
             android:id="@+id/hourly_pic"
             android:layout_width="60dp"
             android:layout_height="30dp"
-            android:layout_above="@+id/temp"
+            android:layout_above="@+id/temp_daily"
             android:layout_below="@+id/time"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"

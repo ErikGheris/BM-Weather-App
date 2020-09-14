@@ -25,6 +25,7 @@ import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
 import android.provider.Settings;
+import com.example.bmweather.openweathermap.mainActivityInstance
 import com.google.android.gms.tasks.OnCompleteListener
 
 // TODO: 17.08.20 Implement the following interface to write override onRequestPermissionResult here and not in MainActivity anymore
@@ -229,6 +230,8 @@ val addressListOfCurrentLocation:  ArrayList<Address>
                         }
                         //  load.done(progressBar)
                     } else {
+                     //   mainActivityInstance.imageIsInvisible=false
+                        mainActivityInstance.wipeTextsOff(mainActivityInstance.getTextViewList())
                         Log.i(debugTag, "location is null ")
                         load.done(progressBar)
                         Log.d(TAG, "Location information is not available!")
@@ -349,7 +352,7 @@ val addressListOfCurrentLocation:  ArrayList<Address>
                 locationLatitude = cAddressList[0].latitude.toString()
 
             }
-            if (cAddressList.size == 0) return "0"
+            if (cAddressList.size == 0) return "null"
         } catch (e: IOException) {
             Log.e(tag, resultMessage, e)
         }
@@ -367,7 +370,7 @@ val addressListOfCurrentLocation:  ArrayList<Address>
             if (cAddressList.isNotEmpty() && cAddressList.size != 0) {
                 locationLongitude = cAddressList[0].longitude.toString()
             }
-            if (cAddressList.size == 0) return "0"
+            if (cAddressList.size == 0) return "null"
         } catch (e: IOException) {
             Log.e(tag, resultMessage, e)
             Log.e(tag, resultMessage, e)
