@@ -134,8 +134,7 @@ class FetchWeatherData {
                         Log.i("SecAct", "responding")
                         //On successful response builde string as defined later on
                         if (response.code() == 200 && response.code() != 400) {
-                            imageIsInvisible = false
-                            mainActivityInstance.displayCheck(imageIsInvisible)
+
                             val weatherReport = response.body()!!
                             activity.fetchDailyWeather(weatherReport.daily.takeLast(7))
                             activity.uiUtility()
@@ -145,12 +144,6 @@ class FetchWeatherData {
                             mainActivityInstance.displayCheck(imageIsInvisible)
 
                             if (response.code() == 404) {
-                                imageIsInvisible = true
-                                myUtilities.clearAllTextViews(mainActivityInstance.getTextViewList())
-                                mainActivityInstance.displayCheck(imageIsInvisible)
-
-
-
                                 Log.i("SecAct", "404")
                                 /*mainActivity.cityName = mainActivity.lastCityCache
                                 mainActivity.sorryDisplayView()*/
