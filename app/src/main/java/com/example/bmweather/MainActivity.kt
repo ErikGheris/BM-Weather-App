@@ -102,7 +102,7 @@ class MainActivity : AppCompatActivity(),
         activityButtonAction()
         binding.searchInput.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                if (connectionControl()){
+                if (connectionControl()) {
                     if (lastLocation.isLocationEnabled(this@MainActivity)) {
                         searched = binding.searchInput.query.toString()
                         searching = true
@@ -119,9 +119,9 @@ class MainActivity : AppCompatActivity(),
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
-                    }else {
+                    } else {
                         imageIsInvisible = true
-                        Log.i(debugTag,"NO INTERNET QRY Listener $imageIsInvisible")
+                        Log.i(debugTag, "NO INTERNET QRY Listener $imageIsInvisible")
                         displayCheck(imageIsInvisible)
                         myUtilities.clearAllTextViews(getTextViewList())
 
@@ -133,7 +133,7 @@ class MainActivity : AppCompatActivity(),
                         closeKeyboard()
                         showLocationIsDisabledAlert(this@MainActivity)
                     }
-            }
+                }
                 val mySValue = binding.searchInput.query.toString()
                 Log.i(debugTag, mySValue)
                 clearSearchView(binding.searchInput)
@@ -293,31 +293,31 @@ class MainActivity : AppCompatActivity(),
     private fun searchButtonAction() {
         binding.searchButton.setOnClickListener {
 
-            if (connectivityManagement.networkCheck(this)){
+            if (connectionControl()) {
 
-            if (lastLocation.isLocationEnabled(this)) {
-                searched = binding.searchInput.query.toString()
-                searching = true
-                if (searched.trim().isNotEmpty()) {
-                    lastCityCache = cityName
-                    cityName = searched
-                    setSearchedCoordinates()
-                    makeSearchWeatherRequest()
-                    setSearchedCityInfoInTV()
+                if (lastLocation.isLocationEnabled(this)) {
+                    searched = binding.searchInput.query.toString()
+                    searching = true
+                    if (searched.trim().isNotEmpty()) {
+                        lastCityCache = cityName
+                        cityName = searched
+                        setSearchedCoordinates()
+                        makeSearchWeatherRequest()
+                        setSearchedCityInfoInTV()
+                    } else {
+                        Toast.makeText(
+                            this, "Please enter a Location!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 } else {
                     Toast.makeText(
-                        this, "Please enter a Location!",
+                        this,
+                        getString(R.string.location_services_not_enabled),
                         Toast.LENGTH_SHORT
                     ).show()
+                    showLocationIsDisabledAlert(this)
                 }
-            } else {
-                Toast.makeText(
-                    this,
-                    getString(R.string.location_services_not_enabled),
-                    Toast.LENGTH_SHORT
-                ).show()
-                showLocationIsDisabledAlert(this)
-            }
             }
             closeKeyboard()
             clearSearchView(binding.searchInput)
@@ -333,13 +333,13 @@ class MainActivity : AppCompatActivity(),
     private fun connectionControl(): Boolean {
         if (connectivityManagement.networkCheck(this)) {
             imageIsInvisible = false
-            Log.i(debugTag,"INTERNET $imageIsInvisible")
+            Log.i(debugTag, "INTERNET $imageIsInvisible")
             displayCheck(imageIsInvisible)
             myUtilities.clearAllTextViews(getTextViewList())
             return true
         } else {
             imageIsInvisible = true
-            Log.i(debugTag,"NO INTERNET $imageIsInvisible")
+            Log.i(debugTag, "NO INTERNET $imageIsInvisible")
             displayCheck(imageIsInvisible)
             myUtilities.clearAllTextViews(getTextViewList())
             Toast.makeText(
@@ -358,7 +358,7 @@ class MainActivity : AppCompatActivity(),
                 searching = false
                 if (connectivityManagement.networkCheck(this)) {
                     imageIsInvisible = false
-                    Log.i(debugTag," INTERNET available on swipe $imageIsInvisible")
+                    Log.i(debugTag, " INTERNET available on swipe $imageIsInvisible")
                     displayCheck(imageIsInvisible)
                     myUtilities.clearAllTextViews(getTextViewList())
                     makeCurrentLocationWeatherRequest()
@@ -371,7 +371,7 @@ class MainActivity : AppCompatActivity(),
                     swipe.isRefreshing = false
                 } else {
                     imageIsInvisible = true
-                    Log.i(debugTag,"NO INTERNET on swipe $imageIsInvisible")
+                    Log.i(debugTag, "NO INTERNET on swipe $imageIsInvisible")
                     displayCheck(imageIsInvisible)
                     myUtilities.clearAllTextViews(getTextViewList())
                     Toast.makeText(
@@ -470,7 +470,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     fun setSearchedCityInfoInTV() {
-                    val (locale, countryCode) = getCityInfo()
+        val (locale, countryCode) = getCityInfo()
         if (locale != "null" && countryCode != "null")
             binding.city.text = getString(R.string.City, locale, countryCode)
         /*else    Todo "just when we need to tell the user that city name is invalid **onSubmit**!"
