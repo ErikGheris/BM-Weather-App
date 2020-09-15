@@ -27,6 +27,7 @@ import kotlin.collections.ArrayList
 import android.provider.Settings;
 import com.example.bmweather.openweathermap.mainActivityInstance
 import com.google.android.gms.tasks.OnCompleteListener
+import java.lang.IllegalStateException
 
 // TODO: 17.08.20 Implement the following interface to write override onRequestPermissionResult here and not in MainActivity anymore
 //:ActivityCompat.OnRequestPermissionsResultCallback
@@ -216,13 +217,18 @@ val addressListOfCurrentLocation:  ArrayList<Address>
                     if (locationResult?.lastLocation != null) {
                         Log.i(debugTag, "runn ,ing")
                         for (location in locationResult.locations) {
-                            val myAddressList: ArrayList<Address> = geocode.getFromLocation(
-                                location.latitude,
-                                location.longitude,
-                                1
-                            ) as ArrayList<Address>
-                            LocationReceiver.countryCode = myAddressList[0].countryCode
-                            LocationReceiver.locality = myAddressList[0].locality
+                            try {
+                                val myAddressList: ArrayList<Address> = geocode.getFromLocation(
+                                    location.latitude,
+                                    location.longitude,
+                                    1
+                                ) as ArrayList<Address>
+                                LocationReceiver.countryCode = myAddressList[0].countryCode
+                                LocationReceiver.locality = myAddressList[0].locality
+                            } catch (e: IllegalStateException) {
+                                LocationReceiver.countryCode = "Cc Unavbl."
+                                LocationReceiver.locality = "Loc Unavbl."
+                            }
                             LocationReceiver.xCoordination = location.latitude.toString()
                             LocationReceiver.yCoordination = location.longitude.toString()
                             Log.i(debugTag, "${location.longitude} , ${location.latitude}")
@@ -230,7 +236,7 @@ val addressListOfCurrentLocation:  ArrayList<Address>
                         }
                         //  load.done(progressBar)
                     } else {
-                     //   mainActivityInstance.imageIsInvisible=false
+                        //   mainActivityInstance.imageIsInvisible=false
                         mainActivityInstance.wipeTextsOff(mainActivityInstance.getTextViewList())
                         Log.i(debugTag, "location is null ")
                         load.done(progressBar)
@@ -375,7 +381,7 @@ val addressListOfCurrentLocation:  ArrayList<Address>
             Log.e(debugTag, resultMessage, e)
 
         }
-        Log.i(debugTag," name to Coor® $locationLongitude")
+        Log.i(debugTag, " name to Coor® $locationLongitude")
         return locationLongitude
     }
 
@@ -401,9 +407,9 @@ val addressListOfCurrentLocation:  ArrayList<Address>
     fun getLocaleFromName(locationName: String = "Koblenz"): String {
 
         try {
-            if (cityNameReq(locationName).size != 0){
-          return  cityNameReq(locationName)[0].locality.toString()
- }
+            if (cityNameReq(locationName).size != 0) {
+                return cityNameReq(locationName)[0].locality.toString()
+            }
         } catch (e: Exception) {
             resultMessage = Resources.getSystem().getString(R.string.service_not_available)
             Log.e(debugTag, resultMessage, e)
