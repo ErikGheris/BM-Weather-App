@@ -107,10 +107,10 @@ class SecondActivity : AppCompatActivity() {
                 val intent = Intent(this, SettingsActivity::class.java)
                 startActivity(intent)
             }
-         /*   android.R.id.home -> {
+           android.R.id.home -> {
                 finish()
                 return true
-            }*/
+            }
         }
         return super.onOptionsItemSelected(item)
     }
