@@ -1,6 +1,8 @@
 package com.example.bmweather
 
 import android.content.Intent
+import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -13,8 +15,6 @@ import com.example.bmweather.openweathermap.FetchWeatherData
 import com.example.bmweather.openweathermap.load
 import com.example.bmweather.openweathermap.response.Daily
 import kotlinx.android.synthetic.main.activity_second.*
-
-lateinit var binding: ActivitySecondBinding
 const val apiKey = "6133b390a077c487bc9ac43311b3ba26"
 var units = "metric"
 var lang = "de"
@@ -25,15 +25,16 @@ val fetchWeather = FetchWeatherData
 
 class SecondActivity : AppCompatActivity() {
 
-    override fun onStart() {
+    lateinit var binding: ActivitySecondBinding
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivitySecondBinding.inflate(layoutInflater)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        setContentView(binding.root)
         makeScreenUntouchable()
         // Get a support ActionBar corresponding to this toolbar and enable the Up button
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         getDeliveredData()
         Log.i("SecAct", "$longitude  und $latitude")
-        super.onStart()
-        binding = ActivitySecondBinding.inflate(layoutInflater)
-        setContentView(binding.root)
         makeForecastRequest()
         binding.secondActivityButton.setOnClickListener {
             finish()
@@ -42,8 +43,6 @@ class SecondActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        getDeliveredData()
-        Log.i("SecAct", "Resume: $longitude  und $latitude")
         makeScreenUntouchable()
         makeForecastRequest()
     }
@@ -107,7 +106,7 @@ class SecondActivity : AppCompatActivity() {
                 val intent = Intent(this, SettingsActivity::class.java)
                 startActivity(intent)
             }
-           android.R.id.home -> {
+            android.R.id.home -> {
                 finish()
                 return true
             }
