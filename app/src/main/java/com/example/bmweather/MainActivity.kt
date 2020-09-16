@@ -85,13 +85,9 @@ class MainActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-
         setContentView(binding.root)
         // myUtilities = Utility(binding)
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-        )
+        myUtilities.makeScreenUntouchable(window)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         val mainActivityContext = applicationContext
         lastLocation = LastLocation(mainActivityContext)
@@ -100,6 +96,10 @@ class MainActivity : AppCompatActivity(),
         searchButtonAction()
         swipeAction()
         activityButtonAction()
+        searchViewQueryAction()
+    }
+
+    private fun searchViewQueryAction() {
         binding.searchInput.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (connectionControl()) {
@@ -124,7 +124,6 @@ class MainActivity : AppCompatActivity(),
                         Log.i(debugTag, "NO INTERNET QRY Listener $imageIsInvisible")
                         displayCheck(imageIsInvisible)
                         myUtilities.clearAllTextViews(getTextViewList())
-
                         Toast.makeText(
                             this@MainActivity,
                             getString(R.string.location_services_not_enabled),
@@ -174,8 +173,6 @@ class MainActivity : AppCompatActivity(),
         } else {
             viewVisibilityState(View.VISIBLE)
         }
-
-
     }
 
     private fun viewVisibilityState(visibility: Int) {
@@ -201,7 +198,6 @@ class MainActivity : AppCompatActivity(),
         }
         return super.onOptionsItemSelected(item)
     }
-
 
     override fun onRestart() {
         super.onRestart()
@@ -269,7 +265,6 @@ class MainActivity : AppCompatActivity(),
             .show()
     }
 
-
     override fun onBackPressed() {
         // backToast = Toast.makeText(this, "Press back again to leave the app.", Toast.LENGTH_SHORT)
         if (backPressedTime + 2000 > System.currentTimeMillis()) {
@@ -328,7 +323,6 @@ class MainActivity : AppCompatActivity(),
         searchView.setQuery("", false)
         searchView.clearFocus();
     }
-
 
     private fun connectionControl(): Boolean {
         if (connectivityManagement.networkCheck(this)) {
@@ -399,7 +393,6 @@ class MainActivity : AppCompatActivity(),
         searchedYCoordination = lastLocation.toLongitude(cityName)
     }
 
-
     private fun makeSearchWeatherRequest() {
         val lang = preferences.getString("reply", "metric")
         fetchWeather.getCurrentWeatherReport(
@@ -458,7 +451,6 @@ class MainActivity : AppCompatActivity(),
 
     }
 
-
     fun uiUtility() {
         load.done(binding.Progress)
         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
@@ -515,7 +507,6 @@ class MainActivity : AppCompatActivity(),
         hourlylist.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         hourlylist.adapter = HourlyArrayAdapter(hourly)
     }
-
 
     override fun onRequestPermissionsResult(
         requestCode: Int,

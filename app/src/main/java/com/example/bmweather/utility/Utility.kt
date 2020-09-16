@@ -4,6 +4,8 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.util.Log
+import android.view.Window
+import android.view.WindowManager
 import android.widget.AutoCompleteTextView
 import android.widget.EditText
 import android.widget.TextView
@@ -17,6 +19,13 @@ import com.example.bmweather.databinding.ActivityMainBinding
 //val binding: ActivityMainBinding
 class Utility {
     private val tag = "Utility"
+      fun makeScreenUntouchable(window: Window) {
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+        )
+    }
+
 
     fun longToastMsg(context: Context, stringID: Int) {
         Toast.makeText(
