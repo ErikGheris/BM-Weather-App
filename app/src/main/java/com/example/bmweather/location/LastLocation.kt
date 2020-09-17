@@ -228,12 +228,13 @@ val addressListOfCurrentLocation:  ArrayList<Address>
                             } catch (e: IllegalStateException) {
                                 LocationReceiver.countryCode = "Cc Unavbl."
                                 LocationReceiver.locality = "Loc Unavbl."
-                            }
+                            } catch (e: Exception) {
+                                Log.i(debugTag, "Exception on Location Result") }
                             LocationReceiver.xCoordination = location.latitude.toString()
                             LocationReceiver.yCoordination = location.longitude.toString()
                             Log.i(debugTag, "${location.longitude} , ${location.latitude}")
                             expression.invoke()
-                        }
+                         }
                         //  load.done(progressBar)
                     } else {
                         //   mainActivityInstance.imageIsInvisible=false

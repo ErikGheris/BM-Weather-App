@@ -513,6 +513,7 @@ class MainActivity : AppCompatActivity(),
 
     fun fetchHourlyWeather(hourly: List<Hourly>) {
         hourlylist.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        hourlylist.setHasFixedSize(true);
         hourlylist.adapter = HourlyArrayAdapter(hourly)
     }
 
