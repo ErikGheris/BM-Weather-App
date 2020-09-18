@@ -220,16 +220,18 @@ class LastLocation(context: Context) {
                             } catch (e: IllegalStateException) {
                                 LocationReceiver.countryCode = "Cc Unavbl."
                                 LocationReceiver.locality = "Loc Unavbl."
-                            } catch (e: IOException) {
+                            }
+                            catch (e:IOException) {
                                 Log.i(debugTag, "Location result: grpc fails")
                             }
-                            } catch (e: Exception) {
-                                Log.i(debugTag, "Exception on Location Result") }
+                            catch (e: Exception) {
+                                Log.i(debugTag, "Exception on Location Result")
+                            }
                             LocationReceiver.xCoordination = location.latitude.toString()
                             LocationReceiver.yCoordination = location.longitude.toString()
                             Log.i(debugTag, "${location.longitude} , ${location.latitude}")
                             expression.invoke()
-                         }
+                        }
                         //  load.done(progressBar)
                     } else {
                         //   mainActivityInstance.imageIsInvisible=false
@@ -237,7 +239,6 @@ class LastLocation(context: Context) {
                         Log.i(debugTag, "location is null ")
                         load.done(progressBar)
                         Log.d(TAG, "Location information is not available!")
-
                     }
                     // Few more things we can do here:
                     Log.i(debugTag, "location loop is going on ")
@@ -247,8 +248,6 @@ class LastLocation(context: Context) {
         )
         // load.done( progressBar)
 /*        bLocation = true*/
-
-
     }
 
     private fun stopLocationUpdates() {
