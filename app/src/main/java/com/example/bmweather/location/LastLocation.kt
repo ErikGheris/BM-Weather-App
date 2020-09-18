@@ -248,7 +248,9 @@ class LastLocation(context: Context) {
         )
         // load.done( progressBar)
 /*        bLocation = true*/
+
     }
+
 
     private fun stopLocationUpdates() {
         fusedLocationProviderClient.removeLocationUpdates(LocationCallback())
@@ -306,41 +308,41 @@ class LastLocation(context: Context) {
         return "null"
     }
 
-    /*override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        when (requestCode) {
-        permissionsRequestCode -> {
-                if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                     setUpLocationListener(
-                        PASSED_CONTEXT, this,
-                    )
+/*override fun onRequestPermissionsResult(
+    requestCode: Int,
+    permissions: Array<out String>,
+    grantResults: IntArray
+) {
+    when (requestCode) {
+    permissionsRequestCode -> {
+            if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                 setUpLocationListener(
+                    PASSED_CONTEXT, this,
+                )
 
-                    Log.i(
-                       tag,
-                        "Permission has been denied by user"
-                    )
-                    Toast.makeText(
-                        PASSED_CONTEXT, "Permission has been denied by user",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                } else {
-           setUpLocationListener(
-                        PASSED_CONTEXT, LocationReceiver, progressBar = progressBar
-                    )
-                    Log.i(
+                Log.i(
                    tag,
-                        "Permission has been granted by user"
-                    )
-                    Toast.makeText(
-                        PASSED_CONTEXT, "Permission has been granted by user",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+                    "Permission has been denied by user"
+                )
+                Toast.makeText(
+                    PASSED_CONTEXT, "Permission has been denied by user",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+       setUpLocationListener(
+                    PASSED_CONTEXT, LocationReceiver, progressBar = progressBar
+                )
+                Log.i(
+               tag,
+                    "Permission has been granted by user"
+                )
+                Toast.makeText(
+                    PASSED_CONTEXT, "Permission has been granted by user",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
-    }*/
+    }
+}*/
 
 }

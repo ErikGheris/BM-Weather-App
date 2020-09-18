@@ -37,6 +37,8 @@ import com.example.bmweather.openweathermap.response.Daily
 import com.example.bmweather.openweathermap.response.Hourly
 import com.example.bmweather.utility.Load
 import com.example.bmweather.utility.Utility
+import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_INDEFINITE
+import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_LONG
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
 import java.text.SimpleDateFormat
@@ -100,7 +102,6 @@ class MainActivity : AppCompatActivity(),
         swipeAction()
         activityButtonAction()
      //   searchViewQueryAction()
-
     }
 
 
@@ -181,7 +182,7 @@ class MainActivity : AppCompatActivity(),
                         searched = searchView.query.toString()
                         Log.i(debugTag,"submitting $searched")
                         if (searched.trim().isNotEmpty()) {
-                          searching = true
+                              searching = true
                             wipeTextsOff(getTextViewList())
                             lastCityCache = cityName
                             cityName = searched

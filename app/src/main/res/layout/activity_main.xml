@@ -12,11 +12,11 @@
     app:layout_anchorGravity="left">
 
 
-    <FrameLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#fff"
+        android:background="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -154,6 +154,7 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
+                        android:id="@+id/buttonPanel"
                         android:layout_height="match_parent">
 
 
@@ -220,7 +221,7 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/wind"
                             app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toEndOf="@+id/sunset" >
+                            app:layout_constraintStart_toEndOf="@+id/sunset">
 
                             <TextView
                                 android:id="@+id/hum_text"
@@ -246,7 +247,7 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toEndOf="@+id/humidity" >
+                            app:layout_constraintStart_toEndOf="@+id/humidity">
 
                             <TextView
                                 android:id="@+id/wind_text"
@@ -279,8 +280,8 @@
                         android:id="@+id/imageView2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:srcCompat="@drawable/bmlogo"
-                        android:contentDescription="TODO" />
+                        android:contentDescription="TODO"
+                        app:srcCompat="@drawable/bmlogo" />
                 </androidx.cardview.widget.CardView>
 
 
@@ -288,7 +289,7 @@
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    </FrameLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <ProgressBar
         android:id="@+id/Progress"

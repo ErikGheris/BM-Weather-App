@@ -1,8 +1,10 @@
 package com.example.bmweather.openweathermap
 
+import android.content.res.Resources
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_LONG
 import com.example.bmweather.utility.Load
 import com.example.bmweather.MainActivity
 import com.example.bmweather.R
@@ -11,6 +13,7 @@ import com.example.bmweather.network.RetrofitBuilder
 import com.example.bmweather.network.WeatherService
 import com.example.bmweather.openweathermap.response.WeatherReport
 import com.example.bmweather.utility.Utility
+import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_INDEFINITE
 import retrofit2.Callback
 import retrofit2.Response
 
@@ -66,10 +69,14 @@ class FetchWeatherData {
                                 imageIsInvisible = true
                                 myUtilities.clearAllTextViews(mainActivity.getTextViewList())
                                 mainActivity.displayCheck(imageIsInvisible)
-                                myUtilities.longToastMsg(
-                                    mainActivity,
-                                    R.string.invalid_city_name
+
+                                myUtilities.makeSnackbar(
+                                    mainActivity.binding.relativeLayout,
+                                    R.string.invalid_city_name,
+                                    LENGTH_INDEFINITE
                                 )
+
+
                                 load.done(progressBar = progressBar)
                             }
 
@@ -78,10 +85,14 @@ class FetchWeatherData {
                                 imageIsInvisible = true
                                 myUtilities.clearAllTextViews(mainActivity.getTextViewList())
                                 mainActivity.displayCheck(imageIsInvisible)
-                                myUtilities.longToastMsg(
-                                    mainActivity,
-                                    R.string.white_screen_msg
+
+                                myUtilities.makeSnackbar(
+                                    mainActivity.binding.relativeLayout,
+                                    R.string.white_screen_msg,
+                                    LENGTH_INDEFINITE
                                 )
+
+
                                 load.done(progressBar = progressBar)
                             }
                             if (response.code() == 404) {
@@ -90,10 +101,14 @@ class FetchWeatherData {
                                 myUtilities.clearAllTextViews(mainActivity.getTextViewList())
                                 mainActivity.displayCheck(imageIsInvisible)
                                 load.done(progressBar = progressBar)
-                                myUtilities.longToastMsg(
-                                    mainActivity,
-                                    R.string.white_screen_msg
+
+                                myUtilities.makeSnackbar(
+                                    mainActivity.binding.relativeLayout,
+                                    R.string.white_screen_msg,
+                                    LENGTH_INDEFINITE
                                 )
+
+
                                 //    mainActivityInstance.displayCheck()
                                 /*  mainActivity.cityName = mainActivity.lastCityCache
                                   mainActivity.sorryDisplayView()

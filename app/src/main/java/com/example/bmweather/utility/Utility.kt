@@ -4,18 +4,18 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.util.Log
+import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.AutoCompleteTextView
-import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.bmweather.MainActivity
-import com.example.bmweather.R
-import com.example.bmweather.databinding.ActivityMainBinding
+import com.google.android.material.snackbar.BaseTransientBottomBar.ANIMATION_MODE_SLIDE
+import com.google.android.material.snackbar.Snackbar
+
 //val binding: ActivityMainBinding
 class Utility {
     private val tag = "Utility"
@@ -35,6 +35,17 @@ class Utility {
         ).show()
     }
 
+
+
+
+    fun makeSnackbar(view: View, stringId: Int, duration: Int){
+        val mySnack = Snackbar.make(view, stringId , duration)
+        mySnack.show()
+        mySnack.setAction("Dismiss"){
+            mySnack.dismiss()
+        }
+        mySnack.animationMode = ANIMATION_MODE_SLIDE
+    }
 
     fun locationPermissionsAvailable(context: Context, activity: MainActivity): Boolean {
         val fineLocationPermission =
