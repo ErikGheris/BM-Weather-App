@@ -6,16 +6,18 @@ import android.os.PersistableBundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.Window
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.startActivity
+import androidx.core.widget.ContentLoadingProgressBar
 import com.example.bmweather.adapter.DailyArrayAdapter
 import com.example.bmweather.databinding.ActivitySecondBinding
 import com.example.bmweather.openweathermap.FetchWeatherData
 import com.example.bmweather.openweathermap.load
 import com.example.bmweather.openweathermap.response.Daily
+import com.example.bmweather.utility.Utility
 import kotlinx.android.synthetic.main.activity_second.*
-
 
 const val apiKey = "6133b390a077c487bc9ac43311b3ba26"
 var units = "metric"
@@ -25,16 +27,16 @@ var longitude: String = ""
 var latitude: String = ""
 val fetchWeather = FetchWeatherData
 
+val myUtilities: Utility = Utility()
+
 class SecondActivity : AppCompatActivity() {
-
     lateinit var binding: ActivitySecondBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySecondBinding.inflate(layoutInflater)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         setContentView(binding.root)
-        makeScreenUntouchable()
+        myUtilities.makeScreenUntouchable(window)
         // Get a support ActionBar corresponding to this toolbar and enable the Up button
         getDeliveredData()
         Log.i("SecAct", "$longitude  und $latitude")
@@ -46,7 +48,7 @@ class SecondActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        makeScreenUntouchable()
+        myUtilities.makeScreenUntouchable(window)
         makeForecastRequest()
     }
 /*
@@ -58,14 +60,6 @@ class SecondActivity : AppCompatActivity() {
         makeForecastRequest()
 
     }*/
-
-    private fun makeScreenUntouchable() {
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-        )
-    }
-
 
     fun makeForecastRequest() {
         Log.i("SecAct", "making forecast request")
@@ -94,6 +88,7 @@ class SecondActivity : AppCompatActivity() {
     }
 
     fun uiUtility() {
+
         load.done(binding.secondActivitySpinner)
         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
@@ -109,7 +104,7 @@ class SecondActivity : AppCompatActivity() {
                 val intent = Intent(this, SettingsActivity::class.java)
                 startActivity(intent)
             }
-           android.R.id.home -> {
+            android.R.id.home -> {
                 finish()
                 return true
             }
