@@ -2,6 +2,7 @@ package com.example.bmweather
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -15,11 +16,13 @@ import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.TextView
-
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
+import androidx.core.view.MenuItemCompat
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bmweather.adapter.HourlyArrayAdapter
@@ -59,7 +62,7 @@ class MainActivity : AppCompatActivity(),
     private var exclude = "minutely"
     private val fetchWeather = FetchWeatherData
     private lateinit var lastLocation: LastLocation
-    lateinit var binding: ActivityMainBinding
+    lateinit var binding: com.example.bmweather.databinding.ActivityMainBinding
     private var searching = false
     private var load: Load = Load()
     val myUtilities: Utility = Utility()
@@ -84,7 +87,7 @@ class MainActivity : AppCompatActivity(),
     private var backPressedTime: Long = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding =  ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         // myUtilities = Utility(binding)
         myUtilities.makeScreenUntouchable(window)
@@ -93,59 +96,14 @@ class MainActivity : AppCompatActivity(),
         lastLocation = LastLocation(mainActivityContext)
         connectivityManagement = ConnectivityManagement(mainActivityContext)
         lastLocation.setupPermissions(this, this)
-        searchButtonAction()
+       // searchButtonAction()
         swipeAction()
         activityButtonAction()
-        searchViewQueryAction()
+     //   searchViewQueryAction()
+
     }
 
-    private fun searchViewQueryAction() {
-        binding.searchInput.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                if (connectionControl()) {
-                    if (lastLocation.isLocationEnabled(this@MainActivity)) {
-                        searched = binding.searchInput.query.toString()
-                        searching = true
-                        if (searched.trim().isNotEmpty()) {
-                            wipeTextsOff(getTextViewList())
-                            lastCityCache = cityName
-                            cityName = binding.searchInput.query.toString()
-                            setSearchedCoordinates()
-                            makeSearchWeatherRequest()
-                            setSearchedCityInfoInTV()
-                        } else {
-                            Toast.makeText(
-                                this@MainActivity, "Please enter a Location!",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    } else {
-                        imageIsInvisible = true
-                        Log.i(debugTag, "NO INTERNET QRY Listener $imageIsInvisible")
-                        displayCheck(imageIsInvisible)
-                        myUtilities.clearAllTextViews(getTextViewList())
-                        Toast.makeText(
-                            this@MainActivity,
-                            getString(R.string.location_services_not_enabled),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        closeKeyboard()
-                        showLocationIsDisabledAlert(this@MainActivity)
-                    }
-                }
-                val mySValue = binding.searchInput.query.toString()
-                Log.i(debugTag, mySValue)
-                clearSearchView(binding.searchInput)
-                return false
 
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                Log.i(debugTag, "PressQueryTextChange")
-                return false
-            }
-        })
-    }
 
     fun wipeTextsOff(list: List<TextView>) {
         myUtilities.clearAllTextViews(list)
@@ -184,10 +142,84 @@ class MainActivity : AppCompatActivity(),
         binding.icDescription.visibility = visibility
     }
 
+    /*  override fun onCreateOptionsMenu(menu: Menu): Boolean {
+          menuInflater.inflate(R.menu.nav_menu, menu)
+          return true
+      }
+      */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.nav_menu, menu)
-        return true
+        val searchItem: MenuItem = menu.findItem(R.id.menu_search)
+        val searchView = MenuItemCompat.getActionView(searchItem) as SearchView
+        searchView.setOnCloseListener { true }
+        val searchPlate =
+            searchView.findViewById(androidx.appcompat.R.id.search_src_text) as EditText
+        searchPlate.hint = "Search"
+        val searchPlateView: View =
+            searchView.findViewById(androidx.appcompat.R.id.search_plate)
+        searchPlateView.setBackgroundColor(
+            ContextCompat.getColor(
+                this,
+                android.R.color.transparent
+            )
+        )
+
+        menuSearchAction(searchView)
+
+        val searchManager =
+            getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
+        return super.onCreateOptionsMenu(menu)
     }
+
+    private fun menuSearchAction(searchView: SearchView) {
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                Log.i(debugTag,"submitting")
+                if (connectionControl()) {
+                    if (lastLocation.isLocationEnabled(this@MainActivity)) {
+                        searched = searchView.query.toString()
+                        Log.i(debugTag,"submitting $searched")
+                        if (searched.trim().isNotEmpty()) {
+                          searching = true
+                            wipeTextsOff(getTextViewList())
+                            lastCityCache = cityName
+                            cityName = searched
+                           // setSearchedCoordinates()
+                            setSearchedCoordinates2(lastLocation.rGeocode(cityName))
+                            makeSearchWeatherRequest()
+                            setSearchedCityInfoInTV()
+                        } else {
+                            Toast.makeText(
+                                this@MainActivity, "Please enter a Location!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    } else {
+                        imageIsInvisible = true
+                        Log.i(debugTag, "NO INTERNET QRY Listener $imageIsInvisible")
+                        displayCheck(imageIsInvisible)
+                        myUtilities.clearAllTextViews(getTextViewList())
+                        Toast.makeText(
+                            this@MainActivity,
+                            getString(R.string.location_services_not_enabled),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        closeKeyboard()
+                        showLocationIsDisabledAlert(this@MainActivity)
+                    }
+                }
+                clearSearchView(searchView)
+                // do your logic here                Toast.makeText(applicationContext, query, Toast.LENGTH_SHORT).show()
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return false
+            }
+        })
+    }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -285,7 +317,7 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    private fun searchButtonAction() {
+   /* private fun searchButtonAction() {
         binding.searchButton.setOnClickListener {
 
             if (connectionControl()) {
@@ -296,7 +328,8 @@ class MainActivity : AppCompatActivity(),
                     if (searched.trim().isNotEmpty()) {
                         lastCityCache = cityName
                         cityName = searched
-                        setSearchedCoordinates()
+                        //setSearchedCoordinates()
+                        setSearchedCoordinates2(lastLocation.rGeocode(cityName))
                         makeSearchWeatherRequest()
                         setSearchedCityInfoInTV()
                     } else {
@@ -315,9 +348,9 @@ class MainActivity : AppCompatActivity(),
                 }
             }
             closeKeyboard()
-            clearSearchView(binding.searchInput)
+
         }
-    }
+    }*/
 
     private fun clearSearchView(searchView: SearchView) {
         searchView.setQuery("", false)
@@ -387,10 +420,9 @@ class MainActivity : AppCompatActivity(),
 
         }
     }
-
-    private fun setSearchedCoordinates() {
-        searchedXCoordination = lastLocation.toLatitude(cityName)
-        searchedYCoordination = lastLocation.toLongitude(cityName)
+    private fun setSearchedCoordinates2(pair: Pair<String,String>) {
+        searchedXCoordination = pair.first
+        searchedYCoordination = pair.second
     }
 
     private fun makeSearchWeatherRequest() {

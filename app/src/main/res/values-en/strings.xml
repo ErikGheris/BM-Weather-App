@@ -57,5 +57,6 @@
     <string name="white_screen_msg">Oops! Something went wrong. Please try again. If the problem persists please double check your entries or try again later.</string>
 
     <string name="invalid_city_name"> Invalid city name, Please try with a valid name!</string>
+    <string name="nav_menu_title">Search</string>
 
 </resources>

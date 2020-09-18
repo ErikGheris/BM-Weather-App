@@ -38,15 +38,10 @@ class LastLocation(context: Context) {
     private var bLocation = false
     val debugTag = "THISISBS"
     val tag = "PermissionDemo"
-    val PASSED_CONTEXT = context
     val load: Load = Load()
     private val fusedLocationProviderClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(context)
     val geocode = Geocoder(context, Locale.getDefault())
-/*
-val addressListOfCurrentLocation:  ArrayList<Address>
-*/
-
 
     /*  these two have to be declare/initialised @Top */
     private var permissionsList = arrayOf(
@@ -104,7 +99,6 @@ val addressListOfCurrentLocation:  ArrayList<Address>
             .show()
     }
 
-
     fun permissionRequests(activity: MainActivity) {
         ActivityCompat.requestPermissions(
             activity,
@@ -112,7 +106,6 @@ val addressListOfCurrentLocation:  ArrayList<Address>
             this.permissionsRequestCode
         )
     }
-
 
 /*
     fun setupPermissions(context: Context, activity: MainActivity) {
@@ -209,7 +202,6 @@ val addressListOfCurrentLocation:  ArrayList<Address>
         fusedLocationProviderClient.requestLocationUpdates(
             locationRequest,
             object : LocationCallback() {
-
                 override fun onLocationResult(locationResult: LocationResult?) {
                     Log.i(debugTag, "location CallBack")
                     super.onLocationResult(locationResult)
@@ -228,6 +220,9 @@ val addressListOfCurrentLocation:  ArrayList<Address>
                             } catch (e: IllegalStateException) {
                                 LocationReceiver.countryCode = "Cc Unavbl."
                                 LocationReceiver.locality = "Loc Unavbl."
+                            } catch (e: IOException) {
+                                Log.i(debugTag, "Location result: grpc fails")
+                            }
                             } catch (e: Exception) {
                                 Log.i(debugTag, "Exception on Location Result") }
                             LocationReceiver.xCoordination = location.latitude.toString()
@@ -256,134 +251,28 @@ val addressListOfCurrentLocation:  ArrayList<Address>
 
     }
 
-
-    @SuppressLint("MissingPermission")
-    fun firstRequest(
-        LocationReceiver: LocationReceiver,
-        progressBar: View, expression: (() -> Unit)
-    ) {
-        load.start(progressBar)
-        Log.i(debugTag, " progress spinner is activated")
-        fusedLocationProviderClient.locationAvailability.addOnCompleteListener {
-            OnCompleteListener<LocationAvailability?> {
-                /*         object :
-                OnCompleteListener<LocationAvailability?> {
-                override fun onComplete(p0: Task<LocationAvailability?>) {
-
-*/
-                Log.i(debugTag, " complete listening")
-
-
-            }
-
-            fusedLocationProviderClient.lastLocation.addOnSuccessListener { mlocation: Location? ->
-                Log.i(debugTag, "listening !!")
-                /* if (mlocation != null) {
-                LocationReceiver.firstLatitude = mlocation.latitude.toString()
-                LocationReceiver.firstLongitude = mlocation.longitude.toString()
-                Log.i("first","${mlocation.longitude} , ${mlocation.latitude}")
-                expression.invoke()
-            }*/
-
-
-
-                if (mlocation != null) {
-                    Log.i(debugTag, "runn ,ing")
-                    val myAddressList: ArrayList<Address> = geocode.getFromLocation(
-                        mlocation.latitude,
-                        mlocation.longitude,
-                        1
-                    ) as ArrayList<Address>
-                    LocationReceiver.countryCode = myAddressList[0].countryCode
-                    LocationReceiver.locality = myAddressList[0].locality
-                    LocationReceiver.xCoordination = mlocation.latitude.toString()
-                    LocationReceiver.yCoordination = mlocation.longitude.toString()
-                    Log.i(debugTag, "${mlocation.longitude} , ${mlocation.latitude}")
-                    expression.invoke()
-
-                    //  load.done(progressBar)
-                } else {
-                    Log.i(debugTag, "location is null ")
-                    load.done(progressBar)
-                    Log.d(TAG, "Location information is not available!")
-
-                }
-
-            }
-            // load.done(progressBar)
-            fusedLocationProviderClient.lastLocation.addOnFailureListener {
-
-                Log.i(debugTag, " failed ")
-                load.done(progressBar)
-            }
-        }
-    }
-
-    @SuppressLint("MissingPermission")
-    fun getLastLocation(
-        LocationReceiver: LocationReceiver, expression: (() -> Unit)
-    ) {
-
-
-        //  var mlastLocation: Location? = null
-
-        fusedLocationProviderClient?.lastLocation!!.addOnCompleteListener() { task ->
-            if (task.isSuccessful && task.result != null) {
-                task.result!!.time
-                val mlastLocation = task.result
-                LocationReceiver.firstLatitude = mlastLocation?.latitude.toString()
-                LocationReceiver.firstLongitude = mlastLocation?.longitude.toString()
-                LocationReceiver.time = mlastLocation?.time!!
-                expression.invoke()
-
-
-            } else {
-                Log.w(TAG, "getLastLocation:exception", task.exception)
-            }
-        }
-    }
-
-
     private fun stopLocationUpdates() {
         fusedLocationProviderClient.removeLocationUpdates(LocationCallback())
     }
 
-
-    fun toLatitude(locationName: String = "Koblenz"): String {
-        val cAddressList: java.util.ArrayList<Address>
-        var locationLatitude = ""
+    fun rGeocode(place: String): Pair<String, String> {
+        val coordinateList: ArrayList<Address>
+        var longitudeOfName = "null"
+        var latitudeOfName = "null"
         try {
-            cAddressList =
-                geocoder.getFromLocationName(locationName, 1) as java.util.ArrayList<Address>
-            if (cAddressList.isNotEmpty() && cAddressList.size != 0) {
-                locationLatitude = cAddressList[0].latitude.toString()
-
+            coordinateList =
+                geocoder.getFromLocationName(place, 1) as ArrayList<Address>
+            if (coordinateList.isNotEmpty() && coordinateList.size != 0) {
+                latitudeOfName = coordinateList[0].latitude.toString()
+                longitudeOfName = coordinateList[0].longitude.toString()
             }
-            if (cAddressList.size == 0) return "null"
-        } catch (e: IOException) {
-            Log.e(tag, resultMessage, e)
-        }
-        return locationLatitude
-    }
-
-
-    fun toLongitude(locationName: String = "Koblenz"): String {
-        val cAddressList: java.util.ArrayList<Address>
-        var locationLongitude = ""
-        try {
-
-            cAddressList =
-                geocoder.getFromLocationName(locationName, 1) as java.util.ArrayList<Address>
-            if (cAddressList.isNotEmpty() && cAddressList.size != 0) {
-                locationLongitude = cAddressList[0].longitude.toString()
-            }
-            if (cAddressList.size == 0) return "null"
+            return Pair(latitudeOfName, longitudeOfName)
         } catch (e: IOException) {
             Log.e(debugTag, resultMessage, e)
-
+        } catch (a: Exception) {
+            Log.e(debugTag, "TOLONGEXP")
         }
-        Log.i(debugTag, " name to Coor® $locationLongitude")
-        return locationLongitude
+        return Pair(latitudeOfName, longitudeOfName)
     }
 
     fun getCountryCodeFromName(locationName: String = "Koblenz"): String {
