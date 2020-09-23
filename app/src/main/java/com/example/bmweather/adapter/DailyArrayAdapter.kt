@@ -44,6 +44,9 @@ class DailyArrayAdapter
         view.findViewById<TextView>(R.id.temp_daily).text = context.getString(R.string.min_temp).plus(property.temp.min.roundToInt().toString()).plus(context.getString(R.string.empty)).plus(context.getString(R.string.max_temp)).plus(property.temp.max.roundToInt().toString())
         Picasso.get().load("http://openweathermap.org/img/wn/" + property.weather[0].icon + "@2x.png").into(desPic)
         view.findViewById<TextView>(R.id.day).text = format.format(property.dt * 1000L).toString()
+        view.findViewById<TextView>(R.id.temp_daily_mor).text = ("Morgens: ").plus(property.temp.morn.roundToInt().toString())
+        view.findViewById<TextView>(R.id.temp_daily_day).text = ("Mittags: ").plus(property.temp.day.roundToInt().toString())
+        view.findViewById<TextView>(R.id.temp_daily_eve).text = ("Abends: ").plus(property.temp.eve.roundToInt().toString())
 
 
         return view

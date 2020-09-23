@@ -18,7 +18,7 @@
         <TextView
             android:id="@+id/day"
             android:layout_width="wrap_content"
-            android:layout_height="60dp"
+            android:layout_height="50dp"
             android:layout_marginStart="20dp"
             android:clickable="false"
             android:focusable="false"
@@ -30,7 +30,7 @@
         <TextView
             android:id="@+id/temp_daily"
             android:layout_width="wrap_content"
-            android:layout_height="60dp"
+            android:layout_height="50dp"
             android:layout_marginEnd="20dp"
             android:clickable="false"
             android:focusable="false"
@@ -39,10 +39,48 @@
             app:layout_constraintEnd_toStartOf="@+id/des_pic"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/temp_daily_mor"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:gravity="center"
+            app:layout_constraintStart_toStartOf="@+id/day"
+            app:layout_constraintTop_toBottomOf="@+id/day"
+            android:layout_marginBottom="20dp"/>
+
+        <TextView
+            android:id="@+id/temp_daily_eve"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginStart="20dp"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:gravity="center"
+            app:layout_constraintStart_toEndOf="@+id/temp_daily_day"
+            app:layout_constraintTop_toBottomOf="@+id/day"
+            android:layout_marginBottom="20dp"/>
+
+        <TextView
+            android:id="@+id/temp_daily_day"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginStart="20dp"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:gravity="center"
+            app:layout_constraintStart_toEndOf="@+id/temp_daily_mor"
+            app:layout_constraintTop_toBottomOf="@+id/day"
+            android:layout_marginBottom="20dp"/>
+
         <ImageView
             android:id="@+id/des_pic"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_marginEnd="20dp"
             android:clickable="false"
             android:contentDescription="@string/des_pic"
