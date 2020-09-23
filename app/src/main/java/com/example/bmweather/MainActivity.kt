@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity(),
     private var backPressedTime: Long = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding =  ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         // myUtilities = Utility(binding)
         myUtilities.makeScreenUntouchable(window)
@@ -98,12 +98,11 @@ class MainActivity : AppCompatActivity(),
         lastLocation = LastLocation(mainActivityContext)
         connectivityManagement = ConnectivityManagement(mainActivityContext)
         lastLocation.setupPermissions(this, this)
-       // searchButtonAction()
+        // searchButtonAction()
         swipeAction()
         activityButtonAction()
-     //   searchViewQueryAction()
+        //   searchViewQueryAction()
     }
-
 
 
     fun wipeTextsOff(list: List<TextView>) {
@@ -176,17 +175,17 @@ class MainActivity : AppCompatActivity(),
     private fun menuSearchAction(searchView: SearchView) {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                Log.i(debugTag,"submitting")
+                Log.i(debugTag, "submitting")
                 if (connectionControl()) {
                     if (lastLocation.isLocationEnabled(this@MainActivity)) {
                         searched = searchView.query.toString()
-                        Log.i(debugTag,"submitting $searched")
+                        Log.i(debugTag, "submitting $searched")
                         if (searched.trim().isNotEmpty()) {
-                              searching = true
+                            searching = true
                             wipeTextsOff(getTextViewList())
                             lastCityCache = cityName
                             cityName = searched
-                           // setSearchedCoordinates()
+                            // setSearchedCoordinates()
                             setSearchedCoordinates2(lastLocation.rGeocode(cityName))
                             makeSearchWeatherRequest()
                             setSearchedCityInfoInTV()
@@ -318,40 +317,40 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-   /* private fun searchButtonAction() {
-        binding.searchButton.setOnClickListener {
+    /* private fun searchButtonAction() {
+         binding.searchButton.setOnClickListener {
 
-            if (connectionControl()) {
+             if (connectionControl()) {
 
-                if (lastLocation.isLocationEnabled(this)) {
-                    searched = binding.searchInput.query.toString()
-                    searching = true
-                    if (searched.trim().isNotEmpty()) {
-                        lastCityCache = cityName
-                        cityName = searched
-                        //setSearchedCoordinates()
-                        setSearchedCoordinates2(lastLocation.rGeocode(cityName))
-                        makeSearchWeatherRequest()
-                        setSearchedCityInfoInTV()
-                    } else {
-                        Toast.makeText(
-                            this, "Please enter a Location!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                } else {
-                    Toast.makeText(
-                        this,
-                        getString(R.string.location_services_not_enabled),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    showLocationIsDisabledAlert(this)
-                }
-            }
-            closeKeyboard()
+                 if (lastLocation.isLocationEnabled(this)) {
+                     searched = binding.searchInput.query.toString()
+                     searching = true
+                     if (searched.trim().isNotEmpty()) {
+                         lastCityCache = cityName
+                         cityName = searched
+                         //setSearchedCoordinates()
+                         setSearchedCoordinates2(lastLocation.rGeocode(cityName))
+                         makeSearchWeatherRequest()
+                         setSearchedCityInfoInTV()
+                     } else {
+                         Toast.makeText(
+                             this, "Please enter a Location!",
+                             Toast.LENGTH_SHORT
+                         ).show()
+                     }
+                 } else {
+                     Toast.makeText(
+                         this,
+                         getString(R.string.location_services_not_enabled),
+                         Toast.LENGTH_SHORT
+                     ).show()
+                     showLocationIsDisabledAlert(this)
+                 }
+             }
+             closeKeyboard()
 
-        }
-    }*/
+         }
+     }*/
 
     private fun clearSearchView(searchView: SearchView) {
         searchView.setQuery("", false)
@@ -421,7 +420,8 @@ class MainActivity : AppCompatActivity(),
 
         }
     }
-    private fun setSearchedCoordinates2(pair: Pair<String,String>) {
+
+    private fun setSearchedCoordinates2(pair: Pair<String, String>) {
         searchedXCoordination = pair.first
         searchedYCoordination = pair.second
     }
@@ -460,27 +460,37 @@ class MainActivity : AppCompatActivity(),
 
     private fun activityButtonAction() {
         binding.activityButton.setOnClickListener {
-            if (lastLocation.isLocationEnabled(this)) {
-                val intent = Intent(this, SecondActivity::class.java)
-                if (!searching) {
-                    intent.putExtra("xCoordination", xCoordination)
-                    intent.putExtra("yCoordination", yCoordination); } else {
-                    intent.putExtra("xCoordination", searchedXCoordination)
-                    intent.putExtra("yCoordination", searchedYCoordination)
-                }
+            if (!imageIsInvisible) {
+                if (lastLocation.isLocationEnabled(this)) {
+                    val intent = Intent(this, SecondActivity::class.java)
+                    if (!searching) {
+                        intent.putExtra("xCoordination", xCoordination)
+                        intent.putExtra("yCoordination", yCoordination); } else {
+                        intent.putExtra("xCoordination", searchedXCoordination)
+                        intent.putExtra("yCoordination", searchedYCoordination)
+                    }
+                    Toast.makeText(
+                        this,
+                        "wait a sec... ",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    startActivity(intent)
+                } else
+                    Toast.makeText(
+                        this,
+                        getString(R.string.location_services_not_enabled),
+                        Toast.LENGTH_SHORT
+                    ).show()
+            } else {
                 Toast.makeText(
                     this,
-                    "wait a sec... ",
+                    getString(R.string.no_forecast_available),
                     Toast.LENGTH_SHORT
                 ).show()
-                startActivity(intent)
-            } else
-                Toast.makeText(
-                    this,
-                    getString(R.string.location_services_not_enabled),
-                    Toast.LENGTH_SHORT
-                ).show()
+            }
+
         }
+
 
     }
 
