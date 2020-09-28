@@ -222,9 +222,13 @@ class LastLocation(context: Context) {
                                 LocationReceiver.locality = "Loc Unavbl."
                             }
                             catch (e:IOException) {
+                                LocationReceiver.countryCode = "Cc Unavbl."
+                                LocationReceiver.locality = "Loc Unavbl."
                                 Log.i(debugTag, "Location result: grpc fails")
                             }
                             catch (e: Exception) {
+                                LocationReceiver.countryCode = "Cc Unavbl."
+                                LocationReceiver.locality = "Loc Unavbl."
                                 Log.i(debugTag, "Exception on Location Result")
                             }
                             LocationReceiver.xCoordination = location.latitude.toString()
