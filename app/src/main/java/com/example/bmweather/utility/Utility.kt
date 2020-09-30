@@ -64,7 +64,7 @@ class Utility {
         return true
     }
 
-    fun clearTextView(textView: TextView) {
+    private fun clearTextView(textView: TextView) {
         textView.text = ""
     }
 
