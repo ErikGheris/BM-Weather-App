@@ -65,7 +65,8 @@ class FetchWeatherData {
                             load.done(progressBar = progressBar)
                         } else {
                             if (response.code() == 400) {
-                                Log.i(debugTag, "bad  ®esponse 400")
+                               val msg=  response.message()
+                                Log.i(debugTag, "bad  ®esponse 400,$msg")
                                 imageIsInvisible = true
                                 myUtilities.clearAllTextViews(mainActivity.getTextViewList())
                                 mainActivity.displayCheck(imageIsInvisible)

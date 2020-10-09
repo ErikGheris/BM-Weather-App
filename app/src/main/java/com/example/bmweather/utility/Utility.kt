@@ -13,13 +13,15 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.bmweather.MainActivity
+import com.example.bmweather.MySuggestionProvider
+import com.example.bmweather.SearchRecentSuggestions
 import com.google.android.material.snackbar.BaseTransientBottomBar.ANIMATION_MODE_SLIDE
 import com.google.android.material.snackbar.Snackbar
 
 //val binding: ActivityMainBinding
 class Utility {
     private val tag = "Utility"
-      fun makeScreenUntouchable(window: Window) {
+    fun makeScreenUntouchable(window: Window) {
         window.setFlags(
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
@@ -36,12 +38,10 @@ class Utility {
     }
 
 
-
-
-    fun makeSnackbar(view: View, stringId: Int, duration: Int){
-        val mySnack = Snackbar.make(view, stringId , duration)
+    fun makeSnackbar(view: View, stringId: Int, duration: Int) {
+        val mySnack = Snackbar.make(view, stringId, duration)
         mySnack.show()
-        mySnack.setAction("Dismiss"){
+        mySnack.setAction("Dismiss") {
             mySnack.dismiss()
         }
         mySnack.animationMode = ANIMATION_MODE_SLIDE
@@ -69,7 +69,8 @@ class Utility {
     }
 
     fun clearAllTextViews(list: List<TextView>) {
-        list.map { clearTextView(it)
+        list.map {
+            clearTextView(it)
         }
     }
 
@@ -113,4 +114,33 @@ fun makePermissionsDialog(){
 */
 
 
+    fun makeAlertDialog(
+        context: Context,
+        dialogMessageStringId: Int,
+        titleStringId: Int,
+        clearableHistory: android.provider.SearchRecentSuggestions
+    ) {
+        val builder = android.app.AlertDialog.Builder(context)
+        //set title for alert dialog
+        builder.setTitle(titleStringId)
+        //set message for alert dialog
+        builder.setMessage(dialogMessageStringId)
+        builder.setIcon(android.R.drawable.ic_dialog_alert)
+
+        //performing positive action
+        builder.setPositiveButton("Yes") { dialogInterface, which ->
+          clearableHistory.clearHistory()
+        }
+
+        //performing negative action
+        builder.setNegativeButton("No") { dialogInterface, which ->
+            return@setNegativeButton
+        }
+        // Create the AlertDialog
+        val alertDialog: android.app.AlertDialog = builder.create()
+        // Set other dialog properties
+        alertDialog.setCancelable(false)
+        alertDialog.show()
+
+    }
 }

@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.database.Cursor
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
@@ -32,6 +33,7 @@ import com.example.bmweather.openweathermap.imageIsInvisible
 import com.example.bmweather.openweathermap.response.Current
 import com.example.bmweather.openweathermap.response.Daily
 import com.example.bmweather.openweathermap.response.Hourly
+
 import com.example.bmweather.utility.Load
 import com.example.bmweather.utility.Utility
 import com.squareup.picasso.Picasso
@@ -65,7 +67,16 @@ class MainActivity : AppCompatActivity(),
     val myUtilities: Utility = Utility()
     lateinit var connectivityManagement: ConnectivityManagement
     val debugTag = "checked"
-
+    val mySuggestions = SearchRecentSuggestions(
+        this,
+        MySuggestionProvider.AUTHORITY,
+        MySuggestionProvider.MODE
+    )
+    val clearableHistory = android.provider.SearchRecentSuggestions(
+        this,
+        MySuggestionProvider.AUTHORITY,
+        MySuggestionProvider.MODE
+    )
     // TODO: 12.08.20   (reason: )lazy declarataion vs inFunctionDeclaration
 
 
@@ -102,6 +113,20 @@ class MainActivity : AppCompatActivity(),
         //   searchViewQueryAction()
     }
 
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleIntent(intent)
+
+    }
+
+    private fun handleIntent(intent: Intent) {
+        if (Intent.ACTION_SEARCH == intent.action) {
+            intent.getStringExtra(SearchManager.QUERY)?.also { query ->
+                mySuggestions.saveRecentQuery(query, null)
+            }
+        }
+    }
 
     fun wipeTextsOff(list: List<TextView>) {
         myUtilities.clearAllTextViews(list)
@@ -125,7 +150,6 @@ class MainActivity : AppCompatActivity(),
         if (imageIsInvisible) {
             viewVisibilityState(View.INVISIBLE)
             //  imageIsInvisible = !imageIsInvisible
-
         } else {
             viewVisibilityState(View.VISIBLE)
         }
@@ -140,11 +164,6 @@ class MainActivity : AppCompatActivity(),
         binding.icDescription.visibility = visibility
     }
 
-    /*  override fun onCreateOptionsMenu(menu: Menu): Boolean {
-          menuInflater.inflate(R.menu.nav_menu, menu)
-          return true
-      }
-      */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.nav_menu, menu)
         val searchItem: MenuItem = menu.findItem(R.id.menu_search)
@@ -161,12 +180,42 @@ class MainActivity : AppCompatActivity(),
                 android.R.color.transparent
             )
         )
-
         menuSearchAction(searchView)
-
         val searchManager =
             getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
+        (menu.findItem(R.id.menu_search).actionView as SearchView).apply {
+            // Assumes current activity is the searchable activity
+            setSearchableInfo(searchManager.getSearchableInfo(componentName))
+            // setIconifiedByDefault(false) // Do not iconify the widget; expand it by default
+            searchView.isSubmitButtonEnabled = true
+            searchView.isQueryRefinementEnabled = true
+
+            searchView.defaultFocusHighlightEnabled = false
+
+searchView.setQueryRefinementEnable()
+
+                   searchView.setOnSuggestionListener(object : SearchView.OnSuggestionListener {
+                       override fun onSuggestionSelect(position: Int): Boolean {
+                           Toast.makeText(this@MainActivity, "hiii", Toast.LENGTH_SHORT).show()
+
+
+                           closeKeyboard()
+                           return true
+                       }
+
+                       override fun onSuggestionClick(position: Int): Boolean {
+
+                           val cursor: Cursor = searchView.suggestionsAdapter.cursor
+                           cursor.moveToPosition(position)
+                           val suggestion: String =
+                               cursor.getString(2) //2 is the index of col containing suggestion name.
+
+                           searchView.setQuery(suggestion, true) //setting suggestion
+                           closeKeyboard()
+                           return true
+                       }
+                   })
+        }
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -183,7 +232,6 @@ class MainActivity : AppCompatActivity(),
                             wipeTextsOff(getTextViewList())
                             lastCityCache = cityName
                             cityName = searched
-                            // setSearchedCoordinates()
                             setSearchedCoordinates2(lastLocation.rGeocode(cityName))
                             makeSearchWeatherRequest()
                             setSearchedCityInfoInTV()
@@ -225,6 +273,14 @@ class MainActivity : AppCompatActivity(),
                 val intent = Intent(this, SettingsActivity::class.java)
                 startActivity(intent)
             }
+            R.id.clear_search_hisotry -> {
+                myUtilities.makeAlertDialog(
+                    this,
+                    R.string.Clear_Search_History_Dialog_Message,
+                    R.string.Clear_Search_History_Dialog_Title,
+                    clearableHistory
+                )
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -240,7 +296,6 @@ class MainActivity : AppCompatActivity(),
                 if (!searching) {
                     makeCurrentLocationWeatherRequest()
                     Log.i(debugTag, "location request is sent onResume: !searching")
-
                     lastLocation.setUpLocationListener(this, this, binding.Progress) {
                         Log.i(debugTag, "$longitude and $latitude are the coordinates ")
                         makeCurrentLocationWeatherRequest()
@@ -358,13 +413,13 @@ class MainActivity : AppCompatActivity(),
     private fun connectionControl(): Boolean {
         if (connectivityManagement.networkCheck(this)) {
             imageIsInvisible = false
-            Log.i(debugTag, "INTERNET $imageIsInvisible")
+            Log.i(debugTag, "INTERNET avaikable , display invisible : $imageIsInvisible")
             displayCheck(imageIsInvisible)
             myUtilities.clearAllTextViews(getTextViewList())
             return true
         } else {
             imageIsInvisible = true
-            Log.i(debugTag, "NO INTERNET $imageIsInvisible")
+            Log.i(debugTag, "NO INTERNET, display invisible: $imageIsInvisible")
             displayCheck(imageIsInvisible)
             myUtilities.clearAllTextViews(getTextViewList())
             Toast.makeText(

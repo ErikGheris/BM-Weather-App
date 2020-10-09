@@ -73,4 +73,9 @@
     <string name="no_forecast_available"> There\'s no forecast data available at the moment</string>
     <string name="invalid_city_name">Ungültiger Stadtname, bitte versuchen Sie es mal mit einem gültigen Namen</string>
     <string name="white_screen_msg">Hoppla! Etwas ist schief gelaufen. Bitte versuchen Sie es noch einmal. Wenn das Problem weiterhin besteht, überprüfen Sie bitte Ihre Eingaben noch einmal oder versuchen Sie es zu einem späteren Zeitpunkt erneut.</string>
+    <string name="app_label">app_label</string>
+    <string name="search_hint">search_hint</string>
+    <string name="clear_search_history">clear search history</string>
+    <string name="Clear_Search_History_Dialog_Message">Your search history will be deleted, do you want to continue?</string>
+    <string name="Clear_Search_History_Dialog_Title">DELETE SEARCH HISTORY</string>
 </resources>

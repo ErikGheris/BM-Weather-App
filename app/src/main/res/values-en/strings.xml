@@ -25,7 +25,7 @@
     <string name="currentWeatherFragmentTV">ThisIsGoingToBeOurcurrentWeatherFragment</string>
     <string name="fragmentSwitchButton">Weather</string>
     <string name="secondActivityTV">"you are in the second activity "</string>
-    <string name="mainActivityButton">Back</string>
+    <string name="mainActivityButton">Back</string>F
     <string name="kmh">km/h</string>
     <string name="des_pic">des_pic</string>
     <string name="service_not_available">Service is not available.</string>
@@ -58,5 +58,6 @@
 
     <string name="invalid_city_name"> Invalid city name, Please try with a valid name!</string>
     <string name="nav_menu_title">Search</string>
+    <string name="clear_search_history">clear search history</string>
 
 </resources>
