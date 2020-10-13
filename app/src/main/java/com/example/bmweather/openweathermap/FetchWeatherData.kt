@@ -1,10 +1,8 @@
 package com.example.bmweather.openweathermap
 
-import android.content.res.Resources
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_LONG
 import com.example.bmweather.utility.Load
 import com.example.bmweather.MainActivity
 import com.example.bmweather.R
@@ -61,7 +59,8 @@ class FetchWeatherData {
                             mainActivity.fetchHourlyWeather(weatherReport.hourly.take(24))
                             mainActivity.uiUtility()
                             imageIsInvisible = false
-                            mainActivity.displayCheck(imageIsInvisible)
+                            
+                            mainActivity.setDisplayVisibility(imageIsInvisible)
                             load.done(progressBar = progressBar)
                         } else {
                             if (response.code() == 400) {
@@ -69,7 +68,7 @@ class FetchWeatherData {
                                 Log.i(debugTag, "bad  ®esponse 400,$msg")
                                 imageIsInvisible = true
                                 myUtilities.clearAllTextViews(mainActivity.getTextViewList())
-                                mainActivity.displayCheck(imageIsInvisible)
+                                mainActivity.setDisplayVisibility(imageIsInvisible)
 
                                 myUtilities.makeSnackbar(
                                     mainActivity.binding.relativeLayout,
@@ -85,7 +84,7 @@ class FetchWeatherData {
                                 Log.i(debugTag, "bad  ®esponse ,401")
                                 imageIsInvisible = true
                                 myUtilities.clearAllTextViews(mainActivity.getTextViewList())
-                                mainActivity.displayCheck(imageIsInvisible)
+                                mainActivity.setDisplayVisibility(imageIsInvisible)
 
                                 myUtilities.makeSnackbar(
                                     mainActivity.binding.relativeLayout,
@@ -100,7 +99,7 @@ class FetchWeatherData {
                                 Log.i(debugTag, "bad  ®esponse ERROR404")
                                 imageIsInvisible = true
                                 myUtilities.clearAllTextViews(mainActivity.getTextViewList())
-                                mainActivity.displayCheck(imageIsInvisible)
+                                mainActivity.setDisplayVisibility(imageIsInvisible)
                                 load.done(progressBar = progressBar)
 
                                 myUtilities.makeSnackbar(
@@ -157,7 +156,7 @@ class FetchWeatherData {
                         } else {
                             imageIsInvisible = true
                             myUtilities.clearAllTextViews(mainActivityInstance.getTextViewList())
-                            mainActivityInstance.displayCheck(imageIsInvisible)
+                            mainActivityInstance.setDisplayVisibility(imageIsInvisible)
 
                             if (response.code() == 404) {
                                 Log.i("SecAct", "404")

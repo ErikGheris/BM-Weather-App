@@ -146,7 +146,7 @@ class MainActivity : AppCompatActivity(),
         )
     }
 
-    fun displayCheck(imageIsInvisible: Boolean) {
+    fun setDisplayVisibility(imageIsInvisible: Boolean) {
         if (imageIsInvisible) {
             viewVisibilityState(View.INVISIBLE)
             //  imageIsInvisible = !imageIsInvisible
@@ -189,32 +189,27 @@ class MainActivity : AppCompatActivity(),
             // setIconifiedByDefault(false) // Do not iconify the widget; expand it by default
             searchView.isSubmitButtonEnabled = true
             searchView.isQueryRefinementEnabled = true
-
             searchView.defaultFocusHighlightEnabled = false
-
-searchView.setQueryRefinementEnable()
-
-                   searchView.setOnSuggestionListener(object : SearchView.OnSuggestionListener {
-                       override fun onSuggestionSelect(position: Int): Boolean {
-                           Toast.makeText(this@MainActivity, "hiii", Toast.LENGTH_SHORT).show()
+//>>>>>>>>>>>>>>>searchView.setQueryRefinementEnable()
+            searchView.setOnSuggestionListener(object : SearchView.OnSuggestionListener {
+                override fun onSuggestionSelect(position: Int): Boolean {
+                    Toast.makeText(this@MainActivity, "hiii", Toast.LENGTH_SHORT).show()
 
 
-                           closeKeyboard()
-                           return true
-                       }
+                    closeKeyboard()
+                    return true
+                }
 
-                       override fun onSuggestionClick(position: Int): Boolean {
-
-                           val cursor: Cursor = searchView.suggestionsAdapter.cursor
-                           cursor.moveToPosition(position)
-                           val suggestion: String =
-                               cursor.getString(2) //2 is the index of col containing suggestion name.
-
-                           searchView.setQuery(suggestion, true) //setting suggestion
-                           closeKeyboard()
-                           return true
-                       }
-                   })
+                override fun onSuggestionClick(position: Int): Boolean {
+                    val cursor: Cursor = searchView.suggestionsAdapter.cursor
+                    cursor.moveToPosition(position)
+                    val suggestion: String =
+                        cursor.getString(2) //2 is the index of col containing suggestion name.
+                    searchView.setQuery(suggestion, true) //setting suggestion
+                    closeKeyboard()
+                    return true
+                }
+            })
         }
         return super.onCreateOptionsMenu(menu)
     }
@@ -244,7 +239,7 @@ searchView.setQueryRefinementEnable()
                     } else {
                         imageIsInvisible = true
                         Log.i(debugTag, "NO INTERNET QRY Listener $imageIsInvisible")
-                        displayCheck(imageIsInvisible)
+                        setDisplayVisibility(imageIsInvisible)
                         myUtilities.clearAllTextViews(getTextViewList())
                         Toast.makeText(
                             this@MainActivity,
@@ -300,7 +295,6 @@ searchView.setQueryRefinementEnable()
                         Log.i(debugTag, "$longitude and $latitude are the coordinates ")
                         makeCurrentLocationWeatherRequest()
                     }
-
                 } else {
                     Log.i(debugTag, "location request is sent onResume: else")
                     makeSearchWeatherRequest()
@@ -414,13 +408,13 @@ searchView.setQueryRefinementEnable()
         if (connectivityManagement.networkCheck(this)) {
             imageIsInvisible = false
             Log.i(debugTag, "INTERNET avaikable , display invisible : $imageIsInvisible")
-            displayCheck(imageIsInvisible)
+            setDisplayVisibility(imageIsInvisible)
             myUtilities.clearAllTextViews(getTextViewList())
             return true
         } else {
             imageIsInvisible = true
             Log.i(debugTag, "NO INTERNET, display invisible: $imageIsInvisible")
-            displayCheck(imageIsInvisible)
+            setDisplayVisibility(imageIsInvisible)
             myUtilities.clearAllTextViews(getTextViewList())
             Toast.makeText(
                 this,
@@ -439,7 +433,7 @@ searchView.setQueryRefinementEnable()
                 if (connectivityManagement.networkCheck(this)) {
                     imageIsInvisible = false
                     Log.i(debugTag, " INTERNET available on swipe $imageIsInvisible")
-                    displayCheck(imageIsInvisible)
+                    setDisplayVisibility(imageIsInvisible)
                     myUtilities.clearAllTextViews(getTextViewList())
                     makeCurrentLocationWeatherRequest()
                     Toast.makeText(
@@ -452,7 +446,7 @@ searchView.setQueryRefinementEnable()
                 } else {
                     imageIsInvisible = true
                     Log.i(debugTag, "NO INTERNET on swipe $imageIsInvisible")
-                    displayCheck(imageIsInvisible)
+                    setDisplayVisibility(imageIsInvisible)
                     myUtilities.clearAllTextViews(getTextViewList())
                     Toast.makeText(
                         this,
@@ -470,7 +464,6 @@ searchView.setQueryRefinementEnable()
                 swipe.isRefreshing = false
                 showLocationIsDisabledAlert(this)
             }
-
         }
     }
 
@@ -528,6 +521,7 @@ searchView.setQueryRefinementEnable()
                         Toast.LENGTH_SHORT
                     ).show()
                     startActivity(intent)
+                    overridePendingTransition(R.anim.fade_in,R.anim.fade_out)
                 } else
                     Toast.makeText(
                         this,
@@ -541,11 +535,10 @@ searchView.setQueryRefinementEnable()
                     Toast.LENGTH_SHORT
                 ).show()
             }
-
         }
-
-
     }
+
+
 
     fun uiUtility() {
         load.done(binding.Progress)
