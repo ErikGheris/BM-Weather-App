@@ -78,4 +78,5 @@
     <string name="clear_search_history">clear search history</string>
     <string name="Clear_Search_History_Dialog_Message">Your search history will be deleted, do you want to continue?</string>
     <string name="Clear_Search_History_Dialog_Title">DELETE SEARCH HISTORY</string>
+    <string name="no_permission_no_function">"Leider kann BMWeather App keine Dienste anbieten ohne die erforderlichen Berechtigungen zu haben. Bitte ändern Sie die Berechtigungseinstellungen und kommen Sie wieder zurück. "</string>
 </resources>
