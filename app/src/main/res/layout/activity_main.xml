@@ -285,6 +285,21 @@
                         app:srcCompat="@drawable/bmlogo" />
                 </androidx.cardview.widget.CardView>
 
+                <TextView
+                    android:id="@+id/messageHolderTV"
+                    android:layout_width="290dp"
+                    android:layout_height="94dp"
+                    android:breakStrategy="high_quality"
+                    android:capitalize="words"
+                    android:fadingEdge="horizontal|vertical"
+                    android:text="@string/no_permission_no_function"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.37" />
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

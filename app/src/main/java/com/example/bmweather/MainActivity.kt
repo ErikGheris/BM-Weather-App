@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.view.MenuItemCompat
+import androidx.core.view.isVisible
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bmweather.adapter.HourlyArrayAdapter
@@ -85,7 +86,7 @@ class MainActivity : AppCompatActivity(),
         PreferenceManager.getDefaultSharedPreferences(this)
     }
     private var backPressedTime: Long = 0
-
+    val textViewsList by lazy { getTextViewList() }
     private val backToast: Toast by lazy {
         Toast.makeText(
             this,
@@ -191,28 +192,28 @@ class MainActivity : AppCompatActivity(),
             searchView.defaultFocusHighlightEnabled = false
 // searchView.setQueryRefinementEnable()
 
-                   searchView.setOnSuggestionListener(object : SearchView.OnSuggestionListener {
-                       override fun onSuggestionSelect(position: Int): Boolean {
-                           Toast.makeText(this@MainActivity, "hiii", Toast.LENGTH_SHORT).show()
-                           searchView.clearFocus()
-                           searchItem.collapseActionView()
-                           closeKeyboard()
-                           return true
-                       }
+            searchView.setOnSuggestionListener(object : SearchView.OnSuggestionListener {
+                override fun onSuggestionSelect(position: Int): Boolean {
+                    Toast.makeText(this@MainActivity, "hiii", Toast.LENGTH_SHORT).show()
+                    searchView.clearFocus()
+                    searchItem.collapseActionView()
+                    closeKeyboard()
+                    return true
+                }
 
-                       override fun onSuggestionClick(position: Int): Boolean {
+                override fun onSuggestionClick(position: Int): Boolean {
 
-                           val cursor: Cursor = searchView.suggestionsAdapter.cursor
-                           cursor.moveToPosition(position)
-                           val suggestion: String =
-                               cursor.getString(2) //2 is the index of col containing suggestion name.
+                    val cursor: Cursor = searchView.suggestionsAdapter.cursor
+                    cursor.moveToPosition(position)
+                    val suggestion: String =
+                        cursor.getString(2) //2 is the index of col containing suggestion name.
 
-                           searchView.setQuery(suggestion, true) //setting suggestion
-                           searchItem.collapseActionView()
-                           closeKeyboard()
-                           return true
-                       }
-                   })
+                    searchView.setQuery(suggestion, true) //setting suggestion
+                    searchItem.collapseActionView()
+                    closeKeyboard()
+                    return true
+                }
+            })
         }
         return super.onCreateOptionsMenu(menu)
     }
@@ -227,7 +228,7 @@ class MainActivity : AppCompatActivity(),
                         Log.i(debugTag, "submitting $searched")
                         if (searched.trim().isNotEmpty()) {
                             searching = true
-                            wipeTextsOff(getTextViewList())
+                            wipeTextsOff(textViewsList)
                             lastCityCache = cityName
                             cityName = searched
                             setSearchedCoordinates2(lastLocation.rGeocode(cityName))
@@ -284,13 +285,13 @@ class MainActivity : AppCompatActivity(),
 
         }
         if (id == R.id.menu_current_location) {
-            searching=false
+            searching = false
             makeCurrentLocationWeatherRequest()
         }
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onRestart() {
+     override fun onRestart() {
         super.onRestart()
         lastLocation.setUpLocationListener(
             this, this, binding.Progress
@@ -445,7 +446,8 @@ class MainActivity : AppCompatActivity(),
                     setDisplayVisibility(imageIsInvisible)
                     myUtilities.clearAllTextViews(getTextViewList())
                     if (!searching) {
-                    makeCurrentLocationWeatherRequest()} else {
+                        makeCurrentLocationWeatherRequest()
+                    } else {
                         makeSearchWeatherRequest()
                     }
                     Toast.makeText(
@@ -534,7 +536,7 @@ class MainActivity : AppCompatActivity(),
                         Toast.LENGTH_SHORT
                     ).show()
                     startActivity(intent)
-                    overridePendingTransition(R.anim.fade_in,R.anim.fade_out)
+                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
                 } else
                     Toast.makeText(
                         this,
@@ -550,7 +552,6 @@ class MainActivity : AppCompatActivity(),
             }
         }
     }
-
 
 
     fun uiUtility() {
@@ -648,6 +649,9 @@ class MainActivity : AppCompatActivity(),
                         "permissionDenied",
                         "Permission has been denied by user"
                     )
+                    wipeTextsOff(textViewsList)
+                    binding.messageHolderTV.isVisible= true
+
                     Toast.makeText(
                         this,
                         getString(R.string.location_permission_not_granted),

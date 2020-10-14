@@ -55,9 +55,10 @@
     <string name="signature_title">Your signature</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="white_screen_msg">Oops! Something went wrong. Please try again. If the problem persists please double check your entries or try again later.</string>
-
     <string name="invalid_city_name"> Invalid city name, Please try with a valid name!</string>
     <string name="nav_menu_title">Search</string>
     <string name="clear_search_history">clear search history</string>
+    <string name="no_permission_no_function">"Unfortunately the BMWeather App can't provide any services without the required permissions. Please change the permission settings and come back again. "</string>
+    <string name="title_activity_main2">"    Berechtigungen. Bitte ändern Sie die Berechtigungseinstellungen und kommen Sie wieder zurück. "</string>
 
 </resources>

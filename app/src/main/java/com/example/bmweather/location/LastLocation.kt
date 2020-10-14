@@ -34,9 +34,9 @@ import java.lang.IllegalStateException
 class LastLocation(context: Context) {
     val permissionsRequestCode = 10
     private val geocoder: Geocoder = Geocoder(context, Locale.getDefault())
-    private var resultMessage = "SKSKSK"
+    private var resultMessage = "result:"
     private var bLocation = false
-    val debugTag = "THISISBS"
+    val debugTag = "LastLocationDebugTag"
     val tag = "PermissionDemo"
     val load: Load = Load()
     private val fusedLocationProviderClient: FusedLocationProviderClient =
