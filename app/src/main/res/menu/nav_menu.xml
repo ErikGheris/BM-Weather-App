@@ -7,15 +7,19 @@
         android:icon="@drawable/ic_search_black_24dp"
         android:title="@string/nav_menu_title"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="ifRoom|ifRoom"
+        app:showAsAction="always|collapseActionView"
         />
+    <item
+        android:id="@+id/menu_current_location"
+        android:icon="@drawable/location"
+        app:showAsAction="always"
+        android:title="Current_location" />
     <item
         android:id="@+id/settings"
         android:title="@string/Settings"
         app:showAsAction="never" />
 
     <item
-
         android:id="@+id/clear_search_hisotry"
         android:title="@string/clear_search_history"
         app:showAsAction="withText" />

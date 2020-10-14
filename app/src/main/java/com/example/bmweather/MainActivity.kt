@@ -33,7 +33,6 @@ import com.example.bmweather.openweathermap.imageIsInvisible
 import com.example.bmweather.openweathermap.response.Current
 import com.example.bmweather.openweathermap.response.Daily
 import com.example.bmweather.openweathermap.response.Hourly
-
 import com.example.bmweather.utility.Load
 import com.example.bmweather.utility.Utility
 import com.squareup.picasso.Picasso
@@ -191,14 +190,13 @@ class MainActivity : AppCompatActivity(),
             searchView.isQueryRefinementEnabled = true
 
             searchView.defaultFocusHighlightEnabled = false
-
-searchView.setQueryRefinementEnable()
+// searchView.setQueryRefinementEnable()
 
                    searchView.setOnSuggestionListener(object : SearchView.OnSuggestionListener {
                        override fun onSuggestionSelect(position: Int): Boolean {
                            Toast.makeText(this@MainActivity, "hiii", Toast.LENGTH_SHORT).show()
-
-
+                           searchView.clearFocus()
+                           searchItem.collapseActionView()
                            closeKeyboard()
                            return true
                        }
@@ -211,6 +209,7 @@ searchView.setQueryRefinementEnable()
                                cursor.getString(2) //2 is the index of col containing suggestion name.
 
                            searchView.setQuery(suggestion, true) //setting suggestion
+                           searchItem.collapseActionView()
                            closeKeyboard()
                            return true
                        }
@@ -268,11 +267,13 @@ searchView.setQueryRefinementEnable()
 
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.getItemId()
         when (item.itemId) {
             R.id.settings -> {
                 val intent = Intent(this, SettingsActivity::class.java)
                 startActivity(intent)
             }
+
             R.id.clear_search_hisotry -> {
                 myUtilities.makeAlertDialog(
                     this,
@@ -281,6 +282,11 @@ searchView.setQueryRefinementEnable()
                     clearableHistory
                 )
             }
+
+        }
+        if (id == R.id.menu_current_location) {
+            searching=false
+            makeCurrentLocationWeatherRequest()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -435,13 +441,15 @@ searchView.setQueryRefinementEnable()
         binding.swipe.setOnRefreshListener {
             //TODO wipeTextsOff(getTextViewList())
             if (lastLocation.isLocationEnabled(this)) {
-                searching = false
                 if (connectivityManagement.networkCheck(this)) {
                     imageIsInvisible = false
                     Log.i(debugTag, " INTERNET available on swipe $imageIsInvisible")
                     displayCheck(imageIsInvisible)
                     myUtilities.clearAllTextViews(getTextViewList())
-                    makeCurrentLocationWeatherRequest()
+                    if (!searching) {
+                    makeCurrentLocationWeatherRequest()} else {
+                        makeSearchWeatherRequest()
+                    }
                     Toast.makeText(
                         this, "Data Updated, Coordinates are $xCoordination, $yCoordination",
                         Toast.LENGTH_SHORT
@@ -510,6 +518,7 @@ searchView.setQueryRefinementEnable()
             debugTag = debugTag
         )
     }
+
 
     private fun activityButtonAction() {
         binding.activityButton.setOnClickListener {
@@ -670,7 +679,6 @@ searchView.setQueryRefinementEnable()
         }
         return super.dispatchTouchEvent(event)
     }
-
 
 }
 
