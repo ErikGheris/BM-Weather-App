@@ -42,7 +42,9 @@ class SecondActivity : AppCompatActivity() {
         Log.i("SecAct", "$longitude  und $latitude")
         makeForecastRequest()
         binding.secondActivityButton.setOnClickListener {
+
             finish()
+            overridePendingTransition(R.anim.fade_in,R.anim.fade_out)
         }
     }
 
@@ -110,5 +112,11 @@ class SecondActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onBackPressed() {
+        finish()
+        overridePendingTransition(R.anim.fade_in,R.anim.fade_out)
+        super.onBackPressed()
     }
 }

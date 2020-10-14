@@ -145,7 +145,7 @@ class MainActivity : AppCompatActivity(),
         )
     }
 
-    fun displayCheck(imageIsInvisible: Boolean) {
+    fun setDisplayVisibility(imageIsInvisible: Boolean) {
         if (imageIsInvisible) {
             viewVisibilityState(View.INVISIBLE)
             //  imageIsInvisible = !imageIsInvisible
@@ -188,7 +188,6 @@ class MainActivity : AppCompatActivity(),
             // setIconifiedByDefault(false) // Do not iconify the widget; expand it by default
             searchView.isSubmitButtonEnabled = true
             searchView.isQueryRefinementEnabled = true
-
             searchView.defaultFocusHighlightEnabled = false
 // searchView.setQueryRefinementEnable()
 
@@ -243,7 +242,7 @@ class MainActivity : AppCompatActivity(),
                     } else {
                         imageIsInvisible = true
                         Log.i(debugTag, "NO INTERNET QRY Listener $imageIsInvisible")
-                        displayCheck(imageIsInvisible)
+                        setDisplayVisibility(imageIsInvisible)
                         myUtilities.clearAllTextViews(getTextViewList())
                         Toast.makeText(
                             this@MainActivity,
@@ -306,7 +305,6 @@ class MainActivity : AppCompatActivity(),
                         Log.i(debugTag, "$longitude and $latitude are the coordinates ")
                         makeCurrentLocationWeatherRequest()
                     }
-
                 } else {
                     Log.i(debugTag, "location request is sent onResume: else")
                     makeSearchWeatherRequest()
@@ -420,13 +418,13 @@ class MainActivity : AppCompatActivity(),
         if (connectivityManagement.networkCheck(this)) {
             imageIsInvisible = false
             Log.i(debugTag, "INTERNET avaikable , display invisible : $imageIsInvisible")
-            displayCheck(imageIsInvisible)
+            setDisplayVisibility(imageIsInvisible)
             myUtilities.clearAllTextViews(getTextViewList())
             return true
         } else {
             imageIsInvisible = true
             Log.i(debugTag, "NO INTERNET, display invisible: $imageIsInvisible")
-            displayCheck(imageIsInvisible)
+            setDisplayVisibility(imageIsInvisible)
             myUtilities.clearAllTextViews(getTextViewList())
             Toast.makeText(
                 this,
@@ -444,7 +442,7 @@ class MainActivity : AppCompatActivity(),
                 if (connectivityManagement.networkCheck(this)) {
                     imageIsInvisible = false
                     Log.i(debugTag, " INTERNET available on swipe $imageIsInvisible")
-                    displayCheck(imageIsInvisible)
+                    setDisplayVisibility(imageIsInvisible)
                     myUtilities.clearAllTextViews(getTextViewList())
                     if (!searching) {
                     makeCurrentLocationWeatherRequest()} else {
@@ -460,7 +458,7 @@ class MainActivity : AppCompatActivity(),
                 } else {
                     imageIsInvisible = true
                     Log.i(debugTag, "NO INTERNET on swipe $imageIsInvisible")
-                    displayCheck(imageIsInvisible)
+                    setDisplayVisibility(imageIsInvisible)
                     myUtilities.clearAllTextViews(getTextViewList())
                     Toast.makeText(
                         this,
@@ -478,7 +476,6 @@ class MainActivity : AppCompatActivity(),
                 swipe.isRefreshing = false
                 showLocationIsDisabledAlert(this)
             }
-
         }
     }
 
@@ -537,6 +534,7 @@ class MainActivity : AppCompatActivity(),
                         Toast.LENGTH_SHORT
                     ).show()
                     startActivity(intent)
+                    overridePendingTransition(R.anim.fade_in,R.anim.fade_out)
                 } else
                     Toast.makeText(
                         this,
@@ -550,11 +548,10 @@ class MainActivity : AppCompatActivity(),
                     Toast.LENGTH_SHORT
                 ).show()
             }
-
         }
-
-
     }
+
+
 
     fun uiUtility() {
         load.done(binding.Progress)
