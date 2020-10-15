@@ -65,7 +65,7 @@
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
-
+   <string name="no_internet_message_for_message_holder">The BMWeather requires Internet connection to work. Please make sure you’re connected to the internet and come back again.</string>
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="cityTextView">City</string>

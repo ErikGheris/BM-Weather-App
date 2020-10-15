@@ -1,8 +1,7 @@
 package com.example.bmweather
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
-import android.app.SearchManager
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -21,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.view.MenuItemCompat
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity(),
     private var exclude = "minutely"
     private val fetchWeather = FetchWeatherData
     private lateinit var lastLocation: LastLocation
-    lateinit var binding: com.example.bmweather.databinding.ActivityMainBinding
+    lateinit var binding: ActivityMainBinding
     private var searching = false
     private var load: Load = Load()
     val myUtilities: Utility = Utility()
@@ -77,11 +77,10 @@ class MainActivity : AppCompatActivity(),
         MySuggestionProvider.AUTHORITY,
         MySuggestionProvider.MODE
     )
-    // TODO: 12.08.20   (reason: )lazy declarataion vs inFunctionDeclaration
-
-
-    //  val list : ArrayList by lazy { ArrayList() }
-    // private lateinit var backToast: Toast
+    val isConnected: Boolean
+        get() {
+            return connectivityManagement.networkCheck(this)
+        }
     val preferences: SharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(this)
     }
@@ -111,6 +110,8 @@ class MainActivity : AppCompatActivity(),
         swipeAction()
         activityButtonAction()
         //   searchViewQueryAction()
+
+        triggerRestart(this)
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -144,6 +145,17 @@ class MainActivity : AppCompatActivity(),
             binding.sunriseText,
             binding.sunsetText
         )
+    }
+
+
+    fun hideViews() {
+        imageIsInvisible = true
+        setDisplayVisibility(imageIsInvisible)
+    }
+
+    fun showViews() {
+        imageIsInvisible = false
+        setDisplayVisibility(imageIsInvisible)
     }
 
     fun setDisplayVisibility(imageIsInvisible: Boolean) {
@@ -291,49 +303,63 @@ class MainActivity : AppCompatActivity(),
         return super.onOptionsItemSelected(item)
     }
 
-     override fun onRestart() {
+    override fun onRestart() {
         super.onRestart()
-        lastLocation.setUpLocationListener(
-            this, this, binding.Progress
-        ) {
-            Log.i(debugTag, "  onResume")
-            if (lastLocation.isLocationEnabled(this)) {
-                Log.i(debugTag, "location request is sent onResume")
-                if (!searching) {
-                    makeCurrentLocationWeatherRequest()
-                    Log.i(debugTag, "location request is sent onResume: !searching")
-                    lastLocation.setUpLocationListener(this, this, binding.Progress) {
-                        Log.i(debugTag, "$longitude and $latitude are the coordinates ")
+        if (isConnected) {
+            lastLocation.setUpLocationListener(
+                this, this, binding.Progress
+            ) {
+                Log.i(debugTag, "  onResume")
+                if (lastLocation.isLocationEnabled(this)) {
+                    Log.i(debugTag, "location request is sent onResume")
+                    if (!searching) {
                         makeCurrentLocationWeatherRequest()
+                        Log.i(debugTag, "location request is sent onResume: !searching")
+                        lastLocation.setUpLocationListener(this, this, binding.Progress) {
+                            Log.i(debugTag, "$longitude and $latitude are the coordinates ")
+                            makeCurrentLocationWeatherRequest()
+                        }
+                    } else {
+                        Log.i(debugTag, "location request is sent onResume: else")
+                        makeSearchWeatherRequest()
                     }
-                } else {
-                    Log.i(debugTag, "location request is sent onResume: else")
-                    makeSearchWeatherRequest()
                 }
             }
+        } else {
+            hideViews()
+            displayMessageInTextView(R.string.no_internet_message_for_message_holder)
         }
     }
 
     override fun onResume() {
         super.onResume()
-        lastLocation.setUpLocationListener(
-            this, this, binding.Progress
-        ) {
-            Log.i(debugTag, "  onResume")
-            if (lastLocation.isLocationEnabled(this)) {
-                Log.i(debugTag, "location request is sent onResume")
-                if (!searching) {
-                    makeCurrentLocationWeatherRequest()
-                    Log.i(debugTag, "location request is sent onResume: !searching")
-                    lastLocation.setUpLocationListener(this, this, binding.Progress) {
-                        Log.i(debugTag, "$longitude and $latitude are the coordinates ")
+        if (isConnected) {
+
+            if (binding.messageHolderTV.isVisible)
+                binding.messageHolderTV.isInvisible = true
+
+            lastLocation.setUpLocationListener(
+                this, this, binding.Progress
+            ) {
+                Log.i(debugTag, "  onResume")
+                if (lastLocation.isLocationEnabled(this)) {
+                    Log.i(debugTag, "location request is sent onResume")
+                    if (!searching) {
                         makeCurrentLocationWeatherRequest()
+                        Log.i(debugTag, "location request is sent onResume: !searching")
+                        lastLocation.setUpLocationListener(this, this, binding.Progress) {
+                            Log.i(debugTag, "$longitude and $latitude are the coordinates ")
+                            makeCurrentLocationWeatherRequest()
+                        }
+                    } else {
+                        Log.i(debugTag, "location request is sent onResume: else")
+                        makeSearchWeatherRequest()
                     }
-                } else {
-                    Log.i(debugTag, "location request is sent onResume: else")
-                    makeSearchWeatherRequest()
                 }
             }
+        } else {
+            hideViews()
+            displayMessageInTextView(R.string.no_internet_message_for_message_holder)
         }
     }
 
@@ -416,7 +442,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun connectionControl(): Boolean {
-        if (connectivityManagement.networkCheck(this)) {
+        if (isConnected) {
             imageIsInvisible = false
             Log.i(debugTag, "INTERNET avaikable , display invisible : $imageIsInvisible")
             setDisplayVisibility(imageIsInvisible)
@@ -436,11 +462,22 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
+    fun triggerRestart(context: Activity) {
+        binding.messageHolderTV.setOnClickListener {
+            val intent = Intent(context, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            context.startActivity(intent)
+            (context as Activity).finish()
+            Runtime.getRuntime().exit(0)
+        }
+
+    }
+
     private fun swipeAction() {
         binding.swipe.setOnRefreshListener {
             //TODO wipeTextsOff(getTextViewList())
             if (lastLocation.isLocationEnabled(this)) {
-                if (connectivityManagement.networkCheck(this)) {
+                if (isConnected) {
                     imageIsInvisible = false
                     Log.i(debugTag, " INTERNET available on swipe $imageIsInvisible")
                     setDisplayVisibility(imageIsInvisible)
@@ -618,48 +655,62 @@ class MainActivity : AppCompatActivity(),
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            lastLocation.permissionsRequestCode -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.i(
-                        "permission granted",
-                        "Permission has been granted by user"
-                    )
-                    Toast.makeText(
-                        this, "Permission has been granted by user",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    when {
-                        lastLocation.isLocationEnabled(this) -> {
-                            lastLocation.setUpLocationListener(
-                                this,
-                                this, binding.Progress
-                            ) {
-                                makeCurrentLocationWeatherRequest()
-                                Log.i(debugTag, "req")
+
+        if (isConnected) {
+            when (requestCode) {
+                lastLocation.permissionsRequestCode -> {
+                    if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        Log.i(
+                            "permission granted",
+                            "Permission has been granted by user"
+                        )
+                        Toast.makeText(
+                            this, "Permission has been granted by user",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        when {
+                            lastLocation.isLocationEnabled(this) -> {
+                                lastLocation.setUpLocationListener(
+                                    this,
+                                    this, binding.Progress
+                                ) {
+                                    makeCurrentLocationWeatherRequest()
+                                    Log.i(debugTag, "req")
+                                }
+                            }
+                            else -> {
+                                //TODO it should be ajdusted so that when the user comes back after activation# a new rqst will be sent
+                                lastLocation.showGPSNotEnabledDialog(this)
                             }
                         }
-                        else -> {
-                            //TODO it should be ajdusted so that when the user comes back after activation# a new rqst will be sent
-                            lastLocation.showGPSNotEnabledDialog(this)
-                        }
-                    }
-                } else {
-                    Log.i(
-                        "permissionDenied",
-                        "Permission has been denied by user"
-                    )
-                    wipeTextsOff(textViewsList)
-                    binding.messageHolderTV.isVisible= true
+                    } else {
+                        Log.i(
+                            "permissionDenied",
+                            "Permission has been denied by user"
+                        )
+                        wipeTextsOff(textViewsList)
+                        binding.messageHolderTV.isVisible = true
 
-                    Toast.makeText(
-                        this,
-                        getString(R.string.location_permission_not_granted),
-                        Toast.LENGTH_LONG
-                    ).show()
+                        Toast.makeText(
+                            this,
+                            getString(R.string.location_permission_not_granted),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
                 }
             }
+        } else {
+            displayMessageInTextView(R.string.no_permission_no_function)
+
         }
+
+    }
+
+    private fun displayMessageInTextView(stringID: Int) {
+        val textOfStringID = getString(stringID)
+        wipeTextsOff(textViewsList)
+        binding.messageHolderTV.text = textOfStringID
+        binding.messageHolderTV.isVisible = true
     }
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {

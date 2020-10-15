@@ -60,5 +60,6 @@
     <string name="clear_search_history">clear search history</string>
     <string name="no_permission_no_function">"Unfortunately the BMWeather App can't provide any services without the required permissions. Please change the permission settings and come back again. "</string>
     <string name="title_activity_main2">"    Berechtigungen. Bitte ändern Sie die Berechtigungseinstellungen und kommen Sie wieder zurück. "</string>
+    <string name="no_internet_message_for_message_holder">Die BMWeather benötigt eine Internetverbindung, um zu funktionieren. Bitte überprüfen Sie, ob Sie mit dem Internet verbunden sind und kommen Sie wieder zurück.</string>
 
 </resources>
